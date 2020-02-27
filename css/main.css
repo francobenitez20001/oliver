@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+.logo{font-size: 25px;font-family: 'Open Sans', sans-serif;font-weight: bold;}
+
+.nav-link{font-family: 'Open Sans',sans-serif;margin: 0px 10px;}
+#icon-menu{cursor: pointer;}
+
+
+.menu-secundary{
+    width: 20%;
+    position: absolute;
+    top:0;
+    left:80%;
+    z-index: 100;
+    height:100vh;
+}
+
+.menu-secundary ul li{list-style: none;margin: 20px 0px;}
+.menu-secundary ul li a{color: white;font-size: 18px;cursor: pointer;}
+.menu-secundary ul li a:hover{color: #b6b6b6;}
+
+.menu-secundary #botonVolverSecundary{color: white; font-size: 25px;margin: 10px;cursor: pointer;}
+
+.banner-form{margin: 0px 35px;}
+
+.cajaform{background-color: #b6b6b6;height: 91vh;padding-top: 18vh;}
+ .form-cont{background-color: #fff;padding: 20px 20px;border-radius: 15px;}
+ .form-cont form p{font-family: 'Open Sans',sans-serif; font-size: 25px;}

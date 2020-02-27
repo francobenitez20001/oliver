@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Admin productos</title>
+    <script src="js/autenticacion.js"></script>
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/sweetalert2.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
+    <a class="navbar-brand logo" href="home.html">Oliver</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="adminProductos.html">Productos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="adminPedidos.html">Pedidos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="adminDeudores.html">Deudores</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="adminEnvios.html">Envíos</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> Ingresar</a>
+        </li> -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <!--contenido desde menu.js-->
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" id="cerrarSesion" >Cerrar sesión</a>
+          </div>
+        </li>
+        <li class="nav-item" id="icon-menu-li">
+          <a id="icon-menu" class="nav-link d-xs-none d-sm-none d-md-block"><i class="fas fa-bars"></i></a>
+        </li>
+      </ul>
+    </div>
+  </nav><!--menu-->
+  
+  <div class="banner-form" id="banner-form">
+    <div class="row">
+      <div class="col-12 col-sm-8 col-md-9">
+        <h3 class="my-4">Panel de administración de productos</h3>
+      </div>
+      <div class="col-12 col-sm-4 col-md-3">
+        <form id="form-search">
+          <input type="text" class="form-control my-4" name="productoSearch" placeholder="Busque su producto">
+          <!-- <input type="submit" class="btn btn-outline-info" value="buscar"> -->
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <table class="table text-center fadeIn fast" id="tablaProductos">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Código</th>
+        <th scope="col">Producto</th>
+        <th scope="col">Marca</th>
+        <th scope="col">Stock</th>
+        <th scope="col">Precio público</th>
+        <th scope="col">Precio Unitario</th>
+        <th scope="col">Precio por KG</th>
+        <th scope="col">
+          <button class="btn btn-outline-info" id="botonAgregar" onclick="mostrarFormularioAgregar()">Agregar</button>
+        </th>
+      </tr>
+    </thead>
+    <tbody id="bodyTable">
+    
+    </tbody>
+  </table><!--tabla productos-->
+
+  <!--formulario de agregar-->
+  <div class="container mt-3 d-none fadeIn fast" id="form-agregar-div">
+    <div class="alert alert-success d-none" id="alert-success">Se ha agregado el producto con éxito</div>
+    <a class="btn btn-warning" onclick="ocultarFormularioAgregar()">Regresar al panel de control</a>
+    <h1>Formulario de alta de un nuevo producto</h1>
+    <hr>
+    <form id="formAgregarProducto" class="form-group">
+      <div class="row">
+          <input type="text" name="producto" id="producto" class="form-control col-12 mb-4" placeholder="Nombre del producto" required>
+          <div class="col-5">
+            <p>Selecciona una marca</p>
+            <select class="form-control mb-4" name="idMarca" id="idMarca" required>
+              <option value="">Seleccione una marca</option>
+            </select>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-5">
+            <p>Selecciona una categoria</p>
+            <select class="form-control mb-4" name="idCategoria" id="idCategoria" required>
+              <option value="">Seleccione una categoria</option>
+            </select>
+          </div>
+          <div class="input-group col-12 col-md-5 mb-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text">$</div>
+            </div>
+            <input type="text" name="precioPublico" id="precioPublico" class="form-control" placeholder="Precio público">
+          </div>
+          <div class="col-md-2"></div>
+          <div class="input-group col-12 col-md-5 mb-4">
+            <div class="input-group-prepend">
+                <div class="input-group-text">$</div>
+            </div>
+            <input type="text" name="precioUnidad" id="precioUnidad" class="form-control" placeholder="Precio por unidad">
+          </div>
+          <div class="input-group col-12 col-md-5 mb-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text">$</div>
+            </div>
+            <input type="text" name="PrecioKilo" id="PrecioKilo" class="form-control" placeholder="Precio por Kg">
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-12 col-md-5 mb-4">
+            <input type="text" name="stock" id="stock" class="form-control" placeholder="Stock">
+          </div>
+      </div>
+      <center><input type="submit" class="btn btn-outline-info" value="Agregar"></center>
+    </form>
+  </div>
+
+  <center><button class="btn btn-outline-dark mb-2" id="botonVerMas">Ver más</button></center>
+
+  <div class="menu-secundary bg-dark animated fadeIn fast d-none" id="menu-secundary">
+    <i class="fas fa-times-circle" id="botonVolverSecundary"></i>
+    <ul>
+      <li><a onclick="mostrarFormularioAgregarMarca()" class="nav-link link-secundary"><i class="fas fa-ad"></i> Agregar una marca</a></li>
+      <li><a onclick="mostrarFormularioAgregarCategoria()" class="nav-link link-secundary"><i class="fas fa-align-left"></i> Agregar una categoria</a></li>
+      <li><a class="nav-link link-secundary"><i class="fas fa-check-double"></i> Modificar varios</a></li>
+      <li><a class="nav-link link-secundary"><i class="fas fa-question-circle"></i> Ayuda</a></li>
+    </ul>
+  </div><!--menu secundario-->
+
+  <!--formulario agregar marca-->
+  <div class="container mt-3 fadeIn fast d-none" id="form-agregar-marca">
+    <div class="alert alert-success d-none" id="alert-success">Se ha agregado la marca con éxito</div>
+    <a class="btn btn-warning" onclick="ocultarFormularioAgregarMarca()">Regresar al panel de control</a>
+    <hr>
+    <h1>Formulario de alta de una nueva marca</h1>
+    <hr>
+    <form id="formAgregarMarca" action="backend/marca/agregarMarca.php" method="POST" class="form-group">
+      <div class="row">
+          <div class="col-12 col-md-5 mb-4">
+            <input type="text" name="marcaNombre" id="marcaNombre" class="form-control" placeholder="Nombre de la marca">
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-5">
+            <input type="submit" class="btn btn-outline-info col-12" value="Agregar">
+          </div>
+      </div>
+    </form>
+  </div>
+
+  <!--form agregar categoria-->
+  <div class="container mt-3 fadeIn fast d-none" id="form-agregar-categoria">
+    <div class="alert alert-success d-none" id="alert-success">Se ha agregado la categoria con éxito</div>
+    <a class="btn btn-warning" onclick="ocultarFormularioAgregarCategoria()">Regresar al panel de control</a>
+    <hr>
+    <h1>Formulario de alta de una nueva categoria</h1>
+    <hr>
+    <form id="formAgregarCategoria" class="form-group">
+      <div class="row">
+          <div class="col-12 col-md-5 mb-4">
+            <input type="text" name="categoriaNombre" id="categoriaNombre" class="form-control" placeholder="Nombre de la categoria">
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-md-5">
+            <input type="submit" class="btn btn-outline-info col-12" value="Agregar">
+          </div>
+      </div>
+    </form>
+  </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="js/bootstrap/bootstrap.min.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/sweetalert2.js" charset="utf-8"></script>
+    <script src="js/app.js"></script>
+    <script src="js/productos.js"></script>
+    <!-- <script src="js/formAgregarProducto.js"></script> -->
+</body>
+</html>
