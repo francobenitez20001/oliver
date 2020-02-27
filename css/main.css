@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
-.logo{font-size: 25px;font-family: 'Open Sans', sans-serif;font-weight: bold;}
+.logo img{width: 110px;height: 70px;margin: 0;}
 
 .nav-link{font-family: 'Open Sans',sans-serif;margin: 0px 10px;}
 #icon-menu{cursor: pointer;}

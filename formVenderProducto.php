@@ -27,7 +27,9 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
-    <a class="navbar-brand logo" href="home.html">Oliver</a>
+    <a class="navbar-brand logo" href="home.html">
+      <img src="assets/img/logo.png" class="img-fluid" alt="">
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
