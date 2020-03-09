@@ -47,6 +47,9 @@
         <li class="nav-item">
           <a class="nav-link" href="adminEnvios.html">Envíos</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="adminServicios.html">Servícios</a>
+        </li>
         <!-- <li class="nav-item">
           <a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> Ingresar</a>
         </li> -->
@@ -72,29 +75,36 @@
     <hr>
     <form id="formVentaProducto" class="form-group">
         <div class="row">
-            <input type="text" name="producto" id="producto" class="form-control col-5 mb-4" value="<?php echo $reg['producto'] ?>" required>
-            <div class="col-2"></div>
-            <div class="col-5">
+            <input type="text" name="producto" id="producto" class="form-control col-12 col-md-5 mb-4" value="<?php echo $reg['producto'] ?>" required>
+            <div class="col-md-2"></div>
+            <div class="col-md-5 col-12">
               <div class="row">
                 <div class="col-3"><p class="mt-2">Cantidad</p></div>
                 <div class="col-9">
                   <select class="form-control" name="cantidad" id="cantidad" required>
-                  
+                  <!--Viene desde ventas.js-->
                   </select>
                 </div>
               </div>
             </div>
-            <div class="col-5">
+            <div class="col-12 col-md-5">
                 <p>Selecciona una marca</p>
                 <select class="form-control mb-4" name="idMarca" id="idMarca" required>
                     <option value="<?php echo $reg['idMarca'] ?>"><?php echo $reg['marcaNombre'] ?></option>
                 </select>
             </div>
             <div class="col-md-2"></div>
-            <div class="col-5">
+            <div class="col-12 col-md-5">
                 <p>Selecciona una categoria</p>
                 <select class="form-control mb-4" name="idCategoria" id="idCategoria" required>
                     <option value="<?php echo $reg['idCategoria'] ?>"><?php echo $reg['categoriaNombre'] ?></option>
+                </select>
+            </div>
+            <div class="col-12 col-md-5">
+                <p>Selecciona el estado de la compra</p>
+                <select class="form-control mb-4" name="estado" id="estado" required>
+                    <option value="Pago">Abonado en el momento</option>
+                    <option value="Debe">Sumarlo a deudores</option>
                 </select>
             </div>
             <input type="hidden" name="idProducto" value="<?php echo $reg['idProducto'] ?>">
@@ -117,7 +127,7 @@
       <li><a href="" class="nav-link link-secundary"><i class="fas fa-ad"></i> Agregar una marca</a></li>
       <li><a href="" class="nav-link link-secundary"><i class="fas fa-align-left"></i> Agregar una categoria</a></li>
       <li><a href="" class="nav-link link-secundary"><i class="fas fa-check-double"></i> Modificar varios</a></li>
-      <li><a href="" class="nav-link link-secundary"><i class="fas fa-question-circle"></i> Ayuda</a></li>
+      <li><a href="adminVentas.html" class="nav-link link-secundary"><i class="fas fa-question-circle"></i>Ver ventas</a></li>
     </ul>
   </div><!--menu secundario-->
 

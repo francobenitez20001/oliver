@@ -15,7 +15,8 @@
                     'idPedido' => $reg['idPedido'],
                     'descripcion' => $reg['descripcion'],
                     'cantidad' => $reg['cantidad'],
-                    'estado' => $reg['estado']
+                    'estado' => $reg['estado'],
+                    'total' => $reg['total']
                 );
             }
             $jsonString = json_encode($json);
@@ -28,11 +29,13 @@
             $descripcion = $_POST['descripcion'];
             $cantidad = $_POST['cantidad'];
             $estado = $_POST['estado'];
-            $sql = "INSERT INTO pedidos (descripcion,cantidad,estado) VALUES (:descripcion,:cantidad,:estado)";
+            $total = $_POST['total'];
+            $sql = "INSERT INTO pedidos (descripcion,cantidad,estado,total) VALUES (:descripcion,:cantidad,:estado,:total)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':descripcion',$descripcion,PDO::PARAM_STR);
             $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_INT);
             $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
+            $stmt->bindParam(':total',$total,PDO::PARAM_INT);
             $bool = $stmt->execute();
             if ($bool) {
                 return json_encode(true);

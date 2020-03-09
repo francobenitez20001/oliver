@@ -38,3 +38,6 @@ for (let index = 1; index <= stockParcial; index++) {
     template += `<option value="${index}">${index}</option>`;
 }
 selectCantidad.innerHTML = template;
+
+
+

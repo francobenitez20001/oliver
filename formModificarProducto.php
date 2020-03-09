@@ -26,7 +26,7 @@
     <script src="js/autenticacion.js"></script>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
     <a class="navbar-brand logo" href="home.html">
       <img src="assets/img/logo.png" class="img-fluid" alt="">
     </a>
@@ -36,30 +36,32 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link" href="home.html">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="adminProductos.html">Productos</a>
+          <a class="nav-link active" href="adminProductos.html">Productos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"">Pedidos</a>
+          <a class="nav-link" href="adminPedidos.html">Pedidos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Balance</a>
+          <a class="nav-link" href="adminDeudores.html">Deudores</a>
         </li>
         <li class="nav-item">
-          <a href="" class="nav-link"><i class="fas fa-sign-in-alt"></i> Ingresar</a>
+          <a class="nav-link" href="adminEnvios.html">Envíos</a>
         </li>
-        <li class="nav-item dropdown d-none">
+        <li class="nav-item">
+            <a class="nav-link" href="adminEnvios.html">Servícios</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> Ingresar</a>
+        </li> -->
+        <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-user"></i>
-            <!-- Hola, Franco -->
+            <!--contenido desde menu.js-->
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Iniciar Sesión</a>
+            <a class="dropdown-item" id="cerrarSesion">Cerrar sesión</a>
           </div>
         </li>
-        <li class="nav-item">
+        <li class="nav-item d-none" id="icon-menu-li">
           <a id="icon-menu" class="nav-link d-xs-none d-sm-none d-md-block"><i class="fas fa-bars"></i></a>
         </li>
       </ul>
@@ -154,5 +156,6 @@
             })
         })
     </script>
+    <script src="js/menu.js"></script>
     <script src="js/app.js"></script>
 </body>
