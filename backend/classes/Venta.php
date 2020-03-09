@@ -108,5 +108,28 @@
             return json_encode(false);
         }
 
+        public function listarVentasSaldadas()
+        {
+            $link = Conexion::conectar();
+            $sql = "SELECT * FROM ventas WHERE estado = 'Pago' ORDER BY idVenta DESC";
+            $stmt = $link->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $json = array();
+            foreach ($result as $reg) {
+                $json[] = array(
+                    'idVenta' => $reg['idVenta'],
+                    'producto' => $reg['producto'],
+                    'cantidad' => $reg['cantidad'],
+                    'fecha' => $reg['fecha'],
+                    'dia' => $reg['dia'],
+                    'total' => $reg['total'],
+                    'estado' => $reg['estado']
+                );
+            }
+            $jsonString = json_encode($json);
+            return $jsonString;
+        }
+
     }
     
