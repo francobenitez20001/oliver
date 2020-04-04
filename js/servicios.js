@@ -7,10 +7,11 @@ function getServicios() {
         buttons = '';
         newRes.forEach(reg => {
             if (reg.estado == 'No pago') {
-                buttons = `<button class="btn btn-outline-warning mr-2" id="boton-entregar" onclick="saldarServicio(${reg.idServicio})">Saldado</button>
+                buttons = `<button class="btn btn-outline-warning mr-2" id="boton-entregar" onclick="switchForm(${reg.idServicio})">Saldado</button>
                 <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarServicio(${reg.idServicio})">Eliminar</button>`;
             }else{
-                buttons = `<button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarServicio(${reg.idServicio})">Eliminar</button>`;
+                buttons = `<button class="btn btn-outline-info mr-2" id="boton-entregar" onclick="verComprobante(${reg.idServicio})">Ver comprobante</button>
+                <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarServicio(${reg.idServicio})">Eliminar</button>`;
             }
             template += `
             <tr>
@@ -54,32 +55,47 @@ function eliminarServicio(id) {
     })
 }
 
-function saldarServicio(id) {
-    Swal.fire({
-        title: 'Querés notificar que pagaste el servício?',
-        text: "Pasaremos el servicio a pagado",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar!'
-    }).then((result) => {
-        if (result.value) {
-            fetch('backend/servicios/saldarServicio.php?idServicio='+id)
-            .then(response=>response.json())
-            .then(newRes=>{
-                if(newRes){
-                    Swal.fire(
-                        'Listo!',
-                        'Actulizaste el estado del servício.',
-                        'success'
-                    )
-                    getServicios();
-                }
-            })
-        }
+let formCargarComprobante = document.getElementById('formCargarComprobante');
+formCargarComprobante.addEventListener('submit',event=>{
+    event.preventDefault();
+    let alertLoading = document.getElementById('alert-loading');
+    let alertLoad = document.getElementById('alert-load');
+    let alertError = document.getElementById('alert-error');
+    alertLoading.classList.remove('d-none');
+    let data = new FormData(formCargarComprobante);
+    fetch('backend/servicios/cargarComprobante.php',{
+        method:'POST',
+        body:data
     })
-}
+    .then(res=>res.json())
+    .then(response=>{
+        if (response.status == 400) {
+            alertLoading.classList.add('d-none');
+            alertError.innerHTML = response.info;
+            alertError.classList.remove('d-none');
+            return;
+        }
+        fetch('backend/servicios/saldarServicio.php?idServicio='+response.data.idServicio+'&comprobante='+response.data.comprobante)
+        .then(res=>res.json())
+        .then(response=>{
+            if (response.status == 400) {
+                alertLoading.classList.add('d-none');
+                alertError.innerHTML = response.info;
+                alertError.classList.remove('d-none');
+                return;
+            }
+            alertLoad.innerHTML = response.info;
+            alertLoading.classList.add('d-none');
+            alertLoad.classList.remove('d-none');
+            getServicios();
+            setTimeout(() => {
+                switchForm();
+                return;
+            }, 1000);
+        })
+    })
+})
+
 
 let formAgregarServicio = document.getElementById('formAgregarServicio');
 formAgregarServicio.addEventListener('submit',event=>{
@@ -91,7 +107,7 @@ formAgregarServicio.addEventListener('submit',event=>{
     })
     .then(res=>res.json())
     .then(newRes=>{
-        if (newRes) {
+        if (newRes.status==200) {
             alert = document.getElementById('alert-success');
             alert.classList.remove('d-none');
             formAgregarServicio.classList.add('d-none');
@@ -110,6 +126,7 @@ input.value = f.getFullYear() + "/" + (f.getMonth() +1) + "/" + f.getDate();
 
 
 function mostrarFormularioAgregar() {
+    habilitarFormComprobante();
     //ocultar listado de eventos y mostrar el form para agregar
     let tablaServicios = document.getElementById('tablaServicios');
     let divFormulario = document.getElementById('form-agregar-div');
@@ -119,6 +136,8 @@ function mostrarFormularioAgregar() {
     divFormulario.classList.remove('d-none');
     tablaServicios.classList.add('d-none');
     bannerForm.classList.add('d-none');
+    estado = document.getElementById('estado');
+    console.log(estado.value);
 }
 
 function ocultarFormularioAgregar() {
@@ -134,4 +153,29 @@ function ocultarFormularioAgregar() {
     bannerForm.classList.remove('d-none');
     getServicios();
     // getProductos(0,100);//llamo a la funcion de getData para obtener la tabla actualizada con lo que agregue
+}
+
+function switchForm(id=null){
+    document.getElementById('idServicio').value = id;
+    let cargarComponente = document.getElementById('cargarComprobante');
+    cargarComponente.classList.toggle('d-none');
+    cargarComponente.classList.toggle('swal2-container');
+    cargarComponente.classList.toggle('swal2-center');
+    cargarComponente.classList.toggle('swal2-fade');
+    cargarComponente.classList.toggle('swal2-shown');
+}
+
+function habilitarFormComprobante()
+{
+    comprobante = document.getElementById('comprobante');
+    estado = document.getElementById('estado');
+    if (estado.value == 'No pago') {
+        comprobante.classList.add('d-none');   
+    }else{
+        comprobante.classList.remove('d-none');
+    }
+}
+
+function verComprobante(idServicio) {
+    window.location.assign('verComprobante.php?idServicio='+idServicio);
 }

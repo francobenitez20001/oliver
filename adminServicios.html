@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
     <link rel="stylesheet" href="css/sweetalert2.css">
 </head>
-<body>
+<body class="">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
     <a class="navbar-brand logo" href="home.html">
       <img src="assets/img/logo.png" class="img-fluid" alt="">
@@ -85,7 +85,7 @@
     <a class="btn btn-warning" onclick="ocultarFormularioAgregar()">Regresar al panel de control</a>
     <h1 class="mt-2">Formulario de alta de un nuevo servicio</h1>
     <hr>
-    <form id="formAgregarServicio" class="form-group">
+    <form id="formAgregarServicio" class="form-group" enctype="multipart/form-data">
       <div class="row">
           <div class="col-12 col-md-5 mb-4">
             <input type="text" name="servicioNombre" id="servicioNombre" class="form-control" placeholder="Servicio" required>
@@ -93,8 +93,8 @@
           </div>
           <div class="col-md-2"></div>
           <div class="col-12 col-md-5 mb-4">
-            <select name="estado" id="" class="form-control">
-              <option value="pago">Pago</option>
+            <select name="estado" onchange="habilitarFormComprobante()" id="estado" class="form-control">
+              <option value="Pago">Pago</option>
               <option value="No pago">No pago</option>
             </select>
           </div>
@@ -102,10 +102,36 @@
             <input type="text" name="total" id="total" class="form-control" placeholder="Total" required>
           </div>
           <div class="col-md-2"></div>
-          <div class="col-12 col-md-5">
-            <input type="submit" class="btn btn-outline-info pr-4 col-12 col-md-5" value="Agregar">
+          <div class="col-12 col-md-5 mb-4" id="comprobante">
+            <label>Cargue el comprobante</label>
+            <input type="file" accept="image/*" name="comprobante">
+          </div>
+          <div class="col-12 col-md-12 mt-4">
+            <input type="submit" class="btn btn-outline-info btn-block pr-4 col-12" value="Agregar">
           </div>
       </div>
+    </form>
+  </div>
+
+  <div class="cargarComprobante d-none" id="cargarComprobante">
+    <form id="formCargarComprobante" class="form-group" enctype="multipart/form-data">
+      <label>Adjuntar comprobante</label>
+      <br>
+      <input type="file" accept="image/*" name="comprobante" id="" required>
+      <br><br>
+      <div class="row">
+        <div class="col-6">
+          <input type="hidden" id="idServicio" name="idServicio" value="">
+          <input type="button" onclick="switchForm()" class="btn btn-danger btn-block" value="Cancelar">
+        </div>
+        <div class="col-6">
+          <input type="submit" class="btn btn-info btn-block" value="Cargar">
+        </div>
+      </div>
+      <br>
+      <div class="alert alert-warning text-center d-none" id="alert-loading">Subiendo comprobante y cambiando el estado del servicio...</div>
+      <div class="alert alert-success text-center d-none" id="alert-load">Servicio actualizado</div>
+      <div class="alert alert-danger text-center d-none" id="alert-error"></div>
     </form>
   </div>
 

@@ -21,7 +21,8 @@
                     'servicioNombre' => $reg['servicioNombre'],
                     'fecha' => $reg['fecha'],
                     'estado' => $reg['estado'],
-                    'total' => $reg['total']
+                    'total' => $reg['total'],
+                    'comprobante' => $reg['comprobante']
                 );
             };
             $jsonString = json_encode($json);
@@ -32,14 +33,24 @@
         {
             $link = Conexion::conectar();
             $idServicio = $_GET['idServicio'];
-            $sql = "UPDATE servicios SET estado = 'Pago' WHERE idServicio = :idServicio";
+            $comprobante = $_GET['comprobante'];
+            $sql = "UPDATE servicios SET estado = 'Pago',
+                                         comprobante = :comprobante
+                    WHERE idServicio = :idServicio";
             $stmt = $link->prepare($sql);
+            $stmt->bindParam(':comprobante',$comprobante,PDO::PARAM_STR);
             $stmt->bindParam(':idServicio',$idServicio,PDO::PARAM_INT);
             $result = $stmt->execute();
             if ($result) {
-                return json_encode(true);
+                return json_encode(array(
+                    'status'=>200,
+                    'info'=>'Servicio Actualizado'
+                ));
             }
-            return json_encode(false);
+            return json_encode(array(
+                'status'=>400,
+                'info'=>'Problemas al actualizar el servicio'
+            ));
         }
 
         public function eliminarServicio()
@@ -62,19 +73,68 @@
             $fecha = $_POST['fecha'];
             $estado = $_POST['estado'];
             $total = $_POST['total'];
+            $comprobante = 'NO';
+            if (isset($_FILES['comprobante'])) {
+                $comprobante = $this->cargarComprobante('agregar');
+            }
             $link = Conexion::conectar();
-            $sql = "INSERT INTO servicios (servicioNombre,fecha,estado,total)
-                    VALUES (:servicioNombre,:fecha,:estado,:total)";
+            $sql = "INSERT INTO servicios (servicioNombre,fecha,estado,total,comprobante)
+                    VALUES (:servicioNombre,:fecha,:estado,:total,:comprobante)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':servicioNombre',$servicioNombre,PDO::PARAM_STR);
             $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
             $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
             $stmt->bindParam(':total',$total,PDO::PARAM_INT);
+            $stmt->bindParam(':comprobante',$comprobante,PDO::PARAM_STR);
             $response = $stmt->execute();
             if ($response) {
-                return json_encode(true);
+                return json_encode(array('status'=>200,'info'=>$comprobante));
             }
-            return json_encode(false);
+            return json_encode(array('status'=>400,'info'=>'Problemas al insertar servicio'));
+        }
+
+        public function cargarComprobante($accion=null)
+        {
+            $idServicio = '';
+            if ($accion==null) {
+                $idServicio = $_POST['idServicio'];
+            }
+            // $comprobante = $_FILES['comprobante'];
+            $ruta = '../../comprobantes/';
+            $imagen = $_FILES['comprobante']['name'];
+            if ($_FILES['comprobante']['error']==0) {
+                $imagenTMP = $_FILES['comprobante']['tmp_name'];
+                $bool = move_uploaded_file($imagenTMP,$ruta.$imagen);
+                if ($bool) {
+                    if ($accion!=null) {
+                        return $imagen;
+                    }
+                    return json_encode(array(
+                        'status'=>200,
+                        'data'=>array('idServicio'=>$idServicio,'comprobante'=>$imagen),
+                        'info'=>'Comprobante cargado'));
+                };
+                if ($accion!=null){
+                    return $imagen;
+                }
+                return json_encode(array(
+                    'status'=>400,
+                    'data'=>array('nombre'=>$imagen,'tmp'=>$imagenTMP,'ruta'=>$ruta,'size'=>$_FILES['comprobante']['error']),
+                    'info'=>'Problemas al cargar el componente'
+                ));
+            }
+        }
+
+        public function verComprobante()
+        {
+            $idServicio = $_GET['idServicio'];
+            $link = Conexion::conectar();
+            $sql = "SELECT comprobante FROM servicios WHERE idServicio = :idServicio";
+            $stmt = $link->prepare($sql);
+            $stmt->bindParam(':idServicio',$idServicio,PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
         }
 
     }
