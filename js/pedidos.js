@@ -17,6 +17,7 @@ function getPedidos() {
                 <th scope="row">${reg.descripcion}</th>
                 <td>${reg.cantidad}</td>
                 <td>${reg.estado}</td>
+                <td>${reg.proveedor}</td>
                 <td>
                     ${buttons}
                 </td>
@@ -58,27 +59,21 @@ function eliminarPedido(id) {
 
 function recibirPedido(id) {
     Swal.fire({
-        title: 'Querés notificar que recibiste el pedido?',
-        text: "Pasaremos este pedido a recibidos",
-        icon: 'warning',
+        title: 'Ingrese el total',
+        input: 'text',
+        inputAttributes: {
+            name:'total'
+        },
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Notificar que lo recibí!'
-    }).then((result) => {
-        if (result.value) {
-            fetch('backend/pedidos/recibirPedido.php?idPedido='+id)
-            .then(response=>response.json())
-            .then(newRes=>{
-                if(newRes){
-                    Swal.fire(
-                        'Listo!',
-                        'Actulizaste el estado del pedido.',
-                        'success'
-                    )
-                    getPedidos();
-                }
-            })
+        inputValidator: (value) => {
+          fetch('backend/pedidos/recibirPedido.php?total='+value+'&idPedido='+id)
+          .then(res => res.json())
+          .then(response=>{
+            //   console.log(response);
+              if (response.status == 200) {
+                  getPedidos();
+              }
+          })
         }
     })
 }
@@ -95,6 +90,8 @@ function mostrarFormularioAgregar() {
     divFormulario.classList.remove('d-none');
     tablaPedidos.classList.add('d-none');
     bannerForm.classList.add('d-none');
+    // habilitarTotal();
+    getProveedores();
 }
 
 
@@ -130,3 +127,29 @@ function ocultarFormularioAgregar() {
     getPedidos();
     // getProductos(0,100);//llamo a la funcion de getData para obtener la tabla actualizada con lo que agregue
 }
+
+
+function getProveedores() {
+    let select = document.getElementById('proveedor');
+    fetch('backend/proveedores/listarProveedor.php')
+    .then(res=>res.json())
+    .then(proveedores=>{
+        let template = '';
+        proveedores.forEach(proveedor => {
+            template += `
+                <option value="${proveedor.idProveedor}">${proveedor.proveedor}</option>
+            `
+        });
+        select.innerHTML = template;
+    })
+}
+
+// function habilitarTotal(){
+//     let estado = document.getElementById('estado').value;
+//     let total = document.getElementById('input-total');
+//     if (estado != 'No recibido') {
+//         total.classList.remove('d-none');
+//     }else{
+//         total.classList.add('d-none');
+//     }
+// }

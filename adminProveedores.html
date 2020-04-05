@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Admin Pedidos</title>
+    <title>Admin proveedores</title>
     <script src="js/autenticacion.js"></script>
     <link rel="stylesheet" href="css/bootstrap/bootstrap.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/animate.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="css/sweetalert2.css">
 </head>
 <body>
@@ -25,8 +25,8 @@
         <li class="nav-item">
           <a class="nav-link" href="adminProductos.html">Productos</a>
         </li>
-        <li class="nav-item active">
-          <a class="nav-link disabled" href="adminPedidos.html">Pedidos</a>
+        <li class="nav-item">
+          <a class="nav-link" href="adminPedidos.html">Pedidos</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="adminDeudores.html">Deudores</a>
@@ -45,33 +45,29 @@
             <!--contenido desde menu.js-->
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" id="cerrarSesion">Cerrar sesión</a>
+            <a class="dropdown-item" id="cerrarSesion" >Cerrar sesión</a>
           </div>
-        </li>
-        <li class="nav-item d-none" id="icon-menu-li">
-          <a id="icon-menu" class="nav-link d-xs-none d-sm-none d-md-block"><i class="fas fa-bars"></i></a>
         </li>
       </ul>
     </div>
   </nav><!--menu-->
-
+  
   <div class="banner-form" id="banner-form">
     <div class="row">
       <div class="col-12 col-sm-8 col-md-9">
-        <h3 class="my-4">Panel de administración de pedidos</h3>
+        <h3 class="my-4">Panel de administración de proveedores</h3>
       </div>
     </div>
   </div>
 
-  <table class="table text-center fadeIn fast" id="tablaPedidos">
+  <table class="table text-center fadeIn fast" id="tablaProveedor">
     <thead class="thead-light">
       <tr>
-        <th scope="col">Descripción</th>
-        <th scope="col">Cantidad</th>
-        <th scope="col">Estado</th>
         <th scope="col">Proveedor</th>
+        <th scope="col">Email</th>
+        <th scope="col">Telefono</th>
         <th scope="col">
-          <button class="btn btn-outline-info" id="botonAgregar" onclick="mostrarFormularioAgregar()">Nuevo pedido!</button>
+          <button class="btn btn-outline-info" id="botonAgregar" onclick="mostrarFormularioAgregar()">Agregar</button>
         </th>
       </tr>
     </thead>
@@ -80,59 +76,54 @@
     </tbody>
   </table><!--tabla productos-->
 
-  <div class="menu-secundary bg-dark animated fadeIn fast d-none" id="menu-secundary">
-    <i class="fas fa-times-circle" id="botonVolverSecundary"></i>
-    <ul>
-      <li><a href="" class="nav-link link-secundary"><i class="fas fa-ad"></i> Agregar una marca</a></li>
-      <li><a href="" class="nav-link link-secundary"><i class="fas fa-align-left"></i> Agregar una categoria</a></li>
-      <li><a href="" class="nav-link link-secundary"><i class="fas fa-check-double"></i> Modificar varios</a></li>
-      <li><a href="" class="nav-link link-secundary"><i class="fas fa-question-circle"></i> Ayuda</a></li>
-    </ul>
-  </div><!--menu secundario -->
-
-   <!--formulario de agregar-->
-   <div class="container mt-3 fadeIn d-none fast" id="form-agregar-div">
-    <div class="alert alert-success d-none" id="alert-success">Se ha cargado el pedido con éxito</div>
+  <!--formulario de agregar-->
+  <div class="container mt-3 d-none fadeIn fast" id="form-agregar-div">
+    <div class="alert alert-success d-none" id="alert-success">Se ha agregado el proveedor con éxito</div>
     <a class="btn btn-warning" onclick="ocultarFormularioAgregar()">Regresar al panel de control</a>
-    <h1 class="mt-2">Formulario de alta de un nuevo pedido</h1>
+    <h1>Formulario de alta de un nuevo proveedor</h1>
     <hr>
-    <form id="formAgregarPedido" class="form-group">
+    <form id="formAgregarProveedor" class="form-group">
       <div class="row">
-          <div class="col-12 col-md-5 mb-4">
-            <input type="text" name="descripcion" id="descripcion" class="form-control" placeholder="Descripción del pedido" required>
-          </div>
+          <input type="text" name="proveedor" id="producto" class="form-control col-12 col-md-5 mb-4" placeholder="Nombre del proveedor" required>
           <div class="col-md-2"></div>
-          <div class="col-12 col-md-5 mb-4">
-            <input type="text" name="cantidad" id="cantidad" class="form-control" placeholder="Cantidad" required>
-          </div>
-          <div class="col-12 col-md-5 mb-4">
-            <select name="idProveedor" class="form-control" id="proveedor" required>
+          <input type="email" name="email" id="email" class="form-control col-12 col-md-5 mb-4" placeholder="Email proveedor (opcional)">
+          <input type="text" name="telefono" id="telefono" class="form-control col-12 col-md-5 mb-4" placeholder="telefono proveedor (opcional)">
+          <div class="col-md-2"></div>
+          <div class="col-12 col-md-5">
+            <select name="estado" id="estado" class="form-control">
+              <option value="1">Activo</option>
+              <option value="0">Inactivo</option>
             </select>
           </div>
-          <div class="col-md-2"></div>
-          <div class="col-12 col-md-5 mb-4">
-            <select name="estado" class="form-control" onchange="habilitarTotal()" id="estado" required>
-              <option value="No recibido">No recibido</option>
-              <option value="Recibido">Recibido</option>
-            </select>
-          </div>
-          <div class="col-12 col-md-5 mb-4" id="input-total">
-            <input type="number" name="total" id="total" class="form-control" placeholder="Total (opcional)">
-          </div>
-          <div class="col-12 text-center">
-            <input type="submit" class="btn btn-outline-info pr-4 col-12 col-md-5" value="Agregar">
+          <div class="col-12">
+            <input type="submit" class="btn btn-outline-info btn-block" value="Agregar">
           </div>
       </div>
     </form>
   </div>
 
+  <!--form modificar-->
+  <div class="container mt-3 d-none fadeIn fast" id="form-modificar-div">
+    <div class="alert d-none" id="alerta"></div>
+    <a class="btn btn-warning" onclick="ocultarFormularioModificar()">Regresar al panel de control</a>
+    <h1>Formulario de modificacion de proveedor</h1>
+    <hr>
+    <form id="formModificarProveedor" class="form-group">
+        <!-- el contenido viene desde el js -->
+    </form>
+  </div>
+
+
+
+
 
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
-    <script src="js/sweetalert2.js"></script>
     <script src="js/menu.js"></script>
+    <script src="js/sweetalert2.js" charset="utf-8"></script>
     <script src="js/app.js"></script>
-    <script src="js/pedidos.js"></script>
+    <script src="js/proveedor.js"></script>
+    <!-- <script src="js/formAgregarProducto.js"></script> -->
 </body>
 </html>
