@@ -126,7 +126,7 @@
     <ul>
       <li><a href="" class="nav-link link-secundary"><i class="fas fa-ad"></i> Agregar una marca</a></li>
       <li><a href="" class="nav-link link-secundary"><i class="fas fa-align-left"></i> Agregar una categoria</a></li>
-      <li><a href="" class="nav-link link-secundary"><i class="fas fa-check-double"></i> Modificar varios</a></li>
+      <li><a href="aumentarPorProveedor.html" class="nav-link link-secundary"><i class="fas fa-check-double"></i> Modificar varios</a></li>
       <li><a href="adminVentas.html" class="nav-link link-secundary"><i class="fas fa-question-circle"></i>Ver ventas</a></li>
     </ul>
   </div><!--menu secundario-->

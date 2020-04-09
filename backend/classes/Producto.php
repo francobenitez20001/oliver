@@ -21,9 +21,10 @@ class Producto
                 $inicio = $_GET['inicio'];
                 $fin = $_GET['fin'];
                 $link = Conexion::conectar();
-                $sql = "SELECT idProducto,producto,marcaNombre,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock
-                        FROM productos p, marcas m, categorias c
-                        WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND idProducto between :inicio AND :fin";
+                $sql = "SELECT idProducto,producto,marcaNombre,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock,proveedor,porcentaje_ganancia
+                        FROM productos p, marcas m, categorias c, proveedor pr
+                        WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = pr.idProveedor AND
+                        idProducto between :inicio AND :fin";
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':inicio',$inicio,PDO::PARAM_INT);
                 $stmt->bindParam(':fin',$fin,PDO::PARAM_INT);
@@ -39,7 +40,9 @@ class Producto
                                 'precioPublico' => $reg['precioPublico'],
                                 'precioUnidad' => $reg['precioUnidad'],
                                 'precioKilo' => $reg['precioKilo'],
-                                'stock' => $reg['stock']
+                                'stock' => $reg['stock'],
+                                'proveedor' => $reg['proveedor'],
+                                'porcentaje_ganancia' => $reg['porcentaje_ganancia']
                         );
                 }
                 $jsonString = json_encode($json);
@@ -56,8 +59,9 @@ class Producto
             $precioUnidad = $_POST['precioUnidad'];
             $precioKilo = $_POST['PrecioKilo'];
             $stock = $_POST['stock'];
-            $sql = "INSERT INTO productos (producto,idMarca,idCategoria,precioPublico,precioUnidad,preciokilo,stock)
-                    VALUES (:producto,:idMarca,:idCategoria,:precioPublico,:precioUnidad,:precioKilo,:stock)";
+            $idProveedor = $_POST['idProveedor'];
+            $porcentaje_ganancia = $_POST['porcentaje_ganancia'];
+            $sql = "INSERT INTO productos (producto,idMarca,idCategoria,precioPublico,precioUnidad,preciokilo,stock,idProveedor,porcentaje_ganancia) VALUES (:producto,:idMarca,:idCategoria,:precioPublico,:precioUnidad,:precioKilo,:stock,:idProveedor,:porcentaje_ganancia)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
             $stmt->bindParam(':idMarca',$idMarca,PDO::PARAM_INT);
@@ -66,6 +70,8 @@ class Producto
             $stmt->bindParam(':precioUnidad',$precioUnidad,PDO::PARAM_INT);
             $stmt->bindParam(':precioKilo',$precioKilo,PDO::PARAM_INT);
             $stmt->bindParam(':stock',$stock,PDO::PARAM_INT);
+            $stmt->bindParam(':idProveedor',$idProveedor,PDO::PARAM_INT);
+            $stmt->bindParam(':procentaje_ganancia',$porcentaje_ganancia,PDO::PARAM_INT);
             $resultado = $stmt->execute();
             if ($resultado) {
                 return json_encode('true');
@@ -85,13 +91,17 @@ class Producto
                 $precioUnidad = $_POST['precioUnidad'];
                 $precioKilo = $_POST['PrecioKilo'];
                 $stock = $_POST['stock'];
+                $idProveedor = $_POST['idProveedor'];
+                $porcentaje_ganancia = $_POST['porcentaje_ganancia'];
                 $sql = "UPDATE productos SET producto = :producto,
                                                 idMarca = :idMarca,
                                                 idCategoria = :idCategoria,
                                                 precioPublico = :precioPublico,
                                                 precioUnidad = :precioUnidad,
                                                 precioKilo = :precioKilo,
-                                                stock = :stock
+                                                stock = :stock,
+                                                idProveedor = :idProveedor,
+                                                porcentaje_ganancia = :porcentaje_ganancia
                                         WHERE idProducto = :idProducto";
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':idProducto', $idProducto , PDO::PARAM_INT);
@@ -102,6 +112,8 @@ class Producto
                 $stmt->bindParam(':precioUnidad', $precioUnidad , PDO::PARAM_INT);
                 $stmt->bindParam(':precioKilo', $precioKilo , PDO::PARAM_INT);
                 $stmt->bindParam(':stock', $stock , PDO::PARAM_INT);
+                $stmt->bindParam(':idProveedor', $idProveedor , PDO::PARAM_INT);
+                $stmt->bindParam(':porcentaje_ganancia', $porcentaje_ganancia , PDO::PARAM_INT);
                 $bool = $stmt->execute();
                 if ($bool) {
                         return json_encode('true');
@@ -127,9 +139,9 @@ class Producto
         {
                 $link = Conexion::conectar();
                 $idProducto = $_GET['idProducto'];
-                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,        precioPublico,precioUnidad,precioKilo,stock     
-                        FROM productos p, marcas m, categorias c
-                        WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND idProducto = :idProducto";
+                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,stock,p.idProveedor,proveedor,porcentaje_ganancia     
+                        FROM productos p, marcas m, categorias c, proveedor prov
+                        WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = prov.idProveedor AND idProducto = :idProducto";
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':idProducto', $idProducto, PDO::PARAM_INT);
                 $stmt->execute();
@@ -178,27 +190,23 @@ class Producto
                 return $jsonString;
         }
 
-        public function aumentarPorMarca()
+        public function aumentarPorProveedor()
         {
                 $link = Conexion::conectar();
-                $idMarca = $_POST['idMarca'];
-                $precioPublico = $_POST['precioPublico'];
-                $precioUnidad = $_POST['precioUnidad'];
-                $precioKilo = $_POST['PrecioKilo'];
-                $sql = "UPDATE productos SET precioPublico = :precioPublico,
-                                                precioUnidad = :precioUnidad,
-                                                precioKilo = :precioKilo
-                                        WHERE idMarca = :idMarca";
+                $idProveedor = $_POST['idProveedor'];
+                $porcentajeAumento = $_POST['porcentaje_aumento'];
+                $sql = "UPDATE productos SET precioPublico = precioPublico + (precioPublico*:porcentaje/100),
+                                             precioUnidad = precioUnidad + (precioUnidad*:porcentaje/100),
+                                             precioKilo = precioKilo + (precioKilo*:porcentaje/100)
+                        WHERE idProveedor = :idProveedor";
                 $stmt = $link->prepare($sql);
-                $stmt->bindParam(':precioPublico',$precioPublico,PDO::PARAM_INT);
-                $stmt->bindParam(':precioUnidad',$precioUnidad,PDO::PARAM_INT);
-                $stmt->bindParam(':precioKilo',$precioKilo,PDO::PARAM_INT);
-                $stmt->bindParam(':idMarca',$idMarca,PDO::PARAM_INT);
+                $stmt->bindParam(':porcentaje',$porcentajeAumento,PDO::PARAM_INT);
+                $stmt->bindParam(':idProveedor',$idProveedor,PDO::PARAM_INT);
                 $bool = $stmt->execute();
                 if ($bool) {
-                        return json_encode('true');
+                        return json_encode(array('status'=>200,'info'=>'Se actualizaron los precios de manera correcta'));
                 }
-                return json_encode('false');
+                return json_encode(array('status'=>400,'info'=>'Problemas al actualizar los precios'));
         }
 
 

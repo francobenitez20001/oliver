@@ -17,8 +17,7 @@ function getProductos(inicio,fin) {
             if(reg.stock <=0){
                 template += `
                 <tr>
-                    <th scope="row">${reg.idProducto}</th>
-                    <td>${reg.producto}</td>
+                    <td scope="row">${reg.producto}</td>
                     <td>${reg.marcaNombre}</td>
                     <td>${reg.stock}</td>
                     <td>${reg.precioPublico}</td>
@@ -34,8 +33,7 @@ function getProductos(inicio,fin) {
             }else{
                 template += `
                 <tr>
-                    <th scope="row">${reg.idProducto}</th>
-                    <td>${reg.producto}</td>
+                    <td scope="row">${reg.producto}</td>
                     <td>${reg.marcaNombre}</td>
                     <td>${reg.stock}</td>
                     <td>${reg.precioPublico}</td>
