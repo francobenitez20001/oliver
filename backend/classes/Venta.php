@@ -12,12 +12,17 @@
             $fecha = $_POST['fecha'];
             $dia = $_POST['dia'];
             $cantidad = $_POST['cantidad'];
+            $tipo_pago = $_POST['tipo_pago'];
+            $cliente = 'No registrado';
+            if (isset($_POST['cliente']) && $_POST['cliente']!='') {
+                $cliente = $_POST['cliente'];
+            }
             $total = $precio * $cantidad;
             $link = Conexion::conectar();
             $sql = "INSERT INTO ventas (producto,cantidad,idMarca,idCategoria,
-                                        total,fecha,dia,estado)
+                                        total,fecha,dia,estado,tipo_pago,cliente)
                     VALUES (:producto,:cantidad,:idMarca,:idCategoria,:total,
-                            :fecha,:dia,:estado)";
+                            :fecha,:dia,:estado,:tipo_pago,:cliente)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':producto', $producto,PDO::PARAM_STR);
             $stmt->bindParam(':cantidad', $cantidad,PDO::PARAM_INT);
@@ -28,15 +33,17 @@
             $stmt->bindParam(':fecha', $fecha,PDO::PARAM_STR);
             $stmt->bindParam(':dia', $dia,PDO::PARAM_STR);
             $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
+            $stmt->bindParam(':tipo_pago',$tipo_pago,PDO::PARAM_STR);
+            $stmt->bindParam(':cliente',$cliente,PDO::PARAM_STR);
             $resultado = $stmt->execute();
             if ($resultado) {
                 $actualizarStock = $this->actualizarStock();
                 if ($actualizarStock) {
-                    return json_encode(true);   
+                    return json_encode(array('status'=>200,'info'=>'Venta agregada', 'idVenta'=>$link->lastInsertId()));//trae el ultimo id registrado, es el id de la venta cargada.   
                 }
-                return json_encode('Problemas al actualizar el stock del producto');
+                return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el stock'));
             }
-            return json_encode(false);
+            return json_encode(array('status'=>400,'info'=>'Problemas al agregar la venta'));
         }
 
         public function actualizarStock()
@@ -60,8 +67,16 @@
         public function listarVenta()
         {
             $link = Conexion::conectar();
-            $sql = "SELECT * FROM ventas ORDER BY idVenta DESC";
+            $sql = "SELECT * FROM ventas ";
+            if (isset($_GET['tipo-pago']) && $_GET['tipo-pago']!='null') {
+                $tipo_pago = $_GET['tipo-pago'];
+                $sql .= "WHERE tipo_pago = :tp ";
+            }
+            $sql .= "ORDER BY idVenta DESC";
             $stmt = $link->prepare($sql);
+            if (isset($_GET['tipo-pago']) && $_GET['tipo-pago']!='null') {
+                $stmt->bindParam(':tp',$tipo_pago,PDO::PARAM_STR);
+            }
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $json = array();
@@ -73,7 +88,9 @@
                     'fecha' => $reg['fecha'],
                     'dia' => $reg['dia'],
                     'total' => $reg['total'],
-                    'estado' => $reg['estado']
+                    'estado' => $reg['estado'],
+                    'tipo_pago' => $reg['tipo_pago'],
+                    'cliente' => $reg['cliente']
                 );
             }
             $jsonString = json_encode($json);
@@ -124,7 +141,9 @@
                     'fecha' => $reg['fecha'],
                     'dia' => $reg['dia'],
                     'total' => $reg['total'],
-                    'estado' => $reg['estado']
+                    'estado' => $reg['estado'],
+                    'tipo_pago' => $reg['tipo_pago'],
+                    'cliente' => $reg['cliente']
                 );
             }
             $jsonString = json_encode($json);

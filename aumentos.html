@@ -56,35 +56,57 @@
     </nav><!--menu-->
 
     <div class="container mt-5">
-        <h3 class="my-4">Aumentos por proveedor</h3>
-        <div class="row">
-            <form action="" class="form-group col-12" id="formAumentarPorProveedor">
+        <h3 class="my-4">Aumentos generales</h3>
+
+        <div class="col-12 mb-3">
+            <form action="" class="form-group" id="formAumentarPorProveedor">
                 <div class="row">
-                    <div class="input-group col-12 col-md-6 my-2">
+                    <div class="input-group col-12 col-md-4 my-2">
                         <div class="input-group-prepend">
                             <div class="input-group-text">Proveedor</div>
                         </div>
                         <select name="idProveedor" class="form-control" id="idProveedor" required>
-                            <!-- render desde el js -->
+                           
                         </select>
                     </div>
-                    <div class="col-12 col-md-6 my-2">
+                    <div class="col-12 col-md-5 pt-2">
                         <input type="number" name="porcentaje_aumento" class="form-control" placeholder="Ingrese el porcentaje de aumento" required>
                     </div>
-                    <div class="col-12 text-center pt-4">
-                        <input type="submit" class="btn btn-outline-info" name="" id="" value="Aplicar aumento">
+                    <div class="col-12 col-md-3 pt-2">
+                        <input type="submit" class="btn btn-outline-info btn-block" name="" id="" value="Aplicar aumento">
                     </div>
                 </div>
             </form>
         </div>
-    </div>
+        <hr>
+        <div class="col-12">
+            <form action="" class="form-group" onsubmit="enviar(event,'marca')" id="formAumentarPorMarca">
+                <div class="row">
+                    <div class="input-group col-12 col-md-4 my-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Marca</div>
+                        </div>
+                        <select name="idMarca" class="form-control" id="idMarca" required>
+                           
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-5 pt-2">
+                        <input type="number" name="porcentaje_aumento" class="form-control" placeholder="Ingrese el porcentaje de aumento" required>
+                    </div>
+                    <div class="col-12 col-md-3 pt-2">
+                        <input type="submit" class="btn btn-outline-info btn-block" name="" id="" value="Aplicar aumento">
+                    </div>
+                </div>
+            </form>
+        </div>
 
+    </div>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
     <script src="js/sweetalert2.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/aumentoPorProveedor.js"></script>
+    <script src="js/aumentos.js"></script>
 </body>
 </html>

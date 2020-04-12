@@ -15,7 +15,7 @@ function getEnvios() {
             template += `
             <tr>
                 <th scope="row">${reg.cliente}</th>
-                <td>${reg.producto}</td>
+                <td>${reg.email}</td>
                 <td>${reg.ubicacion}</td>
                 <td>${reg.descripcionUbicacion}</td>
                 <td>${reg.telefono}</td>

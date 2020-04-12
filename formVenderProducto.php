@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <script src="js/autenticacion.js"></script>
+    <link rel="stylesheet" href="css/sweetalert2.css">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
@@ -75,7 +76,9 @@
     <hr>
     <form id="formVentaProducto" class="form-group">
         <div class="row">
-            <input type="text" name="producto" id="producto" class="form-control col-12 col-md-5 mb-4" value="<?php echo $reg['producto'] ?>" required>
+            <div class="col-12 col-md-5 mb-4">
+            <input type="text" name="producto" id="producto" class="form-control" value="<?php echo $reg['producto'] ?>" required>
+            </div>
             <div class="col-md-2"></div>
             <div class="col-md-5 col-12">
               <div class="row">
@@ -107,6 +110,17 @@
                     <option value="Debe">Sumarlo a deudores</option>
                 </select>
             </div>
+            <div class="col-md-2"></div>
+            <div class="col-12 col-md-5">
+              <p>Selecciona la forma de pago</p>
+              <select name="tipo_pago" id="tipo_pago" onchange="habilitarInput(event)" class="form-control" id="">
+                <option value="Efectivo">Efectivo</option>
+                <option value="Tarjeta">Tarjeta</option>
+              </select>
+            </div>
+            <div class="col-12 d-none mt-4" id="nombreCliente">
+              <input type="text" class="form-control" name="cliente" placeholder="Nombre del cliente">
+            </div>
             <input type="hidden" name="idProducto" value="<?php echo $reg['idProducto'] ?>">
             <div class="col-12 col-md-5 mb-4">
             <!-- campos ocultos importantes para backend -->
@@ -118,6 +132,41 @@
           </div>
         </div>
         <center><input type="submit" class="btn btn-outline-info" value="Agregar"></center>
+    </form>
+  </div>
+
+  <div class="container mt-3 fadeIn fast d-none" id="form-agregar-div">
+    <h1>Detalle del envío</h1>
+    <hr>
+    <form id="formAgregarEnvio" class="form-group">
+      <div class="row">
+          <input type="hidden" name="idVenta" id="idVenta">
+          <div class="col-12 col-md-5 mb-4">
+            <input type="text" class="form-control" name="cliente" placeholder="Cliente" required>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-12 col-md-5 mb-4">
+            <input type="email" class="form-control" name="email" placeholder="Email del cliente (opcional)">
+          </div>
+          <div class="col-12 col-md-5 mb-4">
+            <input type="text" name="ubicacion" id="ubicacion" class="form-control" placeholder="Ubicación" required>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-12 col-md-5 mb-4">
+            <input type="text" name="descripcionUbicacion" id="descripcionUbicacion" class="form-control" placeholder="Descripción de ubicación">
+          </div>
+          <div class="col-12 col-md-5 mb-4">
+            <input type="text" name="telefono" id="telefono" class="form-control" placeholder="Telefono">
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-12 col-md-5 mb-4">
+            <select name="estado" class="form-control" required>
+              <option value="Sin entregar">Sin entregar</option>
+              <option value="Entregado">Entregado</option>
+            </select>
+          </div>
+      </div>
+      <center><input type="submit" class="btn btn-outline-info" value="Cargar envío"></center>
     </form>
   </div>
 
@@ -134,6 +183,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
+    <script src="js/sweetalert2.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/ventas.js"></script>
     <script src="js/app.js"></script>

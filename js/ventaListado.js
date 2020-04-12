@@ -1,5 +1,5 @@
-function getVentas() {
-    fetch('backend/ventas/listarVenta.php')
+function getVentas(filtro=null) {
+    fetch('backend/ventas/listarVenta.php?tipo-pago='+filtro)
     .then(res=>res.json())
     .then(newRes=>{
         // console.log(newRes)
@@ -19,6 +19,8 @@ function getVentas() {
                 <td>${reg.cantidad}</td>
                 <td>${reg.fecha}</td>
                 <td>${reg.total}</td>
+                <td>${reg.tipo_pago}</td>
+                <td>${reg.cliente}</td>
                 <td>
                     ${buttons}
                 </td>

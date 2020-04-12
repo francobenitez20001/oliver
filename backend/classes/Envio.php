@@ -4,7 +4,9 @@
         public function listarEnvios()
         {
             $link = Conexion::conectar();
-            $sql = "SELECT * FROM envios";
+            $sql = "SELECT idEnvio,env.cliente,ubicacion,telefono,env.estado,fecha,descripcionUbicacion,producto,email 
+                    FROM envios AS env, ventas AS ven 
+                    WHERE env.idVenta = ven.idVenta;";
             $stmt = $link->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -13,12 +15,13 @@
                 $json[] = array(
                     'idEnvio' => $reg['idEnvio'],
                     'cliente' => $reg['cliente'],
-                    'producto' => $reg['producto'],
                     'ubicacion' => $reg['ubicacion'],
                     'telefono' => $reg['telefono'],
                     'estado' => $reg['estado'],
                     'fecha' => $reg['fecha'],
-                    'descripcionUbicacion' => $reg['descripcionUbicacion'] 
+                    'descripcionUbicacion' => $reg['descripcionUbicacion'],
+                    'producto' => $reg['producto'],
+                    'email' => $reg['email'] 
                 );
             }
             $jsonString = json_encode($json);
@@ -28,28 +31,31 @@
         public function agregarEnvio()
         {
             $link = Conexion::conectar();
+            $idVenta = $_POST['idVenta'];
             $cliente = $_POST['cliente'];
-            $fecha = $_POST['fecha'];
-            $producto = $_POST['producto'];
             $ubicacion = $_POST['ubicacion'];
             $descripcionUbicacion = $_POST['descripcionUbicacion'];
             $telefono = $_POST['telefono'];
             $estado = $_POST['estado'];
-            $sql = "INSERT INTO envios (cliente,fecha,producto,ubicacion,descripcionUbicacion,telefono,estado)
-                    VALUES (:cliente,:fecha,:producto,:ubicacion,:descripcionUbicacion,:telefono,:estado)";
+            $email = 'No registrado';
+            if (isset($_POST['email']) && !is_null($_POST['email']) && $_POST['email']!='') {
+                $email = $_POST['email'];
+            }
+            $sql = "INSERT INTO envios (cliente,ubicacion,descripcionUbicacion,telefono,estado,idVenta,email)
+                    VALUES (:cliente,:ubicacion,:descripcionUbicacion,:telefono,:estado,:idVenta,:email)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':cliente',$cliente,PDO::PARAM_STR);
-            $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
-            $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
             $stmt->bindParam(':ubicacion',$ubicacion,PDO::PARAM_STR);
             $stmt->bindParam(':descripcionUbicacion',$descripcionUbicacion,PDO::PARAM_STR);
             $stmt->bindParam(':telefono',$telefono,PDO::PARAM_STR);
             $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
+            $stmt->bindParam(':idVenta',$idVenta,PDO::PARAM_INT);
+            $stmt->bindParam(':email',$email,PDO::PARAM_STR);
             $bool = $stmt->execute();
             if ($bool) {
-                return json_encode(true);
+                return json_encode(array('status'=>200,'info'=>'Envío registrado correctamente'));
             }
-            return json_encode(false);
+            return json_encode(array('status'=>400,'info'=>'Problemas al registrar el envío'));
         }
 
         public function eliminarEnvio()

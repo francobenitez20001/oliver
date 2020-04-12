@@ -66,6 +66,15 @@
         <th scope="col">Cantidad</th>
         <th scope="col">Fecha</th>
         <th scope="col">Total</th>
+        <th scope="col">Forma de pago</th>
+        <th scope="col">Cliente</th>
+        <th scope="col">
+          <select name="" onchange="getVentas(value)" id="" class="form-control">
+            <option value="null">Traer todos</option>
+            <option value="Tarjeta">Solo los abonados con tarjeta</option>
+            <option value="Efectivo">Solo los abonado en efectivo</option>
+          </select>
+        </th>
       </tr>
     </thead>
     <tbody id="bodyTable">

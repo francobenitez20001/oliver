@@ -1,3 +1,5 @@
+let divNombre = document.getElementById('nombreCliente');
+
 let formVentaProducto = document.getElementById('formVentaProducto');
 formVentaProducto.addEventListener('submit',event=>{
     event.preventDefault();
@@ -9,11 +11,64 @@ formVentaProducto.addEventListener('submit',event=>{
     .then(res=>res.json())
     .then(newRes=>{
         if (newRes) {
-            alert = document.getElementById('alert-success');
-            alert.classList.remove('d-none');
-            formVentaProducto.classList.add('d-none');
+            Swal.fire({
+                title: newRes.info,
+                text: '¿Desea agregar los datos del envio de esta venta?',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Agregar'
+            }).then((result) => {
+                if (result.value) {
+                  let divVenta = document.getElementById('form-modificar-div');
+                  let divEnvio = document.getElementById('form-agregar-div');
+                  let idVenta = document.getElementById('idVenta');
+                  idVenta.setAttribute('value',newRes.idVenta);
+                  divVenta.classList.add('d-none');
+                  divEnvio.classList.remove('d-none');
+                }else{
+                    window.location.assign('adminVentas.html');
+                    return;
+                }
+            })
         }
         console.log(newRes);
+    })
+})
+
+let formEnvio = document.getElementById('formAgregarEnvio');
+formEnvio.addEventListener('submit',event=>{
+    event.preventDefault();
+    let data = new FormData(formEnvio);
+    fetch('backend/envios/agregarEnvio.php',{
+        method: 'POST',
+        body: data
+    })
+    .then(res=>res.json())
+    .then(newRes=>{
+        let divVenta = document.getElementById('form-modificar-div');
+        let divEnvio = document.getElementById('form-agregar-div');
+        // let idVenta = document.getElementById('idVenta');
+        divVenta.classList.remove('d-none');
+        divEnvio.classList.add('d-none');
+        if (newRes.status == 200) {   
+            Swal.fire({
+                icon: 'success',
+                title: 'Agregado',
+                text: newRes.info
+            }).then(()=>{
+                window.location.assign('adminVentas.html');
+            })
+        }else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Ups..',
+                text: newRes.info
+            }).then(()=>{
+                window.location.assign('adminVentas.html');
+            })
+        }
     })
 })
               
@@ -41,3 +96,11 @@ selectCantidad.innerHTML = template;
 
 
 
+function habilitarInput(data){
+    console.log(data.target.value);
+    if (data.target.value == 'Tarjeta') {
+        divNombre.classList.remove('d-none');
+    }else{
+        divNombre.classList.add('d-none');
+    }
+}
