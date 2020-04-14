@@ -7,10 +7,10 @@ function getDeudores() {
         buttons = '';
         newRes.forEach(reg => {
             if (reg.estado == 'debe') {
-                buttons = `<button class="btn btn-outline-warning mr-2" id="boton-entregar" onclick="saldarDeudor(${reg.idDeudor})">Pagó</button>
-                <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarDeudor(${reg.idDeudor})">Eliminar</button>`;
+                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarDeudor(${reg.idDeudor})"></i>
+                <i class="fas fa-hand-holding-usd" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar" onclick="saldarDeudor(${reg.idDeudor})"></i>`;
             }else{
-                buttons = `<button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarDeudor(${reg.idDeudor})">Eliminar</button>`;
+                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarDeudor(${reg.idDeudor})"></i>`;
             }
             template += `
             <tr>

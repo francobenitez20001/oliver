@@ -8,10 +8,10 @@ function getVentas(filtro=null) {
         buttons = '';
         newRes.forEach(reg => {
             if (reg.estado == 'Debe') {
-                buttons = `<button class="btn btn-outline-warning mr-2" id="boton-entregar" onclick="saldarVenta(${reg.idVenta})">Saldado</button>
-                <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarVenta(${reg.idVenta})">Eliminar</button>`;
+                buttons = `<i class="fas fa-hand-holding-usd" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar" onclick="SaldarVenta(${reg.idVenta})"></i>
+                <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarVenta(${reg.idVenta})"></i>`;
             }else{
-                buttons = `<button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarVenta(${reg.idVenta})">Eliminar</button>`;
+                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarVenta(${reg.idVenta})"></i>`;
             }
             template += `
             <tr>

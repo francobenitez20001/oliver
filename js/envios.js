@@ -7,10 +7,10 @@ function getEnvios() {
         buttons = '';
         newRes.forEach(reg => {
             if (reg.estado == 'Sin entregar') {
-                buttons = `<button class="btn btn-outline-warning mr-2" id="boton-entregar" onclick="entregarEnvio(${reg.idEnvio})">Entregar</button>
-                <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarEnvio(${reg.idEnvio})">Eliminar</button>`;
+                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarEnvio(${reg.idEnvio})"></i>
+                <i class="fas fa-ambulance" style="cursor:pointer;color:green;font-size:20px" id="boton-entregar" onclick="entregarEnvio(${reg.idEnvio})"></i>`;
             }else{
-                buttons = `<button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarEnvio(${reg.idEnvio})">Eliminar</button>`;
+                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarEnvio(${reg.idEnvio})"></i>`;
             }
             template += `
             <tr>

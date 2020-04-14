@@ -20,8 +20,8 @@ function getProveedores() {
                 <th scope="row">${reg.proveedor}</th>
                 <td>${email}</td>
                 <td>${telefono}</td>
-                <td> <button class="btn btn-outline-info mr-2" id="boton-entregar" onclick="verProveedorPorId(${reg.idProveedor})">Modificar</button>
-                <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarProveedor(${reg.idProveedor})">Eliminar</button>
+                <td><i class="fas fa-edit" id="boton-entregar" onclick="verProveedorPorId(${reg.idProveedor})" style="cursor:pointer;color:yellow;font-size:20px"></i>
+                <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProveedor(${reg.idProveedor})"></i>
                 </td>
             </tr>
             `;

@@ -1,4 +1,17 @@
 let divNombre = document.getElementById('nombreCliente');
+let divTotal = document.getElementById('total');
+let inputTotal = document.getElementById('inputTotal');
+let tipoDeVenta = document.getElementsByName('tipoDeVenta');
+let selectDescuento = document.getElementById('div-descuento');
+
+let infoStock = document.getElementById('infoStock');
+let cantidad_dos = document.getElementById('cantidad');
+let cantidadSuelto = document.getElementById('cantidadSuelto');
+
+window.onload = ()=>{
+    infoStock.innerHTML = 'Te quedan ' + stockParcial + ' unidades en stock';
+    cantidad_dos.setAttribute('required','');
+}
 
 let formVentaProducto = document.getElementById('formVentaProducto');
 formVentaProducto.addEventListener('submit',event=>{
@@ -84,6 +97,7 @@ inputDia.value = semana[diaSemana-1];
 
 //stocks
 let stockParcial = parseInt(document.getElementById('stockParcial').value);
+let stockSuelto = parseInt(document.getElementById('stockSuelto').value);
 let cantidad = parseInt(document.getElementById('cantidad').value);
 
 // select para elegir cantidad menor o igual al stock disponible
@@ -102,5 +116,41 @@ function habilitarInput(data){
         divNombre.classList.remove('d-none');
     }else{
         divNombre.classList.add('d-none');
+    }
+}
+
+function habilitarTotal(data) {
+    if (data.target.value == 'si') {
+        inputTotal.setAttribute('required','');
+        divTotal.classList.remove('d-none');
+    }else{
+        inputTotal.removeAttribute('required');
+        divTotal.classList.add('d-none');
+    }
+}
+
+function cambiarTipoDeCompra(event) {
+    let tipoDeCompra = event.target.value;
+    colSeparador = document.getElementById('col-separador');
+    if (tipoDeCompra == 'normal') {
+        selectDescuento.classList.remove('d-none');
+        divTotal.classList.add('d-none');
+        divTotal.removeAttribute('required');
+        cantidad_dos.classList.toggle('d-none');
+        cantidadSuelto.classList.toggle('d-none');
+        cantidad_dos.setAttribute('required','');
+        cantidadSuelto.removeAttribute('required');
+        infoStock.innerHTML = 'Te quedan ' + stockParcial + ' unidades en stock';
+        colSeparador.classList.remove('d-none');
+    }else if(tipoDeCompra == 'suelto'){
+        selectDescuento.classList.add('d-none');
+        cantidad_dos.classList.add('d-none');
+        cantidadSuelto.classList.remove('d-none');
+        divTotal.classList.remove('d-none');
+        cantidad_dos.removeAttribute('required');
+        cantidadSuelto.setAttribute('required','');
+        divTotal.setAttribute('required','');
+        infoStock.innerHTML = 'Te quedan ' + stockSuelto + ' Kg en stock';
+        colSeparador.classList.add('d-none');
     }
 }

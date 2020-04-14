@@ -76,19 +76,31 @@
     <hr>
     <form id="formVentaProducto" class="form-group">
         <div class="row">
+            <div class="input-group col-12 col-md-5 mb-5">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Tipo de venta</div>
+              </div>
+              <select name="tipoDeVenta" onchange="cambiarTipoDeCompra(event)" class="form-control" id="">
+                <option value="normal">Normal</option>
+                <option value="suelto">Suelto</option>
+              </select>
+            </div>
+            <div class="col-md-2"></div>
+            <div class="col-12 col-md-5 text-center mb-4 pt-3 alert alert-info" id="infoStock">
+              
+            </div>
             <div class="col-12 col-md-5 mb-4">
             <input type="text" name="producto" id="producto" class="form-control" value="<?php echo $reg['producto'] ?>" required>
             </div>
             <div class="col-md-2"></div>
-            <div class="col-md-5 col-12">
-              <div class="row">
-                <div class="col-3"><p class="mt-2">Cantidad</p></div>
-                <div class="col-9">
-                  <select class="form-control" name="cantidad" id="cantidad" required>
-                  <!--Viene desde ventas.js-->
-                  </select>
-                </div>
+            <div class="input-group col-12 col-md-5 mb-4">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Cantidad</div>
               </div>
+              <select class="form-control" name="cantidad" id="cantidad">
+                <!--Viene desde ventas.js-->
+              </select>
+              <input type="number" class="form-control d-none" name="cantidadSuelto" id="cantidadSuelto">
             </div>
             <div class="col-12 col-md-5">
                 <p>Selecciona una marca</p>
@@ -118,7 +130,23 @@
                 <option value="Tarjeta">Tarjeta</option>
               </select>
             </div>
-            <div class="col-12 d-none mt-4" id="nombreCliente">
+            <div class="input-group col-12 col-md-5 my-4" id="div-descuento">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Descuento</div>
+              </div>
+              <select name="descuento" onchange="habilitarTotal(event)" class="form-control" id="">
+                <option value="no">No</option>
+                <option value="si">Si</option>
+              </select>
+            </div>
+            <div class="col-md-2" id="col-separador"></div>
+            <div class="input-group col-12 col-md-5 d-none my-4" id="total">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Total</div>
+              </div>
+              <input type="number" class="form-control" id="inputTotal" name="inputTotal">
+            </div>
+            <div class="col-12 col-md-5 d-none my-4" id="nombreCliente">
               <input type="text" class="form-control" name="cliente" placeholder="Nombre del cliente">
             </div>
             <input type="hidden" name="idProducto" value="<?php echo $reg['idProducto'] ?>">
@@ -127,6 +155,7 @@
             <input type="hidden" name="fecha" id="inputFecha">
             <input type="hidden" name="dia" id="inputDia">
             <input type="hidden" value="<?php echo $reg['stock']?>" name="stockParcial" id="stockParcial">
+            <input type="hidden" value="<?php echo $reg['stock_suelto']?>"name="stockSuelto" id="stockSuelto">
             <input type="hidden" name="stock" id="stockFinal">
             <input type="hidden" name="precio" id="precio" value="<?php echo $reg['precioPublico'] ?>">
           </div>

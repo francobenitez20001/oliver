@@ -93,6 +93,7 @@ class Producto
                 $stock = $_POST['stock'];
                 $idProveedor = $_POST['idProveedor'];
                 $porcentaje_ganancia = $_POST['porcentaje_ganancia'];
+                $stockSuelto = $_POST['stockSuelto'];
                 $sql = "UPDATE productos SET producto = :producto,
                                                 idMarca = :idMarca,
                                                 idCategoria = :idCategoria,
@@ -101,7 +102,8 @@ class Producto
                                                 precioKilo = :precioKilo,
                                                 stock = :stock,
                                                 idProveedor = :idProveedor,
-                                                porcentaje_ganancia = :porcentaje_ganancia
+                                                porcentaje_ganancia = :porcentaje_ganancia,
+                                                stock_suelto = :stockSuelto
                                         WHERE idProducto = :idProducto";
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':idProducto', $idProducto , PDO::PARAM_INT);
@@ -114,6 +116,7 @@ class Producto
                 $stmt->bindParam(':stock', $stock , PDO::PARAM_INT);
                 $stmt->bindParam(':idProveedor', $idProveedor , PDO::PARAM_INT);
                 $stmt->bindParam(':porcentaje_ganancia', $porcentaje_ganancia , PDO::PARAM_INT);
+                $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_INT);
                 $bool = $stmt->execute();
                 if ($bool) {
                         return json_encode('true');
@@ -139,7 +142,7 @@ class Producto
         {
                 $link = Conexion::conectar();
                 $idProducto = $_GET['idProducto'];
-                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,stock,p.idProveedor,proveedor,porcentaje_ganancia     
+                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,stock,p.idProveedor,proveedor,porcentaje_ganancia,stock_suelto     
                         FROM productos p, marcas m, categorias c, proveedor prov
                         WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = prov.idProveedor AND idProducto = :idProducto";
                 $stmt = $link->prepare($sql);

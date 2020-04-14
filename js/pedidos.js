@@ -7,10 +7,10 @@ function getPedidos() {
         buttons = '';
         newRes.forEach(reg => {
             if (reg.estado == 'No recibido') {
-                buttons = `<button class="btn btn-outline-warning mr-2" id="boton-entregar" onclick="recibirPedido(${reg.idPedido})">Recibido</button>
-                <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})">Eliminar</button>`;
+                buttons = `<i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar" onclick="recibirPedido(${reg.idPedido})"></i>
+                <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})"`;
             }else{
-                buttons = `<button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})">Eliminar</button>`;
+                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})"></i>`;
             }
             template += `
             <tr>

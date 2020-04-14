@@ -126,6 +126,13 @@
                 <input type="text" name="stock" id="stock" class="form-control" value="<?php echo $reg['stock'] ?>">
             </div>
             <div class="input-group col-12 col-md-5 mb-4">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">Stock suelto</div>
+                </div>
+                <input type="text" name="stockSuelto" id="stock" class="form-control" value="<?php echo $reg['stock_suelto'] ?>">
+            </div>
+            <div class="col-md-2"></div>
+            <div class="input-group col-12 col-md-5 mb-4">
               <div class="input-group-prepend">
                 <div class="input-group-text">Proveedor</div>
               </div>
@@ -136,7 +143,6 @@
                     <?php } ?>
               </select>
             </div>
-            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
               <div class="input-group-prepend">
                 <div class="input-group-text">% Ganancia</div>

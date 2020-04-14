@@ -7,11 +7,11 @@ function getServicios() {
         buttons = '';
         newRes.forEach(reg => {
             if (reg.estado == 'No pago') {
-                buttons = `<button class="btn btn-outline-warning mr-2" id="boton-entregar" onclick="switchForm(${reg.idServicio})">Saldado</button>
-                <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarServicio(${reg.idServicio})">Eliminar</button>`;
+                buttons = `<i class="fas fa-donate" style="cursor:pointer;color:green;font-size:20px" id="boton-entregar" onclick="switchForm(${reg.idServicio})"></i>
+                <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarServicio(${reg.idServicio})"></i>`;
             }else{
-                buttons = `<button class="btn btn-outline-info mr-2" id="boton-entregar" onclick="verComprobante(${reg.idServicio})">Ver comprobante</button>
-                <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarServicio(${reg.idServicio})">Eliminar</button>`;
+                buttons = `<i class="fas fa-file-alt" id="boton-entregar" style="cursor:pointer;color:yellow;font-size:20px" onclick="verComprobante(${reg.idServicio})"></i>
+                <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarServicio(${reg.idServicio})"></i>`;
             }
             template += `
             <tr>

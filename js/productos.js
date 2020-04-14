@@ -24,9 +24,8 @@ function getProductos(inicio,fin) {
                     <td>${reg.precioUnidad}</td>
                     <td>${reg.precioKilo}</td>
                     <td>
-                        <a href="formModificarProducto.php?idProducto=${reg.idProducto}" class="btn btn-outline-warning" id="boton-modificar">Modificar</a>
-                        <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})">Eliminar</button>
-                        <a href="formVenderProducto.php?idProducto=${reg.idProducto}" class="btn btn-outline-dark disabled" tabindex="-1" aria-disabled="true" id="boton-modificar">Vender</a>
+                        <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
+                        <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
                     </td>
                 </tr>
                 `;
@@ -40,9 +39,9 @@ function getProductos(inicio,fin) {
                     <td>${reg.precioUnidad}</td>
                     <td>${reg.precioKilo}</td>
                     <td>
-                        <a href="formModificarProducto.php?idProducto=${reg.idProducto}" class="btn btn-outline-warning" id="boton-modificar">Modificar</a>
-                        <button class="btn btn-outline-danger" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})">Eliminar</button>
-                        <a href="formVenderProducto.php?idProducto=${reg.idProducto}" class="btn btn-outline-success" id="boton-modificar">Vender</a>
+                        <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
+                        <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
+                        <a href="formVenderProducto.php?idProducto=${reg.idProducto}" class=""id="boton-modificar"><i class="fas fa-shopping-cart" style="cursor:pointer;color:green;font-size:20px"></i></a>
                     </td>
                 </tr>
                 `;
@@ -84,8 +83,7 @@ formSearch.addEventListener('submit',event=>{
             if(reg.stock <=0){//no hay stock para vender, entonces deshabilito el boton de vender
                 template += `
                 <tr>
-                    <th scope="row">${reg.idProducto}</th>
-                    <td>${reg.producto}</td>
+                    <td scope="row">${reg.producto}</td>
                     <td>${reg.marcaNombre}</td>
                     <td>${reg.stock}</td>
                     <td>${reg.precioPublico}</td>

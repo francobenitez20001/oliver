@@ -12,12 +12,18 @@
             $fecha = $_POST['fecha'];
             $dia = $_POST['dia'];
             $cantidad = $_POST['cantidad'];
+            if (isset($_POST['cantidadSuelto']) && !is_null($_POST['cantidadSuelto']) && $_POST['cantidadSuelto']!='') {
+                $cantidad = $_POST['cantidadSuelto'];
+            }
             $tipo_pago = $_POST['tipo_pago'];
             $cliente = 'No registrado';
             if (isset($_POST['cliente']) && $_POST['cliente']!='') {
                 $cliente = $_POST['cliente'];
             }
             $total = $precio * $cantidad;
+            if (isset($_POST['inputTotal']) && !is_null($_POST['inputTotal']) && $_POST['inputTotal']!='') {
+               $total = $_POST['inputTotal'];
+            }
             $link = Conexion::conectar();
             $sql = "INSERT INTO ventas (producto,cantidad,idMarca,idCategoria,
                                         total,fecha,dia,estado,tipo_pago,cliente)
@@ -50,10 +56,16 @@
         {
             $producto = $_POST['producto'];
             $stockParcial = $_POST['stockParcial'];
+            $stockSuelto = $_POST['stockSuelto'];
             $cantidad = $_POST['cantidad'];
-            $link = Conexion::conectar();
             $stock = $stockParcial - $cantidad;
+            $link = Conexion::conectar();
             $sql = "UPDATE productos SET stock = :stock WHERE producto = :producto";
+            if ($_POST['cantidadSuelto']!='') {
+                $cantidad = $_POST['cantidadSuelto'];
+                $stock = $stockSuelto - $cantidad;
+                $sql = 'UPDATE productos SET stock_suelto = :stock WHERE producto = :producto';
+            }
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':stock',$stock,PDO::PARAM_INT);
             $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
