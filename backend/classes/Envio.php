@@ -85,6 +85,27 @@
             }
             return json_encode(false);
         }
+
+        ########################### BALANCE ###########################
+
+        public function obtenerEnviosSinEntregar()
+        {
+            $link = Conexion::conectar();
+            $sql = "SELECT count(idEnvio) AS envios_sin_entregar 
+                    FROM envios WHERE estado = 'Sin entregar'";
+            $stmt = $link->prepare($sql);
+            if ($stmt->execute()) {
+                $json = array();
+                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($resultado as $envios) {
+                    $json[] = array(
+                        'envios_sin_entregar' => $envios['envios_sin_entregar']
+                    );
+                }
+                return json_encode($json);
+            }
+            return json_encode(array('status'=>400,'info'=>'problemas al ejecutar la consulta'));
+        }
     }
     
 ?>

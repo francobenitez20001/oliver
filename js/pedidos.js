@@ -1,3 +1,7 @@
+let f = new Date();
+let dia = f.getFullYear() + "-0" + (f.getMonth() +1) + "-" + f.getDate();
+let mes = f.getFullYear() + "-0" + (f.getMonth() +1);
+
 function getPedidos() {
     fetch('backend/pedidos/listarPedidos.php')
     .then(res=>res.json())
@@ -86,6 +90,8 @@ function mostrarFormularioAgregar() {
     let divFormulario = document.getElementById('form-agregar-div');
     let formulario = document.getElementById('formAgregarPedido');
     let bannerForm = document.getElementById('banner-form');
+    let inputfecha = document.getElementById('fecha');
+    inputfecha.setAttribute('value',dia);
     formulario.classList.remove('d-none');
     divFormulario.classList.remove('d-none');
     tablaPedidos.classList.add('d-none');
@@ -144,12 +150,12 @@ function getProveedores() {
     })
 }
 
-// function habilitarTotal(){
-//     let estado = document.getElementById('estado').value;
-//     let total = document.getElementById('input-total');
-//     if (estado != 'No recibido') {
-//         total.classList.remove('d-none');
-//     }else{
-//         total.classList.add('d-none');
-//     }
-// }
+function habilitarTotal(){
+    let estado = document.getElementById('estado').value;
+    let total = document.getElementById('input-total');
+    if (estado != 'No recibido') {
+        total.classList.remove('d-none');
+    }else{
+        total.classList.add('d-none');
+    }
+}

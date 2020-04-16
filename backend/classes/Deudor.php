@@ -73,6 +73,27 @@
             }
             return json_encode(false);
         }
+
+        ###################### BALANCE ######################
+        
+        public function obtenerDeudores()
+        {
+            $link = Conexion::conectar();
+            $sql = "SELECT count(idDeudor) AS deudores_por_venta 
+                    FROM deudores WHERE estado = 'debe'";
+            $stmt = $link->prepare($sql);
+            if ($stmt->execute()) {
+                $json = array();
+                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($resultado as $deudores) {
+                    $json[] = array(
+                        'deudores' => $deudores['deudores_por_venta']
+                    );
+                }
+                return json_encode($json);
+            };
+            return json_encode(array('status'=>400,'info'=>'problemas al ejecutar la consulta'));
+        }
     }
     
 ?>

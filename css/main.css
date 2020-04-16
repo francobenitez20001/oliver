@@ -35,6 +35,13 @@
     border-color: #dee2e6;
  }
 
+
+
+ /* balance */
+
+ .tarjeta-icono{font-size: 170px;color: #2f7d97;margin-top:50px}
+ .info-tarjeta{font-size: 25px;text-transform: uppercase;font-family: 'Open Sans',sans-serif}
+ .valor-info-tarjeta{font-size: 30px;text-transform: uppercase;font-family: 'Open Sans',sans-serif;margin-top:60px;font-weight: bold;}
  
 
  @media (max-width: 576px) {
@@ -52,6 +59,12 @@
     }
     .menu-secundary ul li{list-style: none;margin: 20px 0px;position: relative;left:-50px;}
     .menu-secundary ul li a{color: white;font-size: 16px;cursor: pointer}
+
+    .tarjeta-icono{font-size:100px;margin-top:0px;}
+    .info-tarjeta{font-size: 20px;margin-top: 20px;}
+    .valor-info-tarjeta{margin-top: 25px;}
+
+    #filtro-producto-vendido{margin-bottom: 20px;}
  }
 
 

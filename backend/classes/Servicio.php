@@ -137,5 +137,50 @@
             return $result;
         }
 
+         ######################## BALANCE ########################
+
+        public function obtenerMontoServicio($criterio = null)//criterio es si filtra por dia o por mes. Si no es null, busca por mes
+        {
+             $link = Conexion::conectar();
+             $fecha = $_GET['fecha'];
+             $sql = "SELECT SUM(total) AS total_servicios 
+                     FROM servicios WHERE fecha LIKE '". $fecha ."%'";
+             if (!is_null($criterio) && $criterio!='') {
+                 $sql = "SELECT SUM(total) AS total_servicios
+                         FROM servicios WHERE estado = 'No pago' AND fecha LIKE '". $fecha ."%'";
+             }
+             $stmt = $link->prepare($sql);
+             // $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
+             if ($stmt->execute()) {
+                 $json = array();
+                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                 foreach ($resultado as $servicio) {
+                    $json[] = array(
+                        'servicio_total' => $servicio['total_servicios']
+                    );
+                 }
+                 return json_encode($json);
+             };
+             return json_encode(array('status'=>400,'info'=>'problemas al ejecutar la consulta'));
+        }
+
+        public function obtenerServiciosSinPagar()
+        {
+            $link = Conexion::conectar();
+            $sql = "SELECT count(idServicio) AS servicios_sin_pagar 
+                    FROM servicios WHERE estado = 'No pago'";
+            $stmt = $link->prepare($sql);
+            if ($stmt->execute()) {
+                $json = array();
+                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($resultado as $servicio) {
+                    $json[] = array(
+                        'servicios_sin_pagar' => $servicio['servicios_sin_pagar']
+                    );
+                }
+                return json_encode($json);
+            }
+        }
+
     }
     
