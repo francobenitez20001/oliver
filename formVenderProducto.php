@@ -97,7 +97,7 @@
               <div class="input-group-prepend">
                 <div class="input-group-text">Cantidad</div>
               </div>
-              <select class="form-control" name="cantidad" id="cantidad">
+              <select class="form-control" onchange="actualizarTotal(event,true)" name="cantidad" id="cantidad">
                 <!--Viene desde ventas.js-->
               </select>
               <input type="number" class="form-control d-none" name="cantidadSuelto" id="cantidadSuelto">
@@ -134,17 +134,17 @@
               <div class="input-group-prepend">
                 <div class="input-group-text">Descuento</div>
               </div>
-              <select name="descuento" onchange="habilitarTotal(event)" class="form-control" id="">
+              <select name="descuento" onchange="habilitarDescuento(event)" class="form-control" id="">
                 <option value="no">No</option>
                 <option value="si">Si</option>
               </select>
             </div>
             <div class="col-md-2" id="col-separador"></div>
-            <div class="input-group col-12 col-md-5 d-none my-4" id="total">
+            <div class="input-group col-12 col-md-5 d-none my-4" id="selectDescuento">
               <div class="input-group-prepend">
-                <div class="input-group-text">Total</div>
+                <div class="input-group-text">Valor descuento</div>
               </div>
-              <input type="number" class="form-control" id="inputTotal" name="inputTotal">
+              <input type="number" class="form-control" id="inputDescuento" name="inputDescuento">
             </div>
             <div class="col-12 col-md-5 d-none my-4" id="nombreCliente">
               <input type="text" class="form-control" name="cliente" placeholder="Nombre del cliente">
@@ -158,8 +158,11 @@
             <input type="hidden" value="<?php echo $reg['stock_suelto']?>"name="stockSuelto" id="stockSuelto">
             <input type="hidden" name="stock" id="stockFinal">
             <input type="hidden" name="precio" id="precio" value="<?php echo $reg['precioPublico'] ?>">
+            <input type="hidden" name="precioKilo" id="precioKilo" value="<?php echo $reg['precioKilo']; ?>">
+            <input type="hidden" name="total" id="total">
           </div>
         </div>
+        <div class="alert alert-info text-center" id="alert-total"></div>
         <center><input type="submit" class="btn btn-outline-info" value="Agregar"></center>
     </form>
   </div>

@@ -80,6 +80,7 @@
         <th scope="col">Precio por KG</th>
         <th scope="col">
           <i class="fas fa-plus" style="color:blue;cursor:pointer;" id="botonAgregar" onclick="mostrarFormularioAgregar()"></i>
+          <a href="exports/exportarExcelProductos.php"><i class="fas fa-file-export" style="color:blue;cursor:pointer;"></i></a>
         </th>
       </tr>
     </thead>
@@ -132,6 +133,31 @@
           <div class="col-md-2"></div>
           <div class="col-12 col-md-5 mb-4">
             <input type="text" name="stock" id="stock" class="form-control" placeholder="Stock">
+          </div>
+          <div class="col-12 col-md-5 mb-4">
+            <input type="text" name="stockSuelto" id="stockSuelto" class="form-control" placeholder="Stock suelto">
+          </div>
+          <div class="col-md-2"></div>
+          <div class="input-group col-12 col-md-5 mb-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text">Proveedor</div>
+            </div>
+            <select name="idProveedor" class="form-control" id="idProveedor">
+                 
+            </select>
+          </div>
+          <div class="input-group col-12 col-md-5 mb-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text">% Ganancia</div>
+            </div>
+            <input type="text" name="porcentaje_ganancia" id="porcentaje_ganancia" class="form-control">
+          </div>
+          <div class="col-md-2"></div>
+          <div class="input-group col-12 col-md-5 mb-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text">Precio de costo</div>
+            </div>
+            <input type="text" name="precioCosto" id="precioCosto" class="form-control">
           </div>
       </div>
       <center><input type="submit" class="btn btn-outline-info" value="Agregar"></center>

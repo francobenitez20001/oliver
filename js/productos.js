@@ -135,6 +135,7 @@ function mostrarFormularioAgregar() {
     bannerForm.classList.toggle('d-none');
     getMarcas();
     getCategorias();
+    getProveedores();
 }
 
 function getCategorias() {
@@ -166,6 +167,21 @@ function getMarcas() {
         });
         selectMarca.innerHTML = template;
         // console.log(newRes);
+    })
+}
+
+function getProveedores() {
+    let select = document.getElementById('idProveedor');
+    fetch('backend/proveedores/listarProveedor.php')
+    .then(res=>res.json())
+    .then(proveedores=>{
+        let template = '';
+        proveedores.forEach(proveedor => {
+            template += `
+                <option value="${proveedor.idProveedor}">${proveedor.proveedor}</option>
+            `
+        });
+        select.innerHTML = template;
     })
 }
 

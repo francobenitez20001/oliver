@@ -149,6 +149,13 @@
               </div>
               <input type="text" name="porcentaje_ganancia" id="porcentaje_ganancia" class="form-control" value="<?php echo $reg['porcentaje_ganancia'] ?>">
             </div>
+            <div class="col-md-2"></div>
+            <div class="input-group col-12 col-md-5 mb-4">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Precio de costo</div>
+              </div>
+              <input type="text" name="precio_costo" id="precioCosto" class="form-control" value="<?php echo $reg['precio_costo'] ?>">
+            </div>
             <input type="hidden" name="idProducto" value="<?php echo $reg['idProducto'] ?>">
         </div>
         <center><input type="submit" class="btn btn-outline-info" value="Modificar"></center>

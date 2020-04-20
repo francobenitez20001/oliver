@@ -69,11 +69,18 @@
         <th scope="col">Forma de pago</th>
         <th scope="col">Cliente</th>
         <th scope="col">
-          <select name="" onchange="getVentas(value)" id="" class="form-control">
-            <option value="null">Traer todos</option>
-            <option value="Tarjeta">Solo los abonados con tarjeta</option>
-            <option value="Efectivo">Solo los abonado en efectivo</option>
-          </select>
+          <div class="row">
+            <div class="col-10">
+              <select name="" onchange="getVentas(value)" id="" class="form-control">
+                <option value="null">Traer todos</option>
+                <option value="Tarjeta">Solo los abonados con tarjeta</option>
+                <option value="Efectivo">Solo los abonado en efectivo</option>
+              </select>
+            </div>
+            <div class="col-2 pt-2">
+              <a href="exports/exportarExcelVentas.php"><i class="fas fa-file-export" style="color:blue;cursor:pointer;font-size: 20px;"></i></a>
+            </div>
+          </div>
         </th>
       </tr>
     </thead>

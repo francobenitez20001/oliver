@@ -20,10 +20,7 @@
             if (isset($_POST['cliente']) && $_POST['cliente']!='') {
                 $cliente = $_POST['cliente'];
             }
-            $total = $precio * $cantidad;
-            if (isset($_POST['inputTotal']) && !is_null($_POST['inputTotal']) && $_POST['inputTotal']!='') {
-               $total = $_POST['inputTotal'];
-            }
+            $total = $_POST['total'];
             $link = Conexion::conectar();
             $sql = "INSERT INTO ventas (producto,cantidad,idMarca,idCategoria,
                                         total,fecha,dia,estado,tipo_pago,cliente)

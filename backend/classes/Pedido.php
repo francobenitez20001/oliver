@@ -5,7 +5,7 @@
         public function listarPedidos()
         {
             $link = Conexion::conectar();
-            $sql = "SELECT idPedido,descripcion,cantidad,p.estado,total,proveedor 
+            $sql = "SELECT idPedido,descripcion,cantidad,p.estado,total,proveedor,fecha 
                     FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ORDER BY idPedido DESC";
             $stmt = $link->prepare($sql);
             $stmt->execute();
@@ -18,7 +18,8 @@
                     'cantidad' => $reg['cantidad'],
                     'estado' => $reg['estado'],
                     'total' => $reg['total'],
-                    'proveedor' => $reg['proveedor']
+                    'proveedor' => $reg['proveedor'],
+                    'fecha' => $reg['fecha']
                 );
             }
             $jsonString = json_encode($json);
