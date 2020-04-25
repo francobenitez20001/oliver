@@ -66,7 +66,20 @@
             $stmt->bindParam(':idPedido',$idPedido,PDO::PARAM_INT);
             $bool = $stmt->execute();
             if ($bool) {
-                return json_encode(array('status'=>200,'info'=>'Pedido actualizado'));
+                //obtener la descripcion del producto recientemente recibido para actualizar el stock
+                $sql = "SELECT descripcion,cantidad FROM pedidos WHERE idPedido = ".$idPedido;
+                $stmt = $link->prepare($sql);
+                if ($stmt->execute()) {
+                    $json = array();
+                    $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($resultado as $reg) {
+                        $json[] = array(
+                            'producto' => $reg['descripcion'],
+                            'cantidad' => $reg['cantidad']
+                        );
+                    };
+                    return json_encode(array('status'=>200,'info'=>'Pedido actualizado','producto'=>$json[0]['producto'],'cantidad'=>$json[0]['cantidad']));
+                }
             }
             return json_encode(array('status'=>400,'info'=>'Problemas al actualizar los datos del pedido'));
         }

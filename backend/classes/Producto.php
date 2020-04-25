@@ -250,6 +250,22 @@ class Producto
                 return json_encode(array('status'=>400,'info'=>'Problemas al actualizar los precios'));
         }
 
+        public function modificarStock()
+        {
+                $link = Conexion::conectar();
+                $producto = $_GET['producto'];
+                $cantidad = $_GET['cantidad'];
+                $sql = "UPDATE productos SET stock = stock + :nuevoStock
+                        WHERE producto = :producto";
+                $stmt = $link->prepare($sql);
+                $stmt->bindParam(':nuevoStock',$cantidad,PDO::PARAM_INT);
+                $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
+                if ($stmt->execute()) {
+                        return json_encode(array('status'=>200,'info'=>'Se actualizo el stock y el pedido correctamente','data'=>$producto,'cantidad'=>$cantidad));
+                }
+                return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el stock'));
+        }
+
 
         public function cargarDatosDesdeForm()
         {

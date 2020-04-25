@@ -34,6 +34,7 @@ function getPedidos() {
 
 getPedidos();
 
+
 //######################## ELIMINAR PEDIDO  ######################## 
 
 
@@ -75,7 +76,18 @@ function recibirPedido(id) {
           .then(response=>{
             //   console.log(response);
               if (response.status == 200) {
-                  getPedidos();
+                fetch('backend/producto/modificarStock.php?producto='+response.producto+'&cantidad='+response.cantidad)
+                .then(res=>res.json()).then(response=>{
+                    console.log(response)
+                    if (response.status == 200) {
+                        Swal.fire(
+                            'Listo!',
+                            response.info,
+                            'success'
+                        );
+                        getPedidos();
+                    }
+                })
               }
           })
         }
@@ -96,8 +108,9 @@ function mostrarFormularioAgregar() {
     divFormulario.classList.remove('d-none');
     tablaPedidos.classList.add('d-none');
     bannerForm.classList.add('d-none');
-    // habilitarTotal();
+    habilitarTotal();
     getProveedores();
+    getProductos();
 }
 
 
@@ -150,12 +163,63 @@ function getProveedores() {
     })
 }
 
+function getProductos() {
+    fetch('backend/producto/listarProducto.php').then(res=>res.json()).then(response=>{
+        i = 0;
+        response.forEach(producto => {
+            productosArray[i]= {'producto':producto.producto};
+            i++;
+        });
+        i = 0;
+    })
+}
+
 function habilitarTotal(){
     let estado = document.getElementById('estado').value;
     let total = document.getElementById('input-total');
     if (estado != 'No recibido') {
+        total.setAttribute('required','');
         total.classList.remove('d-none');
     }else{
         total.classList.add('d-none');
+        total.removeAttribute('required');
     }
+}
+
+//autocompletador en input producto
+
+let desplegableProducto = document.getElementById('productosBusqueda');
+let productosArray = [];//es llenado cuando se carga el formulario par agregar
+
+let inputProducto = document.getElementById('producto');
+inputProducto.addEventListener('keyup',event=>{
+    if (inputProducto.value.length > 2) {
+        desplegableProducto.classList.remove('d-none');
+        searchProducto(inputProducto.value);   
+    }else{
+        desplegableProducto.classList.add('d-none');
+    }
+})
+
+function searchProducto(producto) {
+    productoFiltrado = productosArray.filter((prd) =>
+        prd.producto.toLowerCase().indexOf(producto.toLowerCase()) > -1
+    );
+    return renderDesplegableProducto(productoFiltrado);
+}
+
+function renderDesplegableProducto(producto) {
+    let template = '';
+    producto.forEach( prd => {
+        template += `
+            <option onclick="rellenarInputProducto(event)" value="${prd.producto}">${prd.producto}</option>
+        `
+    });
+    return desplegableProducto.innerHTML = template;
+}
+
+function rellenarInputProducto(event) {
+    producto = event.target.value;
+    inputProducto.value = producto;
+    desplegableProducto.classList.add('d-none');
 }

@@ -69,3 +69,27 @@
 
 
 footer p{color:#fff;font-size:16px;font-family: 'Open Sans',sans-serif;}
+
+
+/* desplegable de busqueda de producto en pedidos */
+#productosBusqueda{
+   position: absolute;
+   z-index: 1000;
+   background-color: white;
+   width: 93%;
+   border: 1px solid #ced4da;
+   border-radius: 0.25rem;
+   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+   padding-left: 0px;
+   padding-right: 0px;
+}
+
+#productosBusqueda option{
+   padding: 7px 10px;
+   cursor: pointer;
+}
+
+#productosBusqueda option:hover{
+   background-color: #007bff;
+   color: white;
+}
