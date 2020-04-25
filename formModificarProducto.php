@@ -101,37 +101,30 @@
             </div>
             <div class="input-group col-12 col-md-5 mb-4">
                 <div class="input-group-prepend">
-                    <div class="input-group-text">$ Público</div>
-                </div>
-                <input type="text" name="precioPublico" id="precioPublico" class="form-control" value="<?php echo $reg['precioPublico'] ?>">
-            </div>
-            <div class="col-md-2"></div>
-            <div class="input-group col-12 col-md-5 mb-4">
-                <div class="input-group-prepend">
                     <div class="input-group-text">$ Unidad</div>
                 </div>
                 <input type="text" name="precioUnidad" id="precioUnidad" class="form-control" value="<?php echo $reg['precioUnidad'] ?>">
             </div>
+            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
                 <div class="input-group-prepend">
                     <div class="input-group-text">$ Kilo</div>
                 </div>
                 <input type="text" name="PrecioKilo" id="PrecioKilo" class="form-control" value="<?php echo $reg['precioKilo'] ?>">
             </div>
-            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
                 <div class="input-group-prepend">
                   <div class="input-group-text">Stock</div>
                 </div>
                 <input type="text" name="stock" id="stock" class="form-control" value="<?php echo $reg['stock'] ?>">
             </div>
+            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
                 <div class="input-group-prepend">
                   <div class="input-group-text">Stock suelto</div>
                 </div>
                 <input type="text" name="stockSuelto" id="stock" class="form-control" value="<?php echo $reg['stock_suelto'] ?>">
             </div>
-            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
               <div class="input-group-prepend">
                 <div class="input-group-text">Proveedor</div>
@@ -143,13 +136,13 @@
                     <?php } ?>
               </select>
             </div>
+            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
               <div class="input-group-prepend">
                 <div class="input-group-text">% Ganancia</div>
               </div>
               <input type="text" name="porcentaje_ganancia" id="porcentaje_ganancia" class="form-control" value="<?php echo $reg['porcentaje_ganancia'] ?>">
             </div>
-            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
               <div class="input-group-prepend">
                 <div class="input-group-text">Precio de costo</div>
