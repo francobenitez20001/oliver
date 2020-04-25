@@ -8,7 +8,7 @@ formLogin.addEventListener('submit',event=>{
     })
     .then(res=>res.json())
     .then(newRes=>{
-        if (newRes != 'false') {
+        if (newRes) {
             console.log(newRes)
             formLogin.classList.add('d-none');
             nombre = newRes;

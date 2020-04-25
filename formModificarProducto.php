@@ -137,13 +137,13 @@
               </select>
             </div>
             <div class="col-md-2"></div>
-            <div class="input-group col-12 col-md-5 mb-4">
+            <div class="input-group col-12 col-md-5 mb-4 d-none userPrivate">
               <div class="input-group-prepend">
                 <div class="input-group-text">% Ganancia</div>
               </div>
               <input type="text" name="porcentaje_ganancia" id="porcentaje_ganancia" class="form-control" value="<?php echo $reg['porcentaje_ganancia'] ?>">
             </div>
-            <div class="input-group col-12 col-md-5 mb-4">
+            <div class="input-group col-12 col-md-5 mb-4 d-none userPrivate">
               <div class="input-group-prepend">
                 <div class="input-group-text">Precio de costo</div>
               </div>
@@ -168,25 +168,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
-    <script>
-        let formulario = document.getElementById('formModificarProducto');
-        formulario.addEventListener('submit', event=>{
-            event.preventDefault();
-            let data = new FormData(formulario);
-            fetch('backend/producto/modificarProducto.php',{
-                method: 'POST',
-                body: data
-            })
-            .then(res=>res.json())
-            .then(newRes=>{
-                if (newRes) {
-                    alert = document.getElementById('alert-warning');
-                    alert.classList.remove('d-none');
-                    formulario.classList.add('d-none');
-                }
-            })
-        })
-    </script>
+    <script src="js/updateProducto.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/app.js"></script>
 </body>

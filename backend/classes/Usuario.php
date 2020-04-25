@@ -7,18 +7,28 @@
             $usuario = $_POST['username'];
             $pw = $_POST['pw'];
             $link = Conexion::conectar();
-            $sql = "SELECT nombre,usuario FROM usuarios WHERE usuario = :usuario AND pw = :pw";
+            $sql = "SELECT nombre,usuario,superUser FROM usuarios WHERE usuario = :usuario AND pw = :pw";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':usuario', $usuario, PDO::PARAM_STR);
             $stmt->bindParam(':pw', $pw, PDO::PARAM_STR);
             $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $cantidad = $stmt->rowCount();
             $json = array();
             if ($cantidad == 0) {
-                return json_encode('false');
+                return json_encode(false);
             }else{
-                $_SESSION['login']=1;
-                $_SESSION['usuName'] = $usuario;
+                $_SESSION['login']=0;
+                foreach ($result as $usuario) {
+                    $json[] = array(
+                        'usuario' => $usuario['usuario'],
+                        'superUser' => $usuario['superUser']
+                    );
+                }
+                if ($json[0]['superUser'] == 1) {
+                    $_SESSION['login']=1;   
+                }
+                $_SESSION['usuName'] = $json[0]['usuario'];
                 return json_encode($_SESSION['usuName']);
             }
         }

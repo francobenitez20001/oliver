@@ -3,13 +3,13 @@ let menuSecundario = document.getElementById('menu-secundary');
 let btnOcultarMenu = document.getElementById('botonVolverSecundary');
 let iconMenu = document.getElementById('icon-menu');
 
-iconMenu.addEventListener('click',()=>{
-    menuSecundario.classList.remove('d-none');
-})
+// iconMenu.addEventListener('click',()=>{
+//     menuSecundario.classList.remove('d-none');
+// })
 
-btnOcultarMenu.addEventListener('click',()=>{
-    menuSecundario.classList.toggle('d-none');
-})
+// btnOcultarMenu.addEventListener('click',()=>{
+//     menuSecundario.classList.toggle('d-none');
+// })
 
 
 //animacion de delete

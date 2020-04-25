@@ -11,6 +11,7 @@ function getProductos(inicio,fin) {
     fetch('backend/producto/listarProducto.php?inicio='+inicio+'&fin='+fin)
     .then(res=>res.json())
     .then(newRes=>{
+        permiso = checkUserSession();
         let bodyTable = document.getElementById('bodyTable');
         let template = '';
         newRes.forEach(reg => {
@@ -18,8 +19,8 @@ function getProductos(inicio,fin) {
                 template += `
                 <tr>
                     <td scope="row">${reg.producto}</td>
-                    <td>$${reg.precio_costo}</td>
-                    <td>${reg.porcentaje_ganancia}%</td>
+                    <td class="userPrivate">$${reg.precio_costo}</td>
+                    <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
                     <td>${reg.stock}</td>
                     <td>${reg.precioPublico}</td>
                     <td>${reg.precioUnidad}</td>
@@ -34,8 +35,8 @@ function getProductos(inicio,fin) {
                 template += `
                 <tr>
                     <td scope="row">${reg.producto}</td>
-                    <td>$${reg.precio_costo}</td>
-                    <td>${reg.porcentaje_ganancia}%</td>
+                    <td class="userPrivate">$${reg.precio_costo}</td>
+                    <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
                     <td>${reg.stock}</td>
                     <td>${reg.precioPublico}</td>
                     <td>${reg.precioUnidad}</td>
@@ -50,6 +51,12 @@ function getProductos(inicio,fin) {
             }
         });
         bodyTable.innerHTML = template;
+        if (!permiso) {
+            elementos = document.getElementsByClassName('userPrivate');
+            for (let index = 0; index < elementos.length; index++) {
+                elementos[index].classList.add('d-none');
+            };
+        }
 
         //RESETEO VARIABLES PARA QUE LA PROXIMA VEZ QUE CLICKEO EN 'VER MÁS' ME MUESTRE OTROS 100 REGISTROS POSTERIORES
         inicioDeRangoDeRegistros = fin+1;
@@ -81,13 +88,14 @@ formSearch.addEventListener('submit',event=>{
         console.log(newRes);
         let bodyTable = document.getElementById('bodyTable');
         let template = '';
+        permiso = checkUserSession();
         newRes.forEach(reg => {
             if(reg.stock <=0){//no hay stock para vender, entonces deshabilito el boton de vender
                 template += `
                 <tr>
                     <td scope="row">${reg.producto}</td>
-                    <td>$${reg.precio_costo}</td>
-                    <td>${reg.porcentaje_ganancia}%</td>
+                    <td class="userPrivate">$${reg.precio_costo}</td>
+                    <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
                     <td>${reg.stock}</td>
                     <td>${reg.precioPublico}</td>
                     <td>${reg.precioUnidad}</td>
@@ -102,8 +110,8 @@ formSearch.addEventListener('submit',event=>{
                 template += `
                 <tr>
                     <th scope="row">${reg.producto}</th>
-                    <td>$${reg.precio_costo}</td>
-                    <td>${reg.porcentaje_ganancia}%</td>
+                    <td class="userPrivate">$${reg.precio_costo}</td>
+                    <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
                     <td>${reg.stock}</td>
                     <td>${reg.precioPublico}</td>
                     <td>${reg.precioUnidad}</td>
@@ -118,6 +126,12 @@ formSearch.addEventListener('submit',event=>{
             }
         });
         bodyTable.innerHTML = template;
+        if (!permiso) {
+            elementos = document.getElementsByClassName('userPrivate');
+            for (let index = 0; index < elementos.length; index++) {
+                elementos[index].classList.add('d-none');
+            };
+        }
     })
 })
 
@@ -204,6 +218,13 @@ form.addEventListener('submit',event=>{
             form.classList.add('d-none');
         }
     })
+})
+
+iconMenu.addEventListener('click',()=>{
+    menuSecundario.classList.remove('d-none');
+})
+btnOcultarMenu.addEventListener('click',()=>{
+    menuSecundario.classList.toggle('d-none');
 })
 
 
@@ -361,3 +382,8 @@ formAgregarCategoria.addEventListener('submit',event=>{
     })
 })
 
+function checkUserSession() {
+    if (userSession == 1) {
+        return true;
+    }
+}
