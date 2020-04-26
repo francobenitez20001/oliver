@@ -65,3 +65,19 @@ cerrarSesion.addEventListener("click",()=>{
         }
     })
 })
+
+function modalExport(url) {
+    Swal.fire({
+        title: 'Indique Fechas',
+        html:
+            '<input id="inicio" name="inicio" type="date" class="swal2-input">' +
+            '<input id="fin" name="fin" type="date" class="swal2-input">',
+        focusConfirm: false,
+        showCancelButton: true,
+        preConfirm: () => {
+            inicio = document.getElementById('inicio').value;
+            fin = document.getElementById('fin').value;
+            return window.location.assign(url+'?inicio='+inicio+'&fin='+fin);
+        },
+    })
+}

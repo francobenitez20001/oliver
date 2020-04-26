@@ -6,8 +6,17 @@
         {
             $link = Conexion::conectar();
             $sql = "SELECT idPedido,descripcion,cantidad,p.estado,total,proveedor,fecha 
-                    FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ORDER BY idPedido DESC";
+                    FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ";
+            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
+                $sql .= "AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
+            }else{
+                $sql .= "ORDER BY idPedido DESC";
+            };
             $stmt = $link->prepare($sql);
+            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
+                $stmt->bindParam(':inicio',$_GET['inicio'],PDO::PARAM_STR);
+                $stmt->bindParam(':fin',$_GET['fin'],PDO::PARAM_STR);
+            }
             $stmt->execute();
             $json = array();
             $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);

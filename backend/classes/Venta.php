@@ -76,15 +76,23 @@
         public function listarVenta()
         {
             $link = Conexion::conectar();
-            $sql = "SELECT * FROM ventas ";
+            $sql = "SELECT * FROM ventas WHERE 1=1 ";
             if (isset($_GET['tipo-pago']) && $_GET['tipo-pago']!='null') {
                 $tipo_pago = $_GET['tipo-pago'];
-                $sql .= "WHERE tipo_pago = :tp ";
+                $sql .= "AND tipo_pago = :tp ";
             }
-            $sql .= "ORDER BY idVenta DESC";
+            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
+                $sql .= "AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
+            }else{
+                $sql .= "ORDER BY idVenta DESC";
+            }
             $stmt = $link->prepare($sql);
             if (isset($_GET['tipo-pago']) && $_GET['tipo-pago']!='null') {
                 $stmt->bindParam(':tp',$tipo_pago,PDO::PARAM_STR);
+            }
+            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
+                $stmt->bindParam(':inicio',$_GET['inicio'],PDO::PARAM_STR);
+                $stmt->bindParam(':fin',$_GET['fin'],PDO::PARAM_STR);
             }
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
