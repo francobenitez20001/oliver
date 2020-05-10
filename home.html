@@ -63,6 +63,7 @@
         <a href="adminEnvios.html" class="list-group-item list-group-item-action">Panel de administracion de envios</a>
         <a href="adminProveedores.html" class="list-group-item list-group-item-action">Panel de administracion de proveedores</a>
         <a href="balance.html" class="list-group-item list-group-item-action">Mira tu balance</a>
+        <a href="usuario.html" class="list-group-item list-group-item-action" id="userPrivate">Dar de alta usuarios</a>
     </div>
   </div><!--tabla de opciones-->
 
@@ -84,5 +85,10 @@
     <script src="js/sweetalert2.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/app.js"></script>
+    <script>
+      if(userSession == 0){
+            document.getElementById('userPrivate').classList.add('d-none');
+      }
+    </script>
 </body>
 </html>

@@ -61,7 +61,6 @@ class Producto
             $producto = $_POST['producto'];
             $idMarca = $_POST['idMarca'];
             $idCategoria = $_POST['idCategoria'];
-            $precioUnidad = $_POST['precioUnidad'];
             $precioKilo = $_POST['PrecioKilo'];
             $stock = $_POST['stock'];
             $stockSuelto = $_POST['stockSuelto'];
@@ -69,7 +68,9 @@ class Producto
             $porcentaje_ganancia = $_POST['porcentaje_ganancia'];
             $precioCosto = $_POST['precioCosto'];
             $precioPublico = $precioCosto + ($precioCosto*$porcentaje_ganancia/100);//precio publico dinamico
-            $sql = "INSERT INTO productos (producto,idMarca,idCategoria,precioPublico,precioUnidad,preciokilo,stock,idProveedor,porcentaje_ganancia,stock_suelto,precio_costo) VALUES (:producto,:idMarca,:idCategoria,:precioPublico,:precioUnidad,:precioKilo,:stock,:idProveedor,:porcentaje_ganancia,:stockSuelto,:precioCosto)";
+            $cantidadUnitario = $_POST['cantidadUnitario'];
+            $precioUnidad = $precioPublico/$cantidadUnitario;
+            $sql = "INSERT INTO productos (producto,idMarca,idCategoria,precioPublico,precioUnidad,preciokilo,stock,idProveedor,porcentaje_ganancia,stock_suelto,precio_costo,cantidadUnitario) VALUES (:producto,:idMarca,:idCategoria,:precioPublico,:precioUnidad,:precioKilo,:stock,:idProveedor,:porcentaje_ganancia,:stockSuelto,:precioCosto,:cantidadUnitario)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
             $stmt->bindParam(':idMarca',$idMarca,PDO::PARAM_INT);
@@ -82,6 +83,7 @@ class Producto
             $stmt->bindParam(':porcentaje_ganancia',$porcentaje_ganancia,PDO::PARAM_INT);
             $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_INT);
             $stmt->bindParam(':precioCosto',$precioCosto,PDO::PARAM_INT);
+            $stmt->bindParam(':cantidadUnitario',$cantidadUnitario,PDO::PARAM_INT);
             $resultado = $stmt->execute();
             if ($resultado) {
                 return json_encode(array('status'=>200,'info'=>'agregado'));
@@ -97,7 +99,6 @@ class Producto
                 $producto = $_POST['producto'];
                 $idMarca = $_POST['idMarca'];
                 $idCategoria = $_POST['idCategoria'];
-                $precioUnidad = $_POST['precioUnidad'];
                 $precioKilo = $_POST['PrecioKilo'];
                 $precioCosto = $_POST['precio_costo'];
                 $stock = $_POST['stock'];
@@ -105,6 +106,8 @@ class Producto
                 $porcentaje_ganancia = $_POST['porcentaje_ganancia'];
                 $stockSuelto = $_POST['stockSuelto'];
                 $precioPublico = $precioCosto + ($precioCosto*$porcentaje_ganancia/100);//precio publico dinamico
+                $cantidadUnitario = $_POST['cantidadUnitario'];
+                $precioUnidad = $precioPublico/$cantidadUnitario;
                 $sql = "UPDATE productos SET producto = :producto,
                                                 idMarca = :idMarca,
                                                 idCategoria = :idCategoria,
@@ -115,7 +118,8 @@ class Producto
                                                 stock = :stock,
                                                 idProveedor = :idProveedor,
                                                 porcentaje_ganancia = :porcentaje_ganancia,
-                                                stock_suelto = :stockSuelto
+                                                stock_suelto = :stockSuelto,
+                                                cantidadUnitario = :cantidadUnitario
                                         WHERE idProducto = :idProducto";
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':idProducto', $idProducto , PDO::PARAM_INT);
@@ -130,6 +134,7 @@ class Producto
                 $stmt->bindParam(':idProveedor', $idProveedor , PDO::PARAM_INT);
                 $stmt->bindParam(':porcentaje_ganancia', $porcentaje_ganancia , PDO::PARAM_INT);
                 $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_INT);
+                $stmt->bindParam(':cantidadUnitario',$cantidadUnitario,PDO::PARAM_INT);
                 $bool = $stmt->execute();
                 if ($bool) {
                         return json_encode(true);
@@ -146,16 +151,16 @@ class Producto
                 $stmt->bindParam(':idProducto', $idProducto, PDO::PARAM_INT);
                 $bool = $stmt->execute();
                 if ($bool) {
-                        return json_encode('true');
+                        return json_encode(true);
                 }
-                return json_encode('false');
+                return json_encode(false);
         }
 
         public function verProductoPorId()
         {
                 $link = Conexion::conectar();
                 $idProducto = $_GET['idProducto'];
-                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,precio_costo,stock,p.idProveedor,proveedor,porcentaje_ganancia,stock_suelto     
+                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,precio_costo,stock,p.idProveedor,proveedor,porcentaje_ganancia,stock_suelto,cantidadUnitario     
                         FROM productos p, marcas m, categorias c, proveedor prov
                         WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = prov.idProveedor AND idProducto = :idProducto";
                 $stmt = $link->prepare($sql);

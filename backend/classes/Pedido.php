@@ -42,17 +42,13 @@
             $cantidad = $_POST['cantidad'];
             $idProveedor = $_POST['idProveedor'];
             $estado = $_POST['estado'];
-            $total = $_POST['total'];
             $fecha = $_POST['fecha'];
-            if (!is_null($_POST['total'] && $_POST['total']!='')) {
-                $total = $_POST['total'];
-            }
-            $sql = "INSERT INTO pedidos (descripcion,cantidad,estado,total,idProveedor,fecha) VALUES (:descripcion,:cantidad,:estado,:total,:idProveedor,:fecha)";
+            $sql = "INSERT INTO pedidos (descripcion,cantidad,estado,idProveedor,fecha) VALUES (:descripcion,:cantidad,:estado,:idProveedor,:fecha)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':descripcion',$descripcion,PDO::PARAM_STR);
             $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_INT);
             $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
-            $stmt->bindParam(':total',$total,PDO::PARAM_INT);
+            // $stmt->bindParam(':total',$total,PDO::PARAM_INT);
             $stmt->bindParam(':idProveedor',$idProveedor,PDO::PARAM_INT);
             $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
             $bool = $stmt->execute();

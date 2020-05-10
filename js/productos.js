@@ -14,17 +14,21 @@ function getProductos(inicio,fin) {
         permiso = checkUserSession();
         let bodyTable = document.getElementById('bodyTable');
         let template = '';
+        var indice = 0;
         newRes.forEach(reg => {
             if(reg.stock <=0){
                 template += `
                 <tr>
                     <td scope="row">${reg.producto}</td>
+                    <td>
+                        <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento"/>
+                    </td>
                     <td class="userPrivate">$${reg.precio_costo}</td>
                     <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
                     <td>${reg.stock}</td>
-                    <td>${reg.precioPublico}</td>
-                    <td>${reg.precioUnidad}</td>
-                    <td>${reg.precioKilo}</td>
+                    <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
+                    <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
+                    <td id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
                     <td>
                         <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
                         <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
@@ -35,12 +39,15 @@ function getProductos(inicio,fin) {
                 template += `
                 <tr>
                     <td scope="row">${reg.producto}</td>
+                    <td>
+                    <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento"/>
+                    </td>
                     <td class="userPrivate">$${reg.precio_costo}</td>
                     <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
                     <td>${reg.stock}</td>
-                    <td>${reg.precioPublico}</td>
-                    <td>${reg.precioUnidad}</td>
-                    <td>${reg.precioKilo}</td>
+                    <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
+                    <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
+                    <td id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
                     <td>
                         <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
                         <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
@@ -49,6 +56,7 @@ function getProductos(inicio,fin) {
                 </tr>
                 `;
             }
+            indice++;
         });
         bodyTable.innerHTML = template;
         if (!permiso) {
@@ -89,17 +97,21 @@ formSearch.addEventListener('submit',event=>{
         let bodyTable = document.getElementById('bodyTable');
         let template = '';
         permiso = checkUserSession();
+        var indice = 0;
         newRes.forEach(reg => {
             if(reg.stock <=0){//no hay stock para vender, entonces deshabilito el boton de vender
                 template += `
                 <tr>
                     <td scope="row">${reg.producto}</td>
+                    <td>
+                        <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento"/>
+                    </td>
                     <td class="userPrivate">$${reg.precio_costo}</td>
                     <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
                     <td>${reg.stock}</td>
-                    <td>${reg.precioPublico}</td>
-                    <td>${reg.precioUnidad}</td>
-                    <td>${reg.precioKilo}</td>
+                    <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
+                    <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
+                    <td id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
                     <td>
                         <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
                         <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
@@ -110,12 +122,15 @@ formSearch.addEventListener('submit',event=>{
                 template += `
                 <tr>
                     <th scope="row">${reg.producto}</th>
+                    <td>
+                        <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento"/>
+                    </td>
                     <td class="userPrivate">$${reg.precio_costo}</td>
                     <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
                     <td>${reg.stock}</td>
-                    <td>${reg.precioPublico}</td>
-                    <td>${reg.precioUnidad}</td>
-                    <td>${reg.precioKilo}</td>
+                    <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
+                    <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
+                    <td id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
                     <td>
                         <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
                         <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
@@ -124,6 +139,7 @@ formSearch.addEventListener('submit',event=>{
                 </tr>
                 `;
             }
+            indice++;
         });
         bodyTable.innerHTML = template;
         if (!permiso) {
@@ -386,4 +402,20 @@ function checkUserSession() {
     if (userSession == 1) {
         return true;
     }
+}
+
+function setDescuento(event,publico,unitario,kilo,idProducto) {
+    let precioPublico = document.getElementById(`precioPublico_${idProducto}`),
+        precioUnidad = document.getElementById(`precioUnidad_${idProducto}`),
+        precioKilo = document.getElementById(`precioKilo_${idProducto}`),
+        descuento = parseInt(event.target.value);
+    if(event.target.value == 0 || event.target.value == ''){
+        precioPublico.innerHTML = publico;
+        precioUnidad.innerHTML = unitario;
+        precioKilo.innerHTML = kilo;
+        return;    
+    };
+    precioPublico.innerHTML = parseInt(precioPublico.textContent) + parseInt(precioPublico.textContent)*descuento/100;
+    precioUnidad.innerHTML = parseInt(precioUnidad.textContent) + parseInt(precioUnidad.textContent)*descuento/100;
+    precioKilo.innerHTML = parseInt(precioKilo.textContent) + parseInt(precioKilo.textContent)*descuento/100;
 }

@@ -100,10 +100,10 @@
                 </select>
             </div>
             <div class="input-group col-12 col-md-5 mb-4">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">$ Unidad</div>
-                </div>
-                <input type="text" name="precioUnidad" id="precioUnidad" class="form-control" value="<?php echo $reg['precioUnidad'] ?>">
+              <div class="input-group-prepend">
+                <div class="input-group-text">Cantidad Unitario</div>
+              </div>
+              <input type="text" name="cantidadUnitario" id="cantidadUnitario" class="form-control" value="<?php echo $reg['cantidadUnitario'] ?>">
             </div>
             <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">

@@ -71,13 +71,29 @@ function modalExport(url) {
         title: 'Indique Fechas',
         html:
             '<input id="inicio" name="inicio" type="date" class="swal2-input">' +
-            '<input id="fin" name="fin" type="date" class="swal2-input">',
+            '<input id="fin" name="fin" type="date" class="swal2-input">' +
+            '<input id="all" name="fin" type="checkbox" class="">Exportar todo',
         focusConfirm: false,
         showCancelButton: true,
         preConfirm: () => {
+            if(document.getElementById('all').value=='on'){
+                return window.location.assign(url);
+            };
             inicio = document.getElementById('inicio').value;
             fin = document.getElementById('fin').value;
             return window.location.assign(url+'?inicio='+inicio+'&fin='+fin);
         },
+    })
+}
+
+function modalDelete(titulo) {
+    return Swal({
+        title: titulo,
+        text: "Esta acción no se puede deshacer",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#30d685',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmo'
     })
 }

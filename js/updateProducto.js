@@ -1,12 +1,15 @@
 function checkUserSession() {
-    if (userSession == 1) {
-      elementos = document.getElementsByClassName('userPrivate');
-      for (let index = 0; index < elementos.length; index++) {
-        elementos[index].classList.remove('d-none');
-      };
-    }else{
-      return true;
-    } 
+    setTimeout(() => {
+      if (userSession == 1) {
+        elementos = document.getElementsByClassName('userPrivate');
+        for (let index = 0; index < elementos.length; index++) {
+          elementos[index].classList.remove('d-none');
+        };
+        return true;
+      }else{
+        return true;
+      } 
+    }, 2000);
 }
 
 let formulario = document.getElementById('formModificarProducto');
@@ -28,5 +31,6 @@ formulario.addEventListener('submit', event=>{
 })
 
 window.onload = ()=>{
-    checkUserSession();
+    let bool = checkUserSession();
+    console.log(bool);
 }
