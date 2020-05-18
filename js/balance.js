@@ -19,7 +19,7 @@ let alerta = document.getElementById('alerta');
 let datosBalance = []
 
 let f = new Date();
-let dia = f.getFullYear() + "-" + (f.getMonth() +1) + "-" + f.getDate();
+let dia = f.getFullYear() + "-0" + (f.getMonth() +1) + "-" + f.getDate();
 let mes = f.getFullYear() + "-0" + (f.getMonth() +1);
 
 window.onload = ()=>{
@@ -60,8 +60,24 @@ function guardar() {
 
 function getVentasTotal(criterio=null) {
   url = 'backend/ventas/listarVentaMonto.php?dia='+dia;
-  if (criterio!=null) {
-    url = 'backend/ventas/listarVentaMonto.php?mes='+mes+'&criterio=mes';
+  switch (criterio) {
+    case 'mes':
+      url = 'backend/ventas/listarVentaMonto.php?mes='+mes+'&criterio=mes';
+      break;
+    case 'diaEfectivo':
+      url = 'backend/ventas/listarVentaMonto.php?mes='+dia+'&criterio=diaEfectivo';
+      break;
+    case 'diaTarjeta':
+      url = 'backend/ventas/listarVentaMonto.php?mes='+dia+'&criterio=diaTarjeta';
+      break;
+    case 'mesEfectivo':
+      url = 'backend/ventas/listarVentaMonto.php?mes='+mes+'&criterio=mesEfectivo';
+      break;
+    case 'mesTarjeta':
+      url = 'backend/ventas/listarVentaMonto.php?mes='+mes+'&criterio=mesTarjeta';
+      break;
+    default:
+      break;
   }
   fetch(url)
   .then(res=>res.json())
@@ -229,11 +245,28 @@ function getProductoMasVendido(criterio=null) {
 
 function filtrarVentas(valor) {
   filtro = valor.target.value;
-  if (filtro == 'mes') {
-    getVentasTotal('mes');
-  }else if(filtro=='dia'){
-    getVentasTotal(null);
-  } 
+  switch (filtro) {
+    case 'mes':
+      getVentasTotal('mes');
+      break;
+    case 'dia':
+      getVentasTotal(null);
+      break;
+    case 'diaEfectivo':
+      getVentasTotal('diaEfectivo');
+      break;
+    case 'diaTarjeta':
+      getVentasTotal('diaTarjeta');
+      break;
+    case 'mesEfectivo':
+      getVentasTotal('mesEfectivo');
+      break;
+    case 'mesTarjeta':
+      getVentasTotal('mesTarjeta');
+      break;
+    default:
+      break;
+  }
 }
 
 function filtrarPedidos(valor) {

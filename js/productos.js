@@ -28,7 +28,7 @@ function getProductos(inicio,fin) {
                     <td>${reg.stock}</td>
                     <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
                     <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
-                    <td id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
+                    <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
                     <td>
                         <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
                         <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
@@ -47,7 +47,7 @@ function getProductos(inicio,fin) {
                     <td>${reg.stock}</td>
                     <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
                     <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
-                    <td id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
+                    <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
                     <td>
                         <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
                         <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
@@ -111,7 +111,7 @@ formSearch.addEventListener('submit',event=>{
                     <td>${reg.stock}</td>
                     <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
                     <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
-                    <td id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
+                    <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
                     <td>
                         <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
                         <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
@@ -130,7 +130,7 @@ formSearch.addEventListener('submit',event=>{
                     <td>${reg.stock}</td>
                     <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
                     <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
-                    <td id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
+                    <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
                     <td>
                         <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
                         <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
@@ -415,7 +415,7 @@ function setDescuento(event,publico,unitario,kilo,idProducto) {
         precioKilo.innerHTML = kilo;
         return;    
     };
-    precioPublico.innerHTML = parseInt(precioPublico.textContent) + parseInt(precioPublico.textContent)*descuento/100;
-    precioUnidad.innerHTML = parseInt(precioUnidad.textContent) + parseInt(precioUnidad.textContent)*descuento/100;
-    precioKilo.innerHTML = parseInt(precioKilo.textContent) + parseInt(precioKilo.textContent)*descuento/100;
+    precioPublico.innerHTML = parseInt(precioPublico.textContent) - parseInt(precioPublico.textContent)*descuento/100;
+    precioUnidad.innerHTML = parseInt(precioUnidad.textContent) - parseInt(precioUnidad.textContent)*descuento/100;
+    precioKilo.innerHTML = parseInt(precioKilo.textContent) - parseInt(precioKilo.textContent)*descuento/100;
 }

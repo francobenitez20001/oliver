@@ -172,11 +172,31 @@
         public function obtenerMontoVenta($dia,$criterio=null)
         {
             $link = Conexion::conectar();
-            $sql = "SELECT SUM(total) AS total_ventas
+            switch ($criterio) {
+                case !is_null($criterio) && $criterio=='mes':
+                    $sql = "SELECT SUM(total) AS total_ventas
+                    FROM ventas WHERE estado = 'Pago' AND fecha LIKE '". $dia ."%'";
+                    break;
+                case 'diaEfectivo':
+                    $sql = "SELECT SUM(total) AS total_ventas
+                    FROM ventas WHERE estado = 'Pago' AND fecha = '". $dia ."' AND tipo_pago = 'Efectivo'";
+                    break;
+                case 'diaTarjeta':
+                    $sql = "SELECT SUM(total) AS total_ventas
+                    FROM ventas WHERE estado = 'Pago' AND fecha = '". $dia ."' AND tipo_pago = 'Tarjeta'";
+                    break;
+                case 'mesEfectivo':
+                    $sql = "SELECT SUM(total) AS total_ventas
+                    FROM ventas WHERE estado = 'Pago' AND fecha LIKE '". $dia ."%' AND tipo_pago = 'Efectivo'";
+                    break;
+                case 'mesTarjeta':
+                    $sql = "SELECT SUM(total) AS total_ventas
+                    FROM ventas WHERE estado = 'Pago' AND fecha LIKE '". $dia ."%' AND tipo_pago = 'Tarjeta'";
+                    break;
+                default:
+                    $sql = "SELECT SUM(total) AS total_ventas
                     FROM ventas WHERE estado = 'Pago' AND fecha = '". $dia ."'";
-            if (!is_null($criterio) && $criterio!='') {
-                $sql = "SELECT SUM(total) AS total_ventas
-                        FROM ventas WHERE estado = 'Pago' AND fecha LIKE '". $dia ."%'";
+                    break;
             }
             $stmt = $link->prepare($sql);
             // $stmt->bindParam(':dia',$dia,PDO::PARAM_STR);
