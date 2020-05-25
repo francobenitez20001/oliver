@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="css/animate.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <script src="js/autenticacion.js"></script>
+    <link rel="stylesheet" href="css/sweetalert2.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
@@ -79,7 +80,19 @@
     <hr>
     <form id="formModificarProducto" class="form-group">
         <div class="row">
-            <input type="text" name="producto" id="producto" class="form-control col-12 mb-4" value="<?php echo $reg['producto'] ?>" required>
+          <div class="col-12 col-md-5 input-group mb-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text">Producto</div>
+            </div>
+            <input type="text" name="producto" id="producto" class="form-control" value="<?php echo $reg['producto'] ?>" required>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-12 col-md-5 input-group mb-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text">Codigo producto</div>
+            </div>
+            <input type="number" name="codigoProducto" class="form-control"  value="<?php echo $reg['codigo_producto'] ?>">
+          </div>
             <div class="col-12 col-md-5">
                 <p>Selecciona una marca</p>
                 <select class="form-control mb-4" name="idMarca" id="idMarca" required>
@@ -168,7 +181,8 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
+    <script src="js/sweetalert2.js" charset="utf-8"></script>
+    <script src="js/app.js"></script>
     <script src="js/updateProducto.js"></script>
     <script src="js/menu.js"></script>
-    <script src="js/app.js"></script>
 </body>

@@ -97,3 +97,13 @@ function modalDelete(titulo) {
         confirmButtonText: 'Confirmo'
     })
 }
+
+function modalError(body) {
+    return Swal.fire({
+        title: 'Error',
+        text: body,
+        type: 'error',
+        confirmButtonColor: '#30d685',
+        confirmButtonText: 'Ok'
+    })    
+}

@@ -26,6 +26,8 @@ formulario.addEventListener('submit', event=>{
             alert = document.getElementById('alert-warning');
             alert.classList.remove('d-none');
             formulario.classList.add('d-none');
+        }else{
+          modalError('Ya existe un producto con el codigo ingresado');
         }
     })
 })

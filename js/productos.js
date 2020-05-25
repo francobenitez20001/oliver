@@ -1,106 +1,47 @@
+let listadoProducto = [];
 
-// ESTAS DOS VARIABLES SON PARA EL BETWEEN EN SQL
-let inicioDeRangoDeRegistros = 0;
-let finDeRangoDeRegistros = 100;
-
-//ESTA CONSTANTE ES EL VALOR DE CUANTOS REGISTROS VOY MOSTRAR CADA VEZ QUE CLICKEO EL BOTON 'VER MAS'
-const LIMITE_REGISTROS_A_MOSTRAR = 100;
+window.onload = ()=>{
+    getProductos();
+}
 
 //ESTA FUNCION TRAE LOS REGISTROS ENTRE UN RANGO DETERMINADO. ESE RANGO SON LOS PARAMETROS QUE PIDE
-function getProductos(inicio,fin) {
-    fetch('backend/producto/listarProducto.php?inicio='+inicio+'&fin='+fin)
+function getProductos() {
+    fetch('backend/producto/listarProducto.php')
     .then(res=>res.json())
     .then(newRes=>{
-        permiso = checkUserSession();
-        let bodyTable = document.getElementById('bodyTable');
-        let template = '';
-        var indice = 0;
-        newRes.forEach(reg => {
-            if(reg.stock <=0){
-                template += `
-                <tr>
-                    <td scope="row">${reg.producto}</td>
-                    <td>
-                        <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento"/>
-                    </td>
-                    <td class="userPrivate">$${reg.precio_costo}</td>
-                    <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
-                    <td>${reg.stock}</td>
-                    <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
-                    <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
-                    <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
-                    <td>
-                        <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
-                        <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
-                    </td>
-                </tr>
-                `;
-            }else{
-                template += `
-                <tr>
-                    <td scope="row">${reg.producto}</td>
-                    <td>
-                    <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento"/>
-                    </td>
-                    <td class="userPrivate">$${reg.precio_costo}</td>
-                    <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
-                    <td>${reg.stock}</td>
-                    <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
-                    <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
-                    <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
-                    <td>
-                        <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
-                        <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
-                        <a href="formVenderProducto.php?idProducto=${reg.idProducto}" class=""id="boton-modificar"><i class="fas fa-shopping-cart" style="cursor:pointer;color:green;font-size:20px"></i></a>
-                    </td>
-                </tr>
-                `;
-            }
-            indice++;
-        });
-        bodyTable.innerHTML = template;
-        if (!permiso) {
-            elementos = document.getElementsByClassName('userPrivate');
-            for (let index = 0; index < elementos.length; index++) {
-                elementos[index].classList.add('d-none');
-            };
+        for (let index = 0; index < newRes.length; index++) {
+            listadoProducto[index] = newRes[index];
         }
-
-        //RESETEO VARIABLES PARA QUE LA PROXIMA VEZ QUE CLICKEO EN 'VER MÁS' ME MUESTRE OTROS 100 REGISTROS POSTERIORES
-        inicioDeRangoDeRegistros = fin+1;
-        finDeRangoDeRegistros = inicioDeRangoDeRegistros + LIMITE_REGISTROS_A_MOSTRAR;
+        render(newRes);
     })
 }
 
+function buscar(event) {
+    let input = document.getElementsByName('productoSearch')[0];
+    if(input.value.length==0){
+        render(listadoProducto);
+        return;
+    }
+    let filtrados = listadoProducto.filter(newArray => {
+        if(newArray.producto.toLowerCase().includes(input.value.toLowerCase()) || newArray.codigo_producto == input.value){
+            return true;
+        }else{
+            return false;
+        }
+    });
+    render(filtrados);
+    return;
+}
 
-getProductos(inicioDeRangoDeRegistros,finDeRangoDeRegistros);
-
-//FUNCIONALIDAD DE BOTON 'VER MÁS'
-let botonVerMas = document.getElementById('botonVerMas');
-botonVerMas.addEventListener("click",()=>{
-    getProductos(inicioDeRangoDeRegistros,finDeRangoDeRegistros);
-});
-
-
-
-let formSearch = document.getElementById('form-search');
-formSearch.addEventListener('submit',event=>{
-    event.preventDefault();
-    let data  = new FormData(formSearch);
-    fetch('backend/producto/buscarProducto.php',{
-        method: 'POST',
-        body: data
-    })
-    .then(res=>res.json())
-    .then(newRes=>{
-        console.log(newRes);
-        let bodyTable = document.getElementById('bodyTable');
-        let template = '';
-        permiso = checkUserSession();
-        var indice = 0;
-        newRes.forEach(reg => {
-            if(reg.stock <=0){//no hay stock para vender, entonces deshabilito el boton de vender
-                template += `
+function render(data) {
+    let bodyTable = document.getElementById('bodyTable');
+    let template = '';
+    var indice = 0;
+    permiso = checkUserSession();
+    data.forEach(reg => {
+        listadoProducto[indice] = reg;
+        if(reg.stock <=0){
+            template += `
                 <tr>
                     <td scope="row">${reg.producto}</td>
                     <td>
@@ -117,26 +58,26 @@ formSearch.addEventListener('submit',event=>{
                         <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
                     </td>
                 </tr>
-                `;
+            `;
             }else{
                 template += `
-                <tr>
-                    <th scope="row">${reg.producto}</th>
-                    <td>
+                    <tr>
+                        <td scope="row">${reg.producto}</td>
+                        <td>
                         <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento"/>
-                    </td>
-                    <td class="userPrivate">$${reg.precio_costo}</td>
-                    <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
-                    <td>${reg.stock}</td>
-                    <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
-                    <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
-                    <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
-                    <td>
-                        <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
-                        <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
-                        <a href="formVenderProducto.php?idProducto=${reg.idProducto}" class=""id="boton-modificar"><i class="fas fa-shopping-cart" style="cursor:pointer;color:green;font-size:20px"></i></a>
-                    </td>
-                </tr>
+                        </td>
+                        <td class="userPrivate">$${reg.precio_costo}</td>
+                        <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
+                        <td>${reg.stock}</td>
+                        <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
+                        <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
+                        <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
+                        <td>
+                            <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
+                            <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarProducto(${reg.idProducto})"></i>
+                            <a href="formVenderProducto.php?idProducto=${reg.idProducto}" class=""id="boton-modificar"><i class="fas fa-shopping-cart" style="cursor:pointer;color:green;font-size:20px"></i></a>
+                        </td>
+                    </tr>
                 `;
             }
             indice++;
@@ -148,8 +89,7 @@ formSearch.addEventListener('submit',event=>{
                 elementos[index].classList.add('d-none');
             };
         }
-    })
-})
+}
 
 
 //######################## AGREGAR PRODUCTO  ######################## 
@@ -228,10 +168,14 @@ form.addEventListener('submit',event=>{
     })
     .then(res=>res.json())
     .then(newRes=>{
-        if (newRes) {
-            alert = document.getElementById('alert-success');
-            alert.classList.remove('d-none');
-            form.classList.add('d-none');
+        try {
+            if (newRes) {
+                alert = document.getElementById('alert-success');
+                alert.classList.remove('d-none');
+                form.classList.add('d-none');
+            }    
+        } catch (error) {
+            modalError('Ya existe un producto con el codigo ingresado'); 
         }
     })
 })

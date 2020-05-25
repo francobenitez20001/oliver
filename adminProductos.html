@@ -61,9 +61,8 @@
         <h3 class="my-4">Panel de administración de productos</h3>
       </div>
       <div class="col-12 col-sm-4 col-md-3">
-        <form id="form-search">
-          <input type="text" class="form-control my-4" name="productoSearch" placeholder="Busque su producto">
-          <!-- <input type="submit" class="btn btn-outline-info" value="buscar"> -->
+        <form id="form-search" onsubmit="event.preventDefault()">
+          <input type="text" class="form-control my-4" onkeypress="buscar(event)" name="productoSearch" placeholder="Busque su producto">
         </form>
       </div>
     </div>
@@ -99,15 +98,21 @@
     <hr>
     <form id="formAgregarProducto" class="form-group">
       <div class="row">
-          <input type="text" name="producto" id="producto" class="form-control col-12 mb-4" placeholder="Nombre del producto" required>
-          <div class="col-5">
+          <div class="col-12 col-md-5">
+            <input type="text" name="producto" id="producto" class="form-control mb-4" placeholder="Nombre del producto" required>
+          </div>
+          <div class="col-md-2"></div>
+          <div class="col-12 col-md-5">
+            <input type="number" name="codigoProducto" class="form-control mb-4" placeholder="Codigo del producto"/>
+          </div>
+          <div class="col-12 col-md-5">
             <p>Selecciona una marca</p>
             <select class="form-control mb-4" name="idMarca" id="idMarca" required>
               <option value="">Seleccione una marca</option>
             </select>
           </div>
           <div class="col-md-2"></div>
-          <div class="col-5">
+          <div class="col-12 col-md-5">
             <p>Selecciona una categoria</p>
             <select class="form-control mb-4" name="idCategoria" id="idCategoria" required>
               <option value="">Seleccione una categoria</option>
