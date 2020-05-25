@@ -53,7 +53,6 @@ class Producto
             $producto = $_POST['producto'];
             $idMarca = $_POST['idMarca'];
             $idCategoria = $_POST['idCategoria'];
-            $precioKilo = $_POST['PrecioKilo'];
             $stock = $_POST['stock'];
             $stockSuelto = $_POST['stockSuelto'];
             $idProveedor = $_POST['idProveedor'];
@@ -62,11 +61,22 @@ class Producto
             $precioPublico = $precioCosto + ($precioCosto*$porcentaje_ganancia/100);//precio publico dinamico
             $cantidadUnitario = $_POST['cantidadUnitario'];
             $precioUnidad = $precioPublico/$cantidadUnitario;
+            $precioKilo = 0;
+            $cantidadPorKilo = 0;
+            $porcentajeGananciaKilo = 0;
+            if(isset($_POST['cantidadKilo']) && $_POST['cantidadKilo']!=='' && $_POST['cantidadKilo']!==0 &&
+               isset($_POST['porcentajePorKilo']) && $_POST['porcentajePorKilo']!=='' && $_POST['porcentajePorKilo']!==0){
+                $cantidadPorKilo = $_POST['cantidadKilo'];
+                $porcentajeGananciaKilo = $_POST['porcentajePorKilo'];
+                $costoKilo = $precioPublico/$cantidadPorKilo;
+                $porcentajeGananciaKiloValor = $costoKilo*$porcentajeGananciaKilo/100;
+                $precioKilo = $costoKilo + $porcentajeGananciaKiloValor;
+            };
             $codigoProducto=null;
             if(isset($_POST['codigoProducto']) && $_POST['codigoProducto']!=='' && $_POST['codigoProducto']!==0){
                 $codigoProducto = $_POST['codigoProducto'];
             }
-            $sql = "INSERT INTO productos (producto,idMarca,idCategoria,precioPublico,precioUnidad,preciokilo,stock,idProveedor,porcentaje_ganancia,stock_suelto,precio_costo,cantidadUnitario,codigo_producto) VALUES (:producto,:idMarca,:idCategoria,:precioPublico,:precioUnidad,:precioKilo,:stock,:idProveedor,:porcentaje_ganancia,:stockSuelto,:precioCosto,:cantidadUnitario,:codigoProducto)";
+            $sql = "INSERT INTO productos (producto,idMarca,idCategoria,precioPublico,precioUnidad,preciokilo,stock,idProveedor,porcentaje_ganancia,stock_suelto,precio_costo,cantidadUnitario,codigo_producto,cantidadPorKilo,porcentajeGananciaPorKilo) VALUES (:producto,:idMarca,:idCategoria,:precioPublico,:precioUnidad,:precioKilo,:stock,:idProveedor,:porcentaje_ganancia,:stockSuelto,:precioCosto,:cantidadUnitario,:codigoProducto,:cantidadPorKilo,:porcentajeGananciaPorKilo)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
             $stmt->bindParam(':idMarca',$idMarca,PDO::PARAM_INT);
@@ -81,6 +91,8 @@ class Producto
             $stmt->bindParam(':precioCosto',$precioCosto,PDO::PARAM_INT);
             $stmt->bindParam(':cantidadUnitario',$cantidadUnitario,PDO::PARAM_INT);
             $stmt->bindParam(':codigoProducto',$codigoProducto,PDO::PARAM_INT);
+            $stmt->bindParam(':cantidadPorKilo',$cantidadPorKilo,PDO::PARAM_INT);
+            $stmt->bindParam(':porcentajeGananciaPorKilo',$porcentajeGananciaKilo,PDO::PARAM_INT);
             $resultado = $stmt->execute();
             if ($resultado) {
                 return json_encode(array('status'=>200,'info'=>'agregado'));
@@ -96,7 +108,6 @@ class Producto
                 $producto = $_POST['producto'];
                 $idMarca = $_POST['idMarca'];
                 $idCategoria = $_POST['idCategoria'];
-                $precioKilo = $_POST['PrecioKilo'];
                 $precioCosto = $_POST['precio_costo'];
                 $stock = $_POST['stock'];
                 $idProveedor = $_POST['idProveedor'];
@@ -105,6 +116,17 @@ class Producto
                 $precioPublico = $precioCosto + ($precioCosto*$porcentaje_ganancia/100);//precio publico dinamico
                 $cantidadUnitario = $_POST['cantidadUnitario'];
                 $precioUnidad = $precioPublico/$cantidadUnitario;
+                $precioKilo = 0;
+                $cantidadPorKilo = 0;
+                $porcentajeGananciaKilo = 0;
+                if(isset($_POST['cantidadKilo']) && $_POST['cantidadKilo']!=='' && $_POST['cantidadKilo']!==0 &&
+                   isset($_POST['porcentajePorKilo']) && $_POST['porcentajePorKilo']!=='' && $_POST['porcentajePorKilo']!==0){
+                        $cantidadPorKilo = $_POST['cantidadKilo'];
+                        $porcentajeGananciaKilo = $_POST['porcentajePorKilo'];
+                        $costoKilo = $precioPublico/$cantidadPorKilo;
+                        $porcentajeGananciaKiloValor = $costoKilo*$porcentajeGananciaKilo/100;
+                        $precioKilo = $costoKilo + $porcentajeGananciaKiloValor;
+                };
                 $codigoProducto = null;
                 if (isset($_POST['codigoProducto']) && $_POST['codigoProducto']!=='' && $_POST['codigoProducto']!==0) {
                         $codigoProducto = $_POST['codigoProducto'];
@@ -121,7 +143,9 @@ class Producto
                                                 porcentaje_ganancia = :porcentaje_ganancia,
                                                 stock_suelto = :stockSuelto,
                                                 cantidadUnitario = :cantidadUnitario,
-                                                codigo_producto = :codigoProducto
+                                                codigo_producto = :codigoProducto,
+                                                cantidadPorKilo = :cantidadPorKilo,
+                                                porcentajeGananciaPorKilo = :porcentajeGananciaPorKilo
                                         WHERE idProducto = :idProducto";
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':idProducto', $idProducto , PDO::PARAM_INT);
@@ -138,6 +162,8 @@ class Producto
                 $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_INT);
                 $stmt->bindParam(':cantidadUnitario',$cantidadUnitario,PDO::PARAM_INT);
                 $stmt->bindParam(':codigoProducto',$codigoProducto,PDO::PARAM_INT);
+                $stmt->bindParam(':cantidadPorKilo',$cantidadPorKilo,PDO::PARAM_INT);
+                $stmt->bindParam(':porcentajeGananciaPorKilo',$porcentajeGananciaKilo,PDO::PARAM_INT);
                 $bool = $stmt->execute();
                 if ($bool) {
                         return json_encode(true);
@@ -163,25 +189,12 @@ class Producto
         {
                 $link = Conexion::conectar();
                 $idProducto = $_GET['idProducto'];
-                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,precio_costo,stock,p.idProveedor,proveedor,porcentaje_ganancia,stock_suelto,cantidadUnitario,codigo_producto FROM productos p, marcas m, categorias c, proveedor prov
+                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,precio_costo,stock,p.idProveedor,proveedor,porcentaje_ganancia,stock_suelto,cantidadUnitario,codigo_producto,cantidadPorKilo,porcentajeGananciaPorKilo FROM productos p, marcas m, categorias c, proveedor prov
                         WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = prov.idProveedor AND idProducto = :idProducto";
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':idProducto', $idProducto, PDO::PARAM_INT);
                 $stmt->execute();
                 $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-                //por ahora devuelo el array asociativo nomas
-                // $json = array();
-                // $json[] = array(
-                //         'idProducto' => $reg['idProducto'],
-                //         'producto' => $reg['producto'],
-                //         'marcaNombre' => $reg['marcaNombre'],
-                //         'categoriaNombre' => $reg['categoriaNombre'],
-                //         'precioPublico' => $reg['precioPublico'],
-                //         'precioUnidad' => $reg['precioUnidad'],
-                //         'precioKilo' => $reg['precioKilo']
-                // );
-                // $jsonString = json_encode($json);
-                // return $jsonString;
                 return $resultado;
         }
 

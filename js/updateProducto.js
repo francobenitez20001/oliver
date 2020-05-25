@@ -36,3 +36,15 @@ window.onload = ()=>{
     let bool = checkUserSession();
     console.log(bool);
 }
+
+function handleChangeVentaKilo(event){
+  if (event.target.value === 'si') {
+    document.getElementsByClassName('input-disable')[0].removeAttribute('disabled');
+    document.getElementsByClassName('input-disable')[1].removeAttribute('disabled');
+  }else{
+      document.getElementsByClassName('input-disable')[0].setAttribute('disabled','true');
+      document.getElementsByClassName('input-disable')[0].value="";
+      document.getElementsByClassName('input-disable')[1].setAttribute('disabled','true');
+      document.getElementsByClassName('input-disable')[1].value="";
+  }
+}

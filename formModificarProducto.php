@@ -119,12 +119,55 @@
               <input type="text" name="cantidadUnitario" id="cantidadUnitario" class="form-control" value="<?php echo $reg['cantidadUnitario'] ?>">
             </div>
             <div class="col-md-2"></div>
-            <div class="input-group col-12 col-md-5 mb-4">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">$ Kilo</div>
+
+            <?php
+              if ($reg['precioKilo']!=0) {?>
+                <div class="input-group col-12 col-md-5 mb-4">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">Venta por kilo</div>
+                  </div>
+                  <select onchange="handleChangeVentaKilo(event)" class="form-control" id="ventaKiloSelect">
+                    <option value="si">Si</option>
+                    <option value="no">No</option>
+                  </select>
                 </div>
-                <input type="text" name="PrecioKilo" id="PrecioKilo" class="form-control" value="<?php echo $reg['precioKilo'] ?>">
-            </div>
+                <div class="input-group col-12 col-md-5 mb-4">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">Cantidad por kilo</div>
+                  </div>
+                  <input type="number" name="cantidadKilo" id="cantidadKilo" value="<?php echo $reg['cantidadPorKilo']; ?>" class="form-control input-disable">
+                </div>
+                <div class="col-md-2"></div>
+                <div class="input-group col-12 col-md-5 mb-4">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">% extra por Kilo</div>
+                  </div>
+                  <input type="number" name="porcentajePorKilo" id="porcentajePorKilo" value="<?php echo $reg['porcentajeGananciaPorKilo']; ?>" class="form-control input-disable">
+                </div>
+              <?php } else { ?>
+                <div class="input-group col-12 col-md-5 mb-4">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">Venta por kilo</div>
+                  </div>
+                  <select onchange="handleChangeVentaKilo(event)" class="form-control" id="ventaKiloSelect">
+                    <option value="no">No</option>
+                    <option value="si">Si</option>
+                  </select>
+                </div>
+                <div class="input-group col-12 col-md-5 mb-4">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">Cantidad por kilo</div>
+                  </div>
+                  <input type="number" name="cantidadKilo" id="cantidadKilo" class="form-control input-disable" disabled="true">
+                </div>
+                <div class="col-md-2"></div>
+                <div class="input-group col-12 col-md-5 mb-4">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">% extra por Kilo</div>
+                  </div>
+                  <input type="number" name="porcentajePorKilo" id="porcentajePorKilo" class="form-control input-disable" disabled="true">
+                </div>
+              <?php }; ?>
             <div class="input-group col-12 col-md-5 mb-4">
                 <div class="input-group-prepend">
                   <div class="input-group-text">Stock</div>

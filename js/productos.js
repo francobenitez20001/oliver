@@ -108,6 +108,7 @@ function mostrarFormularioAgregar() {
     getMarcas();
     getCategorias();
     getProveedores();
+    document.getElementById('ventaKiloSelect').value = 'no';
 }
 
 function getCategorias() {
@@ -157,6 +158,15 @@ function getProveedores() {
     })
 }
 
+function handleChangeVentaKilo(event){
+    if (event.target.value === 'si') {
+        document.getElementsByClassName('input-disable')[0].removeAttribute('disabled');
+        document.getElementsByClassName('input-disable')[1].removeAttribute('disabled');
+    }else{
+        document.getElementsByClassName('input-disable')[0].setAttribute('disabled','true');
+        document.getElementsByClassName('input-disable')[1].setAttribute('disabled','true');
+    }
+}
 
 let form = document.getElementById('formAgregarProducto');
 form.addEventListener('submit',event=>{
@@ -173,6 +183,8 @@ form.addEventListener('submit',event=>{
                 alert = document.getElementById('alert-success');
                 alert.classList.remove('d-none');
                 form.classList.add('d-none');
+            }else{
+                modalError('Algo no esta bien');
             }    
         } catch (error) {
             modalError('Ya existe un producto con el codigo ingresado'); 

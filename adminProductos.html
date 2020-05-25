@@ -127,16 +127,32 @@
           <div class="col-md-2"></div>
           <div class="input-group col-12 col-md-5 mb-4">
             <div class="input-group-prepend">
-              <div class="input-group-text">$</div>
+              <div class="input-group-text">Venta por kilo</div>
             </div>
-            <input type="text" name="PrecioKilo" id="PrecioKilo" class="form-control" placeholder="Precio por Kg">
+            <select onchange="handleChangeVentaKilo(event)" class="form-control" id="ventaKiloSelect">
+              <option value="no">No</option>
+              <option value="si">Si</option>
+            </select>
+          </div>
+          <div class="input-group col-12 col-md-5 mb-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text">Cantidad por kilo</div>
+            </div>
+            <input type="number" name="cantidadKilo" id="cantidadKilo" class="form-control input-disable" disabled="true">
+          </div>
+          <div class="col-md-2"></div>
+          <div class="input-group col-12 col-md-5 mb-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text">% extra por Kilo</div>
+            </div>
+            <input type="number" name="porcentajePorKilo" id="porcentajePorKilo" class="form-control input-disable" disabled="true">
           </div>
           <div class="col-12 col-md-5 mb-4">
-            <input type="text" name="stock" id="stock" class="form-control" placeholder="Stock">
+            <input type="number" name="stock" id="stock" class="form-control" placeholder="Stock">
           </div>
           <div class="col-md-2"></div>
           <div class="col-12 col-md-5 mb-4">
-            <input type="text" name="stockSuelto" id="stockSuelto" class="form-control" placeholder="Stock suelto">
+            <input type="number" name="stockSuelto" id="stockSuelto" class="form-control" placeholder="Stock suelto">
           </div>
           <div class="input-group col-12 col-md-5 mb-4">
             <div class="input-group-prepend">
@@ -157,7 +173,7 @@
             <div class="input-group-prepend">
               <div class="input-group-text">Precio de costo</div>
             </div>
-            <input type="text" name="precioCosto" id="precioCosto" class="form-control">
+            <input type="number" name="precioCosto" id="precioCosto" class="form-control">
           </div>
       </div>
       <center><input type="submit" class="btn btn-outline-info" value="Agregar"></center>
