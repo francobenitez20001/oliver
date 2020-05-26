@@ -62,7 +62,13 @@
       </div>
       <div class="col-12 col-sm-4 col-md-3">
         <form id="form-search" onsubmit="submitSearch(event)">
-          <input type="text" class="form-control my-4" onkeypress="buscar(event)" name="productoSearch" placeholder="Busque su producto">
+          <div class="input-group">
+            <select class="input-group-prepend" onchange="changeCriterioBusqueda(event)" style="margin: 24px 0px;">
+              <option value="producto">Producto</option>
+              <option value="codigo">Codigo</option>
+            </select>
+            <input type="text" class="form-control my-4" onkeypress="buscar(event)" name="productoSearch" placeholder="Busque su producto">
+          </div>
         </form>
       </div>
     </div>

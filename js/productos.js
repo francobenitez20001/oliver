@@ -2,6 +2,9 @@ let listadoProducto = [];
 let inicio = 0;
 let fin = 20;
 
+let criterioBusqueda = 'producto';
+let filtrados = [];
+
 window.onload = ()=>{
     document.getElementById('slider').classList.remove('d-none');
     getProductos();
@@ -37,20 +40,36 @@ function submitSearch(event) {
     render(listadoProducto);
 }
 
+function changeCriterioBusqueda(event){
+    if (event.target.value === 'producto') {
+        criterioBusqueda = 'producto';
+    }else{
+        criterioBusqueda = 'codigo';
+    }
+}
+
+
 function buscar(event) {
+    if(filtrados.length>0){
+        filtrados = [];
+        console.log('eliminado');
+        console.log(filtrados);
+    }
     let input = document.getElementsByName('productoSearch')[0];
     if(input.value.length==0){
         render(listadoProducto);
         return;
     }
-    let filtrados = [];
-    filtrados = listadoProducto.filter(newArray => {
-        if(newArray.producto.toLowerCase().includes(input.value.toLowerCase()) || newArray.codigo_producto && newArray.codigo_producto.includes(input.value)){
-            return true;
-        }else{
-            return false;
+    if(criterioBusqueda === 'producto'){
+        filtrados = listadoProducto.filter(newArray => newArray.producto.toLowerCase().includes(input.value.toLowerCase()));
+    }else{
+        for (let index = 0; index < listadoProducto.length; index++) {
+            if(listadoProducto[index].codigo_producto && listadoProducto[index].codigo_producto.includes(input.value)){
+                filtrados.push(listadoProducto[index]);
+            }
         }
-    });
+    }
+    console.log(filtrados);
     render(filtrados);
     return;
 }
@@ -61,10 +80,8 @@ function render(data,search=false,loadMore=false) {
     if(loadMore){
         template = bodyTable.innerHTML;
     }
-    var indice = 0;
     permiso = checkUserSession();
     data.forEach(reg => {
-        listadoProducto[indice] = reg;
         if(reg.stock <=0){
             template += `
                 <tr>
@@ -105,7 +122,6 @@ function render(data,search=false,loadMore=false) {
                     </tr>
                 `;
             }
-            indice++;
         });
         if(!search){
             document.getElementById('slider').classList.add('d-none');
