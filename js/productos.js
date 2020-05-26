@@ -16,6 +16,16 @@ function getProductos() {
     })
 }
 
+function submitSearch(event) {
+    event.preventDefault();
+    if(document.getElementsByName('productoSearch')[0].value.length>0){
+        console.log(1);
+        
+        return;
+    }
+    render(listadoProducto);
+}
+
 function buscar(event) {
     let input = document.getElementsByName('productoSearch')[0];
     if(input.value.length==0){
