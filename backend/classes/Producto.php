@@ -22,6 +22,9 @@ class Producto
                 $sql = "SELECT idProducto,producto,marcaNombre,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock,stock_suelto,proveedor,porcentaje_ganancia,precio_costo,codigo_producto
                         FROM productos p, marcas m, categorias c, proveedor pr
                         WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = pr.idProveedor ";
+                if(isset($_GET['desde']) && !is_null($_GET['desde']) && isset($_GET['hasta']) && !is_null($_GET['hasta'])){
+                        $sql .= "LIMIT ".$_GET['hasta'];
+                }
                 $stmt = $link->prepare($sql);
                 $stmt->execute();
                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);

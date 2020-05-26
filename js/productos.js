@@ -1,19 +1,30 @@
 let listadoProducto = [];
+let inicio = 0;
+let fin = 20;
 
 window.onload = ()=>{
-    document.getElementById('slider').classList.toggle('d-none');
+    document.getElementById('slider').classList.remove('d-none');
     getProductos();
 }
 
-//ESTA FUNCION TRAE LOS REGISTROS ENTRE UN RANGO DETERMINADO. ESE RANGO SON LOS PARAMETROS QUE PIDE
-function getProductos() {
+function getAll() {
     fetch('backend/producto/listarProducto.php')
     .then(res=>res.json())
     .then(newRes=>{
         for (let index = 0; index < newRes.length; index++) {
             listadoProducto[index] = newRes[index];
         }
+        return listadoProducto;
+    })
+}
+
+//ESTA FUNCION TRAE LOS REGISTROS ENTRE UN RANGO DETERMINADO. ESE RANGO SON LOS PARAMETROS QUE PIDE
+function getProductos() {
+    fetch(`backend/producto/listarProducto.php?desde=${inicio}&hasta=${fin}`)
+    .then(res=>res.json())
+    .then(newRes=>{
         render(newRes);
+        getAll();
     })
 }
 
@@ -44,9 +55,12 @@ function buscar(event) {
     return;
 }
 
-function render(data) {
+function render(data,search=false,loadMore=false) {
     let bodyTable = document.getElementById('bodyTable');
     let template = '';
+    if(loadMore){
+        template = bodyTable.innerHTML;
+    }
     var indice = 0;
     permiso = checkUserSession();
     data.forEach(reg => {
@@ -93,7 +107,9 @@ function render(data) {
             }
             indice++;
         });
-        document.getElementById('slider').classList.toggle('d-none');
+        if(!search){
+            document.getElementById('slider').classList.add('d-none');
+        };
         bodyTable.innerHTML = template;
         if (!permiso) {
             elementos = document.getElementsByClassName('userPrivate');
@@ -101,6 +117,18 @@ function render(data) {
                 elementos[index].classList.add('d-none');
             };
         }
+}
+
+function loadMore() {
+    inicio = inicio + 50;
+    fin = fin + 50;
+    let arrayLimit = [];
+    for (let index = inicio; index <= fin; index++) {
+        arrayLimit[index] = listadoProducto[index];
+    }
+    // console.log(arrayLimit);
+    // console.log(inicio,fin);
+    render(arrayLimit,false,true);
 }
 
 
