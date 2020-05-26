@@ -10,9 +10,9 @@
 
        $link = new PDO(
              //completar con los datos reales de xrargentina
-             'mysql:host=localhost;dbname=oliver',
-             'root',
-             'villromance22',
+             'mysql:host=us-cdbr-east-06.cleardb.net;dbname=heroku_04c4af04733e45a',
+             'b603c64ae4d2ae',
+             '90a42cd9',
              $opciones
              );
        $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); //reporte de errores
