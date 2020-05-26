@@ -143,7 +143,7 @@ function mostrarFormularioAgregar() {
     formulario.classList.remove('d-none');
     divFormulario.classList.remove('d-none');
     tablaProductos.classList.add('d-none');
-    botonVerMas.classList.toggle('d-none');
+    document.getElementById('btnverMas').classList.toggle('d-none');
     bannerForm.classList.toggle('d-none');
     getMarcas();
     getCategorias();
@@ -251,7 +251,7 @@ function ocultarFormularioAgregar() {
     formulario.reset(); //reseteo los campos del form para que si luego quiero agregar otro evento, los inputs esten vacios.
     divFormulario.classList.add('d-none');
     tablaProductos.classList.remove('d-none');
-    botonVerMas.classList.toggle('d-none');
+    document.getElementById('btnverMas').classList.toggle('d-none');
     bannerForm.classList.toggle('d-none');
     getProductos(0,100);//llamo a la funcion de getData para obtener la tabla actualizada con lo que agregue
 }
@@ -296,7 +296,7 @@ function mostrarFormularioAgregarMarca() {
     formulario.classList.remove('d-none');
     divFormulario.classList.remove('d-none');
     tablaProductos.classList.add('d-none');
-    botonVerMas.classList.toggle('d-none');
+    document.getElementById('btnverMas').classList.toggle('d-none');
     bannerForm.classList.toggle('d-none');
     menuSecunadario.classList.toggle('d-none');
     botonMenu.classList.add('d-none');
@@ -313,7 +313,7 @@ function ocultarFormularioAgregarMarca() {
     formulario.reset(); //reseteo los campos del form para que si luego quiero agregar otra marca, los inputs esten vacios.
     divFormulario.classList.add('d-none');
     tablaProductos.classList.remove('d-none');
-    botonVerMas.classList.toggle('d-none');
+    document.getElementById('btnverMas').classList.toggle('d-none');
     bannerForm.classList.toggle('d-none');
     botonMenu.classList.remove('d-none');
     getProductos(0,100);//llamo a la funcion de getData para obtener la tabla actualizada con lo que agregue
@@ -352,7 +352,7 @@ function mostrarFormularioAgregarCategoria() {
     formulario.classList.remove('d-none');
     divFormulario.classList.remove('d-none');
     tablaProductos.classList.add('d-none');
-    botonVerMas.classList.toggle('d-none');
+    document.getElementById('btnverMas').classList.toggle('d-none');
     bannerForm.classList.toggle('d-none');
     menuSecunadario.classList.toggle('d-none');
     botonMenu.classList.add('d-none');
@@ -369,7 +369,7 @@ function ocultarFormularioAgregarCategoria() {
     formulario.reset(); //reseteo los campos del form para que si luego quiero agregar otro evento, los inputs esten vacios.
     divFormulario.classList.add('d-none');
     tablaProductos.classList.remove('d-none');
-    botonVerMas.classList.toggle('d-none');
+    document.getElementById('btnverMas').classList.toggle('d-none');
     bannerForm.classList.toggle('d-none');
     botonMenu.classList.remove('d-none');
     getProductos(0,100);//llamo a la funcion de getData para obtener la tabla actualizada con lo que agregue
