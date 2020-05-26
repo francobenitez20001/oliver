@@ -32,7 +32,6 @@ function submitSearch(event) {
     event.preventDefault();
     if(document.getElementsByName('productoSearch')[0].value.length>0){
         console.log(1);
-        
         return;
     }
     render(listadoProducto);
@@ -44,7 +43,8 @@ function buscar(event) {
         render(listadoProducto);
         return;
     }
-    let filtrados = listadoProducto.filter(newArray => {
+    let filtrados = [];
+    filtrados = listadoProducto.filter(newArray => {
         if(newArray.producto.toLowerCase().includes(input.value.toLowerCase()) || newArray.codigo_producto && newArray.codigo_producto.includes(input.value)){
             return true;
         }else{
