@@ -23,7 +23,7 @@ function buscar(event) {
         return;
     }
     let filtrados = listadoProducto.filter(newArray => {
-        if(newArray.producto.toLowerCase().includes(input.value.toLowerCase()) || newArray.codigo_producto == input.value){
+        if(newArray.producto.toLowerCase().includes(input.value.toLowerCase()) || newArray.codigo_producto && newArray.codigo_producto.includes(input.value)){
             return true;
         }else{
             return false;
