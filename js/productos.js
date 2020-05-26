@@ -70,7 +70,7 @@ function render(data,search=false,loadMore=false) {
                 <tr>
                     <td scope="row">${reg.producto}</td>
                     <td>
-                        <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento"/>
+                        <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento" style="width:45px"/>
                     </td>
                     <td class="userPrivate">$${reg.precio_costo}</td>
                     <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
@@ -89,7 +89,7 @@ function render(data,search=false,loadMore=false) {
                     <tr>
                         <td scope="row">${reg.producto}</td>
                         <td>
-                        <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento"/>
+                        <input type="number" onkeyup="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento" style="width:45px"/>
                         </td>
                         <td class="userPrivate">$${reg.precio_costo}</td>
                         <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
