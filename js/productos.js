@@ -1,6 +1,7 @@
 let listadoProducto = [];
 
 window.onload = ()=>{
+    document.getElementById('slider').classList.toggle('d-none');
     getProductos();
 }
 
@@ -92,6 +93,7 @@ function render(data) {
             }
             indice++;
         });
+        document.getElementById('slider').classList.toggle('d-none');
         bodyTable.innerHTML = template;
         if (!permiso) {
             elementos = document.getElementsByClassName('userPrivate');
