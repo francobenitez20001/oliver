@@ -64,7 +64,7 @@ function buscar(event) {
         filtrados = listadoProducto.filter(newArray => newArray.producto.toLowerCase().includes(input.value.toLowerCase()));
     }else{
         for (let index = 0; index < listadoProducto.length; index++) {
-            if(listadoProducto[index].codigo_producto && listadoProducto[index].codigo_producto.includes(input.value)){
+            if(listadoProducto[index].codigo_producto && listadoProducto[index].codigo_producto == input.value){
                 filtrados.push(listadoProducto[index]);
             }
         }
