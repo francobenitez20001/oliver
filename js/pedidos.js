@@ -62,37 +62,72 @@ function eliminarPedido(id) {
     })
 }
 
-function recibirPedido(id) {
-    Swal.fire({
-        title: 'Ingrese el total',
-        input: 'text',
-        inputAttributes: {
-            name:'total'
-        },
-        showCancelButton: true,
-        inputValidator: (value) => {
-          fetch('backend/pedidos/recibirPedido.php?total='+value+'&idPedido='+id)
-          .then(res => res.json())
-          .then(response=>{
-            //   console.log(response);
-              if (response.status == 200) {
-                fetch('backend/producto/modificarStock.php?producto='+response.producto+'&cantidad='+response.cantidad)
-                .then(res=>res.json()).then(response=>{
-                    console.log(response)
+
+
+function recibirPedido(id=null) {
+    document.getElementById('idPedido').value = id;
+    let cargarComponente = document.getElementById('cargarComprobante');
+    cargarComponente.classList.toggle('d-none');
+    cargarComponente.classList.toggle('swal2-container');
+    cargarComponente.classList.toggle('swal2-center');
+    cargarComponente.classList.toggle('swal2-fade');
+    cargarComponente.classList.toggle('swal2-shown');
+                /*fetch('backend/pedidos/recibirPedido.php?total='+value+'&idPedido='+id)
+                .then(res => res.json())
+                .then(response=>{
+                    //   console.log(response);
                     if (response.status == 200) {
-                        Swal.fire(
-                            'Listo!',
-                            response.info,
-                            'success'
-                        );
-                        getPedidos();
+                        fetch('backend/producto/modificarStock.php?producto='+response.producto+'&cantidad='+response.cantidad)
+                        .then(res=>res.json()).then(response=>{
+                            console.log(response)
+                            if (response.status == 200) {
+                                Swal.fire(
+                                    'Listo!',
+                                    response.info,
+                                    'success'
+                                );
+                                getPedidos();
+                            }
+                        })
                     }
-                })
-              }
-          })
+                })*/
+};
+
+document.getElementById('cargarComprobante').addEventListener('submit',event=>{
+    event.preventDefault();
+    let alertLoading = document.getElementById('alert-loading');
+    let alertLoad = document.getElementById('alert-load');
+    let alertError = document.getElementById('alert-error');
+    alertLoading.classList.remove('d-none');
+    let data = new FormData(formCargarComprobante);
+    fetch('backend/pedidos/cargarComprobante.php',{
+        method:'POST',
+        body:data
+    }).then(res=>res.json()).then(response=>{
+        if(response.status == 400){
+            alertLoading.classList.add('d-none');
+            alertError.innerHTML = response.info;
+            alertError.classList.remove('d-none');
+            return;
         }
+        fetch(`backend/pedidos/recibirPedido.php?idPedido=${response.data.idPedido}&total=${response.data.total}&comprobante=${response.data.comprobante}&pago=${response.data.pago}`).then(res=>res.json()).then(response=>{
+            if (response.status == 400) {
+                alertLoading.classList.add('d-none');
+                alertError.innerHTML = response.info;
+                alertError.classList.remove('d-none');
+                return;
+            }
+            alertLoad.innerHTML = response.info;
+            alertLoading.classList.add('d-none');
+            alertLoad.classList.remove('d-none');
+            getPedidos();
+            setTimeout(() => {
+                recibirPedido();
+                return;
+            }, 1000);
+        })
     })
-}
+})
 
 
 
@@ -108,7 +143,6 @@ function mostrarFormularioAgregar() {
     divFormulario.classList.remove('d-none');
     tablaPedidos.classList.add('d-none');
     bannerForm.classList.add('d-none');
-    habilitarTotal();
     getProveedores();
     getProductos();
 }
@@ -174,17 +208,6 @@ function getProductos() {
     })
 }
 
-function habilitarTotal(){
-    let estado = document.getElementById('estado').value;
-    let total = document.getElementById('input-total');
-    if (estado != 'No recibido') {
-        total.setAttribute('required','');
-        total.classList.remove('d-none');
-    }else{
-        total.classList.add('d-none');
-        total.removeAttribute('required');
-    }
-}
 
 //autocompletador en input producto
 

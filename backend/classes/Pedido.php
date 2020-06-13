@@ -63,12 +63,18 @@
             $link = Conexion::conectar();
             $idPedido = $_GET['idPedido'];
             $total = $_GET['total'];
+            $pago = $_GET['pago'];
+            $comprobante = $_GET['comprobante'];
             $sql = "UPDATE pedidos SET estado = 'Recibido',
-                                       total = :total
+                                       total = :total,
+                                       pagado = :pagado,
+                                       comprobante = :comprobante
                     WHERE idPedido = :idPedido";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':total',$total,PDO::PARAM_INT);
             $stmt->bindParam(':idPedido',$idPedido,PDO::PARAM_INT);
+            $stmt->bindParam(':pagado',$pago,PDO::PARAM_INT);
+            $stmt->bindParam(':comprobante',$comprobante,PDO::PARAM_STR);
             $bool = $stmt->execute();
             if ($bool) {
                 //obtener la descripcion del producto recientemente recibido para actualizar el stock
@@ -101,6 +107,29 @@
                 return json_encode(true);
             }
             return json_encode(false);
+        }
+
+        public function cargarComprobante()
+        {
+            $idPedido = $_POST['idPedido'];
+            // $comprobante = $_FILES['comprobante'];
+            $ruta = '../../comprobantes/';
+            $imagen = $_FILES['comprobante']['name'];
+            if ($_FILES['comprobante']['error']==0) {
+                $imagenTMP = $_FILES['comprobante']['tmp_name'];
+                $bool = move_uploaded_file($imagenTMP,$ruta.$imagen);
+                if ($bool) {
+                    return json_encode(array(
+                        'status'=>200,
+                        'data'=>array('idPedido'=>$idPedido,'comprobante'=>$imagen,'total'=>$_POST['total'],'pago'=>$_POST['pago']),
+                        'info'=>'Comprobante cargado'));
+                };
+                return json_encode(array(
+                    'status'=>400,
+                    'data'=>array('nombre'=>$imagen,'tmp'=>$imagenTMP,'ruta'=>$ruta,'size'=>$_FILES['comprobante']['error']),
+                    'info'=>'Problemas al cargar el componente'
+                ));
+            }
         }
 
         ######################## BALANCE ########################
