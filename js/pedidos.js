@@ -14,19 +14,38 @@ function getPedidos() {
                 buttons = `<i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar" onclick="recibirPedido(${reg.idPedido})"></i>
                 <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})"`;
             }else{
-                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})"></i>`;
+                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})"></i>
+                <i class="fas fa-file-alt" id="boton-entregar" style="cursor:pointer;color:black;font-size:20px" onclick="verComprobante(${reg.idPedido})"></i>`;
+                if(reg.total !== reg.pagado){
+                    buttons += ` <i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar" onclick="recibirPedido(${reg.idPedido},true)"></i>`;
+                }
             }
-            template += `
-            <tr>
-                <th scope="row">${reg.descripcion}</th>
-                <td>${reg.cantidad}</td>
-                <td>${reg.estado}</td>
-                <td>${reg.proveedor}</td>
-                <td>
-                    ${buttons}
-                </td>
-            </tr>
-            `;
+            
+            if(reg.total !== reg.pagado){
+                template += `
+                    <tr class="bg-yellow">
+                        <th scope="row">${reg.descripcion}</th>
+                        <td>${reg.cantidad}</td>
+                        <td>${reg.estado}</td>
+                        <td>${reg.proveedor}</td>
+                        <td>
+                            ${buttons}
+                        </td>
+                    </tr>
+                `;
+            }else{
+                template += `
+                <tr>
+                    <th scope="row">${reg.descripcion}</th>
+                    <td>${reg.cantidad}</td>
+                    <td>${reg.estado}</td>
+                    <td>${reg.proveedor}</td>
+                    <td>
+                        ${buttons}
+                    </td>
+                </tr>
+                `;
+            }
         });
         bodyTable.innerHTML = template;
     })
@@ -64,34 +83,42 @@ function eliminarPedido(id) {
 
 
 
-function recibirPedido(id=null) {
+function recibirPedido(id=null,pagoCompleto=false) {
     document.getElementById('idPedido').value = id;
+    inputFile = document.getElementsByName('comprobante')[0];
+    inputTotal = document.getElementsByName('total')[0];
+    inputPago = document.getElementsByName('pago')[0];
+    indicadorValores = document.getElementById('indicadorValores');
+    inputFile.classList.remove('d-none');
+    if(!indicadorValores.classList.contains('d-none') && inputTotal.value != ''){
+        inputTotal.value = '';
+        inputTotal.removeAttribute('disabled');
+        indicadorValores.classList.add('d-none');
+    }
+    if(pagoCompleto){
+        inputFile.classList.add('d-none');
+        inputFile.removeAttribute('required');
+        inputTotal.setAttribute('disabled',true);
+        document.getElementById('pagarDeuda').value='true';
+        fetch(`backend/pedidos/verPedidoPorId.php?idPedido=${id}`).then(res=>res.json()).then(response=>{
+            if (response.status == 200) {
+                let total = parseInt(response.total);
+                let pagado = parseInt(response.pagado);
+                let debe = total - pagado;
+                inputTotal.value = total;
+                indicadorValores.innerHTML = `Pagado: <b>$${pagado}</b>. Por pagar <b>$${debe}</b>`;
+                indicadorValores.classList.remove('d-none');
+            }
+        })
+    }
     let cargarComponente = document.getElementById('cargarComprobante');
     cargarComponente.classList.toggle('d-none');
     cargarComponente.classList.toggle('swal2-container');
     cargarComponente.classList.toggle('swal2-center');
     cargarComponente.classList.toggle('swal2-fade');
     cargarComponente.classList.toggle('swal2-shown');
-                /*fetch('backend/pedidos/recibirPedido.php?total='+value+'&idPedido='+id)
-                .then(res => res.json())
-                .then(response=>{
-                    //   console.log(response);
-                    if (response.status == 200) {
-                        fetch('backend/producto/modificarStock.php?producto='+response.producto+'&cantidad='+response.cantidad)
-                        .then(res=>res.json()).then(response=>{
-                            console.log(response)
-                            if (response.status == 200) {
-                                Swal.fire(
-                                    'Listo!',
-                                    response.info,
-                                    'success'
-                                );
-                                getPedidos();
-                            }
-                        })
-                    }
-                })*/
 };
+
 
 document.getElementById('cargarComprobante').addEventListener('submit',event=>{
     event.preventDefault();
@@ -100,33 +127,49 @@ document.getElementById('cargarComprobante').addEventListener('submit',event=>{
     let alertError = document.getElementById('alert-error');
     alertLoading.classList.remove('d-none');
     let data = new FormData(formCargarComprobante);
-    fetch('backend/pedidos/cargarComprobante.php',{
-        method:'POST',
-        body:data
-    }).then(res=>res.json()).then(response=>{
-        if(response.status == 400){
-            alertLoading.classList.add('d-none');
-            alertError.innerHTML = response.info;
-            alertError.classList.remove('d-none');
-            return;
-        }
-        fetch(`backend/pedidos/recibirPedido.php?idPedido=${response.data.idPedido}&total=${response.data.total}&comprobante=${response.data.comprobante}&pago=${response.data.pago}`).then(res=>res.json()).then(response=>{
-            if (response.status == 400) {
+    if(document.getElementById('pagarDeuda').value != 'true'){
+        fetch('backend/pedidos/cargarComprobante.php',{
+            method:'POST',
+            body:data
+        }).then(res=>res.json()).then(response=>{
+            if(response.status == 400){
                 alertLoading.classList.add('d-none');
                 alertError.innerHTML = response.info;
                 alertError.classList.remove('d-none');
                 return;
             }
+            fetch(`backend/pedidos/recibirPedido.php?idPedido=${response.data.idPedido}&total=${response.data.total}&comprobante=${response.data.comprobante}&pago=${response.data.pago}`).then(res=>res.json()).then(response=>{
+                if (response.status == 400) {
+                    alertLoading.classList.add('d-none');
+                    alertError.innerHTML = response.info;
+                    alertError.classList.remove('d-none');
+                    return;
+                }
+                alertLoad.innerHTML = response.info;
+                alertLoading.classList.add('d-none');
+                alertLoad.classList.remove('d-none');
+                getPedidos();
+                setTimeout(() => {
+                    window.location.assign('adminPedidos.html')
+                    return;
+                }, 1000);
+            })
+        })
+    }else{
+        fetch('backend/pedidos/saldarDeudaPedido.php',{
+            method:'POST',
+            body:data
+        }).then(res=>res.json()).then(response=>{
             alertLoad.innerHTML = response.info;
             alertLoading.classList.add('d-none');
             alertLoad.classList.remove('d-none');
             getPedidos();
             setTimeout(() => {
-                recibirPedido();
+                window.location.assign('adminPedidos.html')
                 return;
             }, 1000);
         })
-    })
+    }
 })
 
 

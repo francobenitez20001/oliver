@@ -5,7 +5,7 @@
         public function listarPedidos()
         {
             $link = Conexion::conectar();
-            $sql = "SELECT idPedido,descripcion,cantidad,p.estado,total,proveedor,fecha 
+            $sql = "SELECT idPedido,descripcion,cantidad,p.estado,total,proveedor,fecha,pagado,comprobante 
                     FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ";
             if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
                 $sql .= "AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
@@ -28,7 +28,9 @@
                     'estado' => $reg['estado'],
                     'total' => $reg['total'],
                     'proveedor' => $reg['proveedor'],
-                    'fecha' => $reg['fecha']
+                    'fecha' => $reg['fecha'],
+                    'pagado' => $reg['pagado'],
+                    'comprobante' => $reg['comprobante']
                 );
             }
             $jsonString = json_encode($json);
@@ -95,6 +97,23 @@
             return json_encode(array('status'=>400,'info'=>'Problemas al actualizar los datos del pedido'));
         }
 
+        public function saldarDeudaConPedido()
+        {
+            $link = Conexion::conectar();
+            $idPedido = $_POST['idPedido'];
+            $pago = $_POST['pago'];
+            $sql = "UPDATE pedidos SET pagado = pagado + :pagado
+                    WHERE idPedido = :idPedido";
+            $stmt = $link->prepare($sql);
+            $stmt->bindParam(':idPedido',$idPedido,PDO::PARAM_INT);
+            $stmt->bindParam(':pagado',$pago,PDO::PARAM_INT);
+            $bool = $stmt->execute();
+            if($bool){
+                return json_encode(array('status'=>200,'info'=>'Se actualizo la informacion del pedido'));
+            }
+            return json_encode(array('status'=>400,'info'=>'Operacion fallida'));
+        }
+
         public function eliminarPedido()
         {
             $idPedido = $_GET['idPedido'];
@@ -130,6 +149,20 @@
                     'info'=>'Problemas al cargar el componente'
                 ));
             }
+        }
+
+        public function verPedidoPorId()
+        {
+            $id = $_GET['idPedido'];
+            $link = Conexion::conectar();
+            $sql = "SELECT * FROM pedidos WHERE idPedido = :id";
+            $stmt = $link->prepare($sql);
+            $stmt->bindParam(':id',$id,PDO::PARAM_INT);
+            if ($stmt->execute()) {
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return json_encode(array('status'=>200,'idPedido'=>$result[0]['idPedido'],'total'=>$result[0]['total'],'pagado'=>$result[0]['pagado']));
+            }
+            return json_encode(array('status'=>400,'data'=>'Problemas al obtener el recurso'));
         }
 
         ######################## BALANCE ########################

@@ -126,11 +126,14 @@
       <br>
       <input type="number" name="total" id="total" required class="form-control col-12 mt-3" placeholder="Ingese el total del pedido">
       <br>
+      <span id="indicadorValores" class="text-muted d-none">Pagado: <b>$600</b>. Por pagar <b>$500</b></span>
+      <br>
       <input type="number" name="pago" id="pago" required class="form-control col-12 mt-3" placeholder="Ingese cuanto pagó">
       <br><br>
       <div class="row">
         <div class="col-6">
           <input type="hidden" id="idPedido" name="idPedido" value="">
+          <input type="hidden" id="pagarDeuda" name="pagarDeuda" value="">
           <input type="button" onclick="recibirPedido()" class="btn btn-danger btn-block" value="Cancelar">
         </div>
         <div class="col-6">
