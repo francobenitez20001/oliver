@@ -33,11 +33,23 @@ function getProductos() {
 
 function submitSearch(event) {
     event.preventDefault();
-    if(document.getElementsByName('productoSearch')[0].value.length>0){
-        console.log(1);
+    let data = new FormData(document.getElementById('form-search')).get('productoSearch');
+    if(data==''){
+        render(listadoProducto)
         return;
     }
-    render(listadoProducto);
+    if(criterioBusqueda === 'producto'){
+        filtrados = listadoProducto.filter(newArray => newArray.producto.toLowerCase().includes(data));
+    }else{
+        for (let index = 0; index < listadoProducto.length; index++) {
+            if(listadoProducto[index].codigo_producto && listadoProducto[index].codigo_producto == data){
+                filtrados.push(listadoProducto[index]);
+            }
+        }
+    }
+    // console.log(filtrados);
+    render(filtrados);
+    return;
 }
 
 function changeCriterioBusqueda(event){
@@ -46,32 +58,6 @@ function changeCriterioBusqueda(event){
     }else{
         criterioBusqueda = 'codigo';
     }
-}
-
-
-function buscar(event) {
-    if(filtrados.length>0){
-        filtrados = [];
-        console.log('eliminado');
-        console.log(filtrados);
-    }
-    let input = document.getElementsByName('productoSearch')[0];
-    if(input.value.length==0){
-        render(listadoProducto);
-        return;
-    }
-    if(criterioBusqueda === 'producto'){
-        filtrados = listadoProducto.filter(newArray => newArray.producto.toLowerCase().includes(input.value.toLowerCase()));
-    }else{
-        for (let index = 0; index < listadoProducto.length; index++) {
-            if(listadoProducto[index].codigo_producto && listadoProducto[index].codigo_producto == input.value){
-                filtrados.push(listadoProducto[index]);
-            }
-        }
-    }
-    console.log(filtrados);
-    render(filtrados);
-    return;
 }
 
 function render(data,search=false,loadMore=false) {
