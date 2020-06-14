@@ -151,6 +151,18 @@
             }
         }
 
+        public function verComprobante()
+        {
+            $idPedido = $_GET['idPedido'];
+            $link = Conexion::conectar();
+            $sql = "SELECT comprobante FROM pedidos WHERE idPedido = :idPedido";
+            $stmt = $link->prepare($sql);
+            $stmt->bindParam(':idPedido',$idPedido,PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
         public function verPedidoPorId()
         {
             $id = $_GET['idPedido'];

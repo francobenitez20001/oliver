@@ -33,6 +33,18 @@ function getPedidos() {
                         </td>
                     </tr>
                 `;
+            }else if(reg.estado == 'Recibido' && reg.total == reg.pagado){
+                template += `
+                <tr class="bg-green">
+                    <th scope="row">${reg.descripcion}</th>
+                    <td>${reg.cantidad}</td>
+                    <td>${reg.estado}</td>
+                    <td>${reg.proveedor}</td>
+                    <td>
+                        ${buttons}
+                    </td>
+                </tr>
+                `;
             }else{
                 template += `
                 <tr>
@@ -118,6 +130,10 @@ function recibirPedido(id=null,pagoCompleto=false) {
     cargarComponente.classList.toggle('swal2-fade');
     cargarComponente.classList.toggle('swal2-shown');
 };
+
+function verComprobante(id) {
+    window.location.assign('verComprobante.php?recurso=pedidos&idPedido='+id)
+}
 
 
 document.getElementById('cargarComprobante').addEventListener('submit',event=>{

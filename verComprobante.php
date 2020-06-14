@@ -1,8 +1,14 @@
 <?php
     require 'backend/classes/Conexion.php';
-    require 'backend/classes/Servicio.php';
-    $servicio = new Servicio;
-    $response = $servicio->verComprobante();
+    if($_GET['recurso']=='servicio'){
+        require 'backend/classes/Servicio.php';
+        $servicio = new Servicio;
+        $response = $servicio->verComprobante();
+    }else{
+        require 'backend/classes/Pedido.php';
+        $pedido = new Pedido;
+        $response = $pedido->verComprobante();
+    }
     $comprobante;
     foreach ($response as $comprobante) {
         $comprobante = $comprobante['comprobante'];

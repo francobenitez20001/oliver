@@ -179,3 +179,8 @@ footer p{color:#fff;font-size:16px;font-family: 'Open Sans',sans-serif;}
  .bg-yellow{
    background-color: yellow;
  }
+
+ .bg-green{
+   background-color: green;
+   color: white;
+ }
