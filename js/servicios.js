@@ -177,5 +177,5 @@ function habilitarFormComprobante()
 }
 
 function verComprobante(idServicio) {
-    window.location.assign('verComprobante.php?idServicio='+idServicio);
+    window.location.assign('verComprobante.php?recurso=servicio&idServicio='+idServicio);
 }

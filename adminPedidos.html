@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/bootstrap/bootstrap.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/animate.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <link rel="stylesheet" href="css/fontawesome/css/all.css">
     <link rel="stylesheet" href="css/sweetalert2.css">
 </head>
 <body>
@@ -56,9 +56,41 @@
   </nav><!--menu-->
 
   <div class="banner-form" id="banner-form">
-    <div class="row">
-      <div class="col-12 col-sm-8 col-md-9">
+    <div class="row align-items-center">
+      <div class="col-12 col-md-8">
         <h3 class="my-4">Panel de administración de pedidos</h3>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="row">
+          <div class="mt-1 col-2 indicadorAmaraillo">
+            <div style="
+                width: 20px;
+                height: 20px;
+                background-color: yellow;
+                border-radius: 10px;
+            "></div>
+          </div>
+          <div class="col-10"><span class="text-muted">Pedidos recibidos pero no pagados en su totalidad</span></div>
+          <div class="mt-1 col-2 indicadorVerde">
+            <div style="
+                width: 20px;
+                height: 20px;
+                background-color: green;
+                border-radius: 10px;
+            "></div>
+          </div>
+          <div class="col-10"><span class="text-muted">Pedidos recibidos y pagados</span></div>
+          <div class="mt-1 col-2 indicadorAmaraillo">
+            <div style="
+                width: 20px;
+                height: 20px;
+                background-color: white;
+                border: solid 1px black;
+                border-radius: 10px;
+            "></div>
+          </div>
+          <div class="col-10"><span class="text-muted">Pedidos no recibidos</span></div>
+        </div>
       </div>
     </div>
   </div>
@@ -106,13 +138,9 @@
           </div>
           <div class="col-md-2"></div>
           <div class="col-12 col-md-5 mb-4">
-            <select name="estado" class="form-control" onchange="habilitarTotal()" id="estado" required>
+            <select name="estado" class="form-control" id="estado" required>
               <option value="No recibido">No recibido</option>
-              <option value="Recibido">Recibido</option>
             </select>
-          </div>
-          <div class="col-12 col-md-5 mb-4" id="input-total">
-            <input type="number" name="total" id="total" class="form-control" placeholder="Total (opcional)">
           </div>
           <div class="col-12 text-center">
             <input type="hidden" name="fecha" id="fecha">
@@ -122,9 +150,38 @@
     </form>
   </div>
 
+  <div class="cargarComprobante d-none" id="cargarComprobante">
+    <form id="formCargarComprobante" class="form-group" enctype="multipart/form-data">
+      <label>Adjuntar comprobante</label>
+      <br>
+      <input type="file" accept="image/*" name="comprobante" id="" required>
+      <br>
+      <input type="number" name="total" id="total" required class="form-control col-12 mt-3" placeholder="Ingese el total del pedido">
+      <br>
+      <span id="indicadorValores" class="text-muted d-none">Pagado: <b>$600</b>. Por pagar <b>$500</b></span>
+      <br>
+      <input type="number" name="pago" id="pago" required class="form-control col-12 mt-3" placeholder="Ingese cuanto pagó">
+      <br><br>
+      <div class="row">
+        <div class="col-6">
+          <input type="hidden" id="idPedido" name="idPedido" value="">
+          <input type="hidden" id="pagarDeuda" name="pagarDeuda" value="">
+          <input type="button" onclick="recibirPedido()" class="btn btn-danger btn-block" value="Cancelar">
+        </div>
+        <div class="col-6">
+          <input type="submit" class="btn btn-info btn-block" value="Cargar">
+        </div>
+      </div>
+      <br>
+      <div class="alert alert-warning text-center d-none" id="alert-loading">Subiendo comprobante y cambiando el estado del pedido...</div>
+      <div class="alert alert-success text-center d-none" id="alert-load">Servicio actualizado</div>
+      <div class="alert alert-danger text-center d-none" id="alert-error"></div>
+    </form>
+  </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+    <script src="js/bootstrap/jquery.js"></script>
+    <script src="js/bootstrap/popper.min.js"></script>
     <script src="js/bootstrap/bootstrap.min.js"></script>
     <script src="js/sweetalert2.js"></script>
     <script src="js/menu.js"></script>

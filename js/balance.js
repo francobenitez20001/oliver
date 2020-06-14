@@ -16,7 +16,9 @@ let productoMasVendido = document.getElementById('producto-mas-vendido');
 
 let alerta = document.getElementById('alerta');
 
-let datosBalance = []
+let datosBalance = [];
+
+let recaudacionFinal = 0;
 
 let f = new Date();
 let dia = f.getFullYear() + "-0" + (f.getMonth() +1) + "-" + f.getDate();
@@ -34,6 +36,13 @@ window.onload = ()=>{
   getVentasTarjeta(null).then(()=>{
     getVentasTarjeta(true).then(()=>{
       getProductoMasVendido();
+      recaudacionFinal = datosBalance.ventas-datosBalance.pedidos;
+      if(recaudacionFinal>0){
+        document.getElementById('cardRecaudacionFinal').classList.toggle('bg-success');
+      }else{
+        document.getElementById('cardRecaudacionFinal').classList.toggle('bg-danger');
+      }
+      document.getElementById('recaudacionFinal').innerHTML = '$'+recaudacionFinal;
     })
   })
 }

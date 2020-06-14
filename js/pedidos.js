@@ -14,19 +14,50 @@ function getPedidos() {
                 buttons = `<i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar" onclick="recibirPedido(${reg.idPedido})"></i>
                 <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})"`;
             }else{
-                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})"></i>`;
+                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})"></i>
+                <i class="fas fa-file-alt" id="boton-entregar" style="cursor:pointer;color:black;font-size:20px" onclick="verComprobante(${reg.idPedido})"></i>`;
+                if(reg.total !== reg.pagado){
+                    buttons += ` <i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar" onclick="recibirPedido(${reg.idPedido},true)"></i>`;
+                }
             }
-            template += `
-            <tr>
-                <th scope="row">${reg.descripcion}</th>
-                <td>${reg.cantidad}</td>
-                <td>${reg.estado}</td>
-                <td>${reg.proveedor}</td>
-                <td>
-                    ${buttons}
-                </td>
-            </tr>
-            `;
+            
+            if(reg.total !== reg.pagado){
+                template += `
+                    <tr class="bg-yellow">
+                        <th scope="row">${reg.descripcion}</th>
+                        <td>${reg.cantidad}</td>
+                        <td>${reg.estado}</td>
+                        <td>${reg.proveedor}</td>
+                        <td>
+                            ${buttons}
+                        </td>
+                    </tr>
+                `;
+            }else if(reg.estado == 'Recibido' && reg.total == reg.pagado){
+                template += `
+                <tr class="bg-green">
+                    <th scope="row">${reg.descripcion}</th>
+                    <td>${reg.cantidad}</td>
+                    <td>${reg.estado}</td>
+                    <td>${reg.proveedor}</td>
+                    <td>
+                        ${buttons}
+                    </td>
+                </tr>
+                `;
+            }else{
+                template += `
+                <tr>
+                    <th scope="row">${reg.descripcion}</th>
+                    <td>${reg.cantidad}</td>
+                    <td>${reg.estado}</td>
+                    <td>${reg.proveedor}</td>
+                    <td>
+                        ${buttons}
+                    </td>
+                </tr>
+                `;
+            }
         });
         bodyTable.innerHTML = template;
     })
@@ -62,37 +93,100 @@ function eliminarPedido(id) {
     })
 }
 
-function recibirPedido(id) {
-    Swal.fire({
-        title: 'Ingrese el total',
-        input: 'text',
-        inputAttributes: {
-            name:'total'
-        },
-        showCancelButton: true,
-        inputValidator: (value) => {
-          fetch('backend/pedidos/recibirPedido.php?total='+value+'&idPedido='+id)
-          .then(res => res.json())
-          .then(response=>{
-            //   console.log(response);
-              if (response.status == 200) {
-                fetch('backend/producto/modificarStock.php?producto='+response.producto+'&cantidad='+response.cantidad)
-                .then(res=>res.json()).then(response=>{
-                    console.log(response)
-                    if (response.status == 200) {
-                        Swal.fire(
-                            'Listo!',
-                            response.info,
-                            'success'
-                        );
-                        getPedidos();
-                    }
-                })
-              }
-          })
-        }
-    })
+
+
+function recibirPedido(id=null,pagoCompleto=false) {
+    document.getElementById('idPedido').value = id;
+    inputFile = document.getElementsByName('comprobante')[0];
+    inputTotal = document.getElementsByName('total')[0];
+    inputPago = document.getElementsByName('pago')[0];
+    indicadorValores = document.getElementById('indicadorValores');
+    inputFile.classList.remove('d-none');
+    if(!indicadorValores.classList.contains('d-none') && inputTotal.value != ''){
+        inputTotal.value = '';
+        inputTotal.removeAttribute('disabled');
+        indicadorValores.classList.add('d-none');
+    }
+    if(pagoCompleto){
+        inputFile.classList.add('d-none');
+        inputFile.removeAttribute('required');
+        inputTotal.setAttribute('disabled',true);
+        document.getElementById('pagarDeuda').value='true';
+        fetch(`backend/pedidos/verPedidoPorId.php?idPedido=${id}`).then(res=>res.json()).then(response=>{
+            if (response.status == 200) {
+                let total = parseInt(response.total);
+                let pagado = parseInt(response.pagado);
+                let debe = total - pagado;
+                inputTotal.value = total;
+                indicadorValores.innerHTML = `Pagado: <b>$${pagado}</b>. Por pagar <b>$${debe}</b>`;
+                indicadorValores.classList.remove('d-none');
+            }
+        })
+    }
+    let cargarComponente = document.getElementById('cargarComprobante');
+    cargarComponente.classList.toggle('d-none');
+    cargarComponente.classList.toggle('swal2-container');
+    cargarComponente.classList.toggle('swal2-center');
+    cargarComponente.classList.toggle('swal2-fade');
+    cargarComponente.classList.toggle('swal2-shown');
+};
+
+function verComprobante(id) {
+    window.location.assign('verComprobante.php?recurso=pedidos&idPedido='+id)
 }
+
+
+document.getElementById('cargarComprobante').addEventListener('submit',event=>{
+    event.preventDefault();
+    let alertLoading = document.getElementById('alert-loading');
+    let alertLoad = document.getElementById('alert-load');
+    let alertError = document.getElementById('alert-error');
+    alertLoading.classList.remove('d-none');
+    let data = new FormData(formCargarComprobante);
+    if(document.getElementById('pagarDeuda').value != 'true'){
+        fetch('backend/pedidos/cargarComprobante.php',{
+            method:'POST',
+            body:data
+        }).then(res=>res.json()).then(response=>{
+            if(response.status == 400){
+                alertLoading.classList.add('d-none');
+                alertError.innerHTML = response.info;
+                alertError.classList.remove('d-none');
+                return;
+            }
+            fetch(`backend/pedidos/recibirPedido.php?idPedido=${response.data.idPedido}&total=${response.data.total}&comprobante=${response.data.comprobante}&pago=${response.data.pago}`).then(res=>res.json()).then(response=>{
+                if (response.status == 400) {
+                    alertLoading.classList.add('d-none');
+                    alertError.innerHTML = response.info;
+                    alertError.classList.remove('d-none');
+                    return;
+                }
+                alertLoad.innerHTML = response.info;
+                alertLoading.classList.add('d-none');
+                alertLoad.classList.remove('d-none');
+                getPedidos();
+                setTimeout(() => {
+                    window.location.assign('adminPedidos.html')
+                    return;
+                }, 1000);
+            })
+        })
+    }else{
+        fetch('backend/pedidos/saldarDeudaPedido.php',{
+            method:'POST',
+            body:data
+        }).then(res=>res.json()).then(response=>{
+            alertLoad.innerHTML = response.info;
+            alertLoading.classList.add('d-none');
+            alertLoad.classList.remove('d-none');
+            getPedidos();
+            setTimeout(() => {
+                window.location.assign('adminPedidos.html')
+                return;
+            }, 1000);
+        })
+    }
+})
 
 
 
@@ -108,7 +202,6 @@ function mostrarFormularioAgregar() {
     divFormulario.classList.remove('d-none');
     tablaPedidos.classList.add('d-none');
     bannerForm.classList.add('d-none');
-    habilitarTotal();
     getProveedores();
     getProductos();
 }
@@ -174,17 +267,6 @@ function getProductos() {
     })
 }
 
-function habilitarTotal(){
-    let estado = document.getElementById('estado').value;
-    let total = document.getElementById('input-total');
-    if (estado != 'No recibido') {
-        total.setAttribute('required','');
-        total.classList.remove('d-none');
-    }else{
-        total.classList.add('d-none');
-        total.removeAttribute('required');
-    }
-}
 
 //autocompletador en input producto
 
