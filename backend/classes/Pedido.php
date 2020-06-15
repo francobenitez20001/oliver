@@ -5,7 +5,7 @@
         public function listarPedidos()
         {
             $link = Conexion::conectar();
-            $sql = "SELECT idPedido,descripcion,cantidad,p.estado,total,proveedor,fecha,pagado,comprobante 
+            $sql = "SELECT idPedido,descripcion,cantidad,p.estado,total,p.idProveedor,proveedor,fecha,pagado,comprobante 
                     FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ";
             if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
                 $sql .= "AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
@@ -27,6 +27,7 @@
                     'cantidad' => $reg['cantidad'],
                     'estado' => $reg['estado'],
                     'total' => $reg['total'],
+                    'idProveedor'=>$reg['idProveedor'],
                     'proveedor' => $reg['proveedor'],
                     'fecha' => $reg['fecha'],
                     'pagado' => $reg['pagado'],
