@@ -161,14 +161,22 @@ document.getElementById('cargarComprobante').addEventListener('submit',event=>{
                     alertError.classList.remove('d-none');
                     return;
                 }
-                alertLoad.innerHTML = response.info;
-                alertLoading.classList.add('d-none');
-                alertLoad.classList.remove('d-none');
-                getPedidos();
-                setTimeout(() => {
-                    window.location.assign('adminPedidos.html')
-                    return;
-                }, 1000);
+                fetch('backend/producto/modificarStock.php?producto='+response.producto+'&cantidad='+response.cantidad)
+                .then(res=>res.json()).then(response=>{
+                    console.log(response)
+                    if (response.status == 200) {
+                        Swal.fire(
+                            'Listo!',
+                            response.info,
+                            'success'
+                        );
+                        getPedidos();
+                        setTimeout(() => {
+                            window.location.assign('adminPedidos.html')
+                            return;
+                        }, 1000);
+                    }
+                })
             })
         })
     }else{
@@ -304,4 +312,9 @@ function rellenarInputProducto(event) {
     producto = event.target.value;
     inputProducto.value = producto;
     desplegableProducto.classList.add('d-none');
+}
+
+//filtrar pedidos
+function getPedidosPorProveedor(event){
+    let proveedor = event;
 }

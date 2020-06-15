@@ -130,6 +130,7 @@
 
         public function cargarComprobante()
         {
+            $link = Conexion::conectar();
             $idPedido = $_POST['idPedido'];
             // $comprobante = $_FILES['comprobante'];
             $ruta = '../../comprobantes/';
@@ -145,6 +146,7 @@
                 };
                 return json_encode(array(
                     'status'=>400,
+                    'error'=>$link->error,
                     'data'=>array('nombre'=>$imagen,'tmp'=>$imagenTMP,'ruta'=>$ruta,'size'=>$_FILES['comprobante']['error']),
                     'info'=>'Problemas al cargar el componente'
                 ));

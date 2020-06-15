@@ -103,8 +103,18 @@
         <th scope="col">Estado</th>
         <th scope="col">Proveedor</th>
         <th scope="col">
-          <button class="btn btn-outline-info" id="botonAgregar" onclick="mostrarFormularioAgregar()">Nuevo pedido!</button>
-          <a onclick="modalExport('exports/exportarExcelPedidos.php')" class="btn btn-outline-info">Exportar</a> 
+          <div class="row align-items-center">
+            <div class="col-6">
+              <select name="" onchange="getPedidosPorProveedor(value)" id="" class="form-control">
+                <option value="all">Traer todos</option>
+                <option value="all2">Traer todos</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-outline-info" id="botonAgregar" onclick="mostrarFormularioAgregar()">Nuevo pedido!</button>
+              <a onclick="modalExport('exports/exportarExcelPedidos.php')" class="btn btn-outline-info">Exportar</a> 
+            </div>
+          </div>
         </th>
       </tr>
     </thead>
