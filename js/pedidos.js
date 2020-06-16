@@ -1,70 +1,91 @@
 let f = new Date();
 let dia = f.getFullYear() + "-0" + (f.getMonth() +1) + "-" + f.getDate();
 let mes = f.getFullYear() + "-0" + (f.getMonth() +1);
+let listadoPedidos;
+let reporteProveedoresDom = {
+    recibidos:document.getElementById('recibidos'),
+    noRecibidos:document.getElementById('noRecibidos'),
+    total:document.getElementById('total'),
+    pagado:document.getElementById('pagado'),
+    sinPagarTodo:document.getElementById('porPagar'),
+    saldo:document.getElementById('saldo')
+}
+let pedidosRecibidos = 0,
+    pedidosNoRecibidos = 0,
+    pedidosRecibidosPorPagar = 0,
+    montoTotal = [],
+    montoPagado = [];
+
+window.onload = ()=>{
+    getPedidos();
+    getProveedores();
+}
 
 function getPedidos() {
     fetch('backend/pedidos/listarPedidos.php')
     .then(res=>res.json())
     .then(newRes=>{
-        let bodyTable = document.getElementById('bodyTable');
-        let template = '';
-        buttons = '';
-        newRes.forEach(reg => {
-            if (reg.estado == 'No recibido') {
-                buttons = `<i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar" onclick="recibirPedido(${reg.idPedido})"></i>
-                <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})"`;
-            }else{
-                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarPedido(${reg.idPedido})"></i>
-                <i class="fas fa-file-alt" id="boton-entregar" style="cursor:pointer;color:black;font-size:20px" onclick="verComprobante(${reg.idPedido})"></i>`;
-                if(reg.total !== reg.pagado){
-                    buttons += ` <i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar" onclick="recibirPedido(${reg.idPedido},true)"></i>`;
-                }
-            }
-            
-            if(reg.total !== reg.pagado){
-                template += `
-                    <tr class="bg-yellow">
-                        <th scope="row">${reg.descripcion}</th>
-                        <td>${reg.cantidad}</td>
-                        <td>${reg.estado}</td>
-                        <td>${reg.proveedor}</td>
-                        <td>
-                            ${buttons}
-                        </td>
-                    </tr>
-                `;
-            }else if(reg.estado == 'Recibido' && reg.total == reg.pagado){
-                template += `
-                <tr class="bg-green">
-                    <th scope="row">${reg.descripcion}</th>
-                    <td>${reg.cantidad}</td>
-                    <td>${reg.estado}</td>
-                    <td>${reg.proveedor}</td>
-                    <td>
-                        ${buttons}
-                    </td>
-                </tr>
-                `;
-            }else{
-                template += `
-                <tr>
-                    <th scope="row">${reg.descripcion}</th>
-                    <td>${reg.cantidad}</td>
-                    <td>${reg.estado}</td>
-                    <td>${reg.proveedor}</td>
-                    <td>
-                        ${buttons}
-                    </td>
-                </tr>
-                `;
-            }
-        });
-        bodyTable.innerHTML = template;
+        listadoPedidos = newRes;
+        render(listadoPedidos);
     })
 }
 
-getPedidos();
-
+function render(data) {
+    let bodyTable = document.getElementById('bodyTable');
+    let template = '';
+    buttons = '';
+    data.forEach(reg => {
+        if (reg.estado == 'No recibido') {
+            buttons = `<i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar"onclick="recibirPedido(${reg.idPedido})"></i>
+            <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"`;
+        }else{
+            buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"></i>
+            <i class="fas fa-file-alt" id="boton-entregar" style="cursor:pointer;color:black;font-size:20px"onclick="verComprobante(${reg.idPedido})"></i>`;
+            if(reg.total !== reg.pagado){
+                buttons += ` <i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px"id="boton-eliminar" onclick="recibirPedido(${reg.idPedido},true)"></i>`;
+            }
+        }
+            
+        if(reg.total !== reg.pagado){
+            template += `
+                <tr class="bg-yellow">
+                    <th scope="row">${reg.descripcion}</th>
+                    <td>${reg.cantidad}</td>
+                    <td>${reg.estado}</td>
+                    <td>${reg.proveedor}</td>
+                    <td>
+                        ${buttons}
+                    </td>
+                </tr>
+            `;
+        }else if(reg.estado == 'Recibido' && reg.total == reg.pagado){
+            template += `
+            <tr class="bg-green">
+                <th scope="row">${reg.descripcion}</th>
+                <td>${reg.cantidad}</td>
+                <td>${reg.estado}</td>
+                <td>${reg.proveedor}</td>
+                <td>
+                    ${buttons}
+                </td>
+            </tr>
+            `;
+        }else{
+            template += `
+            <tr>
+                <th scope="row">${reg.descripcion}</th>
+                <td>${reg.cantidad}</td>
+                <td>${reg.estado}</td>
+                <td>${reg.proveedor}</td>
+                <td>
+                    ${buttons}
+                </td>
+            </tr>
+            `;
+        }
+    });
+    bodyTable.innerHTML = template;
+}
 
 //######################## ELIMINAR PEDIDO  ######################## 
 
@@ -161,14 +182,22 @@ document.getElementById('cargarComprobante').addEventListener('submit',event=>{
                     alertError.classList.remove('d-none');
                     return;
                 }
-                alertLoad.innerHTML = response.info;
-                alertLoading.classList.add('d-none');
-                alertLoad.classList.remove('d-none');
-                getPedidos();
-                setTimeout(() => {
-                    window.location.assign('adminPedidos.html')
-                    return;
-                }, 1000);
+                fetch('backend/producto/modificarStock.php?producto='+response.producto+'&cantidad='+response.cantidad)
+                .then(res=>res.json()).then(response=>{
+                    console.log(response)
+                    if (response.status == 200) {
+                        Swal.fire(
+                            'Listo!',
+                            response.info,
+                            'success'
+                        );
+                        getPedidos();
+                        setTimeout(() => {
+                            window.location.assign('adminPedidos.html')
+                            return;
+                        }, 1000);
+                    }
+                })
             })
         })
     }else{
@@ -304,4 +333,56 @@ function rellenarInputProducto(event) {
     producto = event.target.value;
     inputProducto.value = producto;
     desplegableProducto.classList.add('d-none');
+}
+
+function getProveedores() {
+    fetch('http://localhost/oliver/backend/proveedores/listarProveedor.php').then(res=>res.json()).then(response=>{
+        let template = '';
+        response.forEach(proveedor => {
+            template += `
+            <option value="${proveedor.idProveedor}">${proveedor.proveedor}</option>
+            `
+        });
+        return document.getElementById('proveedores').innerHTML += template;
+    })
+}
+
+//filtrar pedidos
+function getPedidosPorProveedor(event){
+    let proveedor = event;
+    if (proveedor == 'all') {
+        document.getElementById('reporteProveedores').classList.add('d-none');
+        render(listadoPedidos);
+        return;
+    }
+    let filtrados = listadoPedidos.filter(newArr=>newArr.idProveedor == proveedor);
+    if (filtrados.length<1) {
+        render(listadoPedidos);
+        return alert('No hay pedidos con este proveedor');
+    }
+    getReporteEstadisticas(filtrados);
+    return render(filtrados);
+}
+
+function getReporteEstadisticas(filtrados) {
+    pedidosRecibidos = 0;
+    pedidosNoRecibidos = 0;
+    pedidosRecibidosPorPagar = 0;
+    montoPagado.splice(0,montoPagado.length);
+    montoTotal.splice(0,montoTotal.length);
+    filtrados.filter(res=>{
+        (res.estado == 'Recibido')?pedidosRecibidos++:pedidosNoRecibidos++;
+        (res.estado == 'Recibido' && res.total != res.pagado) ?pedidosRecibidosPorPagar++:null;
+        (res.estado == 'Recibido' && res.total != null)?montoTotal.push(parseInt(res.total)):null;
+        (res.estado == 'Recibido' && res.pagado != null)?montoPagado.push(parseInt(res.pagado)):null;
+    });
+    let totalNumero = montoTotal.reduce((a, b) => a + b, 0);
+    let pagadoNumero = montoPagado.reduce((a,b)=> a + b, 0);
+    reporteProveedoresDom.recibidos.innerText = pedidosRecibidos;
+    reporteProveedoresDom.noRecibidos.innerText = pedidosNoRecibidos;
+    reporteProveedoresDom.total.innerText = totalNumero;
+    reporteProveedoresDom.pagado.innerText = pagadoNumero;
+    reporteProveedoresDom.sinPagarTodo.innerText = pedidosRecibidosPorPagar;
+    reporteProveedoresDom.saldo.innerText = pagadoNumero-totalNumero;
+    document.getElementById('reporteProveedores').classList.remove('d-none');
 }

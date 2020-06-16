@@ -184,3 +184,24 @@ footer p{color:#fff;font-size:16px;font-family: 'Open Sans',sans-serif;}
    background-color: green;
    color: white;
  }
+
+ .table thead th{
+  vertical-align: baseline !important;
+  border-bottom: 2px solid #dee2e6;
+ }
+
+
+#reporteProveedores .card{
+  width: 100%;
+  height: auto;
+}
+
+#reporteProveedores .card .card-header{
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 12px;
+}
+
+#reporteProveedores .card .p-balance{
+  font-size: 25px;
+}
