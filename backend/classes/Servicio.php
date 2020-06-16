@@ -119,7 +119,7 @@
                 }
                 return json_encode(array(
                     'status'=>400,
-                    'data'=>array('nombre'=>$imagen,'tmp'=>$imagenTMP,'ruta'=>$ruta,'size'=>$_FILES['comprobante']['error']),
+                    'data'=>array('nombre'=>$imagen,'tmp'=>$imagenTMP,'ruta'=>$ruta,'error'=>$_FILES['comprobante']['error'],'size'=>$_FILES['comprobante']['size']),
                     'info'=>'Problemas al cargar el componente'
                 ));
             }
