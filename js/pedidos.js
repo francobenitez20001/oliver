@@ -344,7 +344,7 @@ function getProveedores(domElementId){
             <option value="${proveedor.idProveedor}">${proveedor.proveedor}</option>
             `
         });
-        return document.getElementById(domElementId).innerHTML += template;
+        return document.getElementById(`${domElementId}`).innerHTML += template;
     })
 }
 
