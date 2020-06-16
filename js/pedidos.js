@@ -18,7 +18,8 @@ let pedidosRecibidos = 0,
 
 window.onload = ()=>{
     getPedidos();
-    getProveedores();
+    getProveedores('proveedor');
+    getProveedores('filtroPedidoPorProveedor');
 }
 
 function getPedidos() {
@@ -335,7 +336,7 @@ function rellenarInputProducto(event) {
     desplegableProducto.classList.add('d-none');
 }
 
-function getProveedores() {
+function getProveedores(domElementId){
     fetch('backend/proveedores/listarProveedor.php').then(res=>res.json()).then(response=>{
         let template = '';
         response.forEach(proveedor => {
@@ -343,7 +344,7 @@ function getProveedores() {
             <option value="${proveedor.idProveedor}">${proveedor.proveedor}</option>
             `
         });
-        return document.getElementById('proveedores').innerHTML += template;
+        return document.getElementById(domElementId).innerHTML += template;
     })
 }
 
