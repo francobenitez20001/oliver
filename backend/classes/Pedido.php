@@ -148,11 +148,7 @@
                 return json_encode(array(
                     'status'=>400,
                     'error'=>$link->error,
-<<<<<<< HEAD
-                    'data'=>array('nombre'=>$imagen,'tmp'=>$imagenTMP,'ruta'=>$ruta,'error'=>$_FILES['comprobante']['error'],'size'=>$_FILES['comprobante']['size']),
-=======
                     'data'=>array('nombre'=>$imagen,'tmp'=>$imagenTMP,'ruta'=>$ruta,'size'=>$_FILES['comprobante']['error']),
->>>>>>> 6e54dada73692657aa662a5864a4d767db19913e
                     'info'=>'Problemas al cargar el componente'
                 ));
             }
@@ -249,4 +245,3 @@
         }
 
     }
-    

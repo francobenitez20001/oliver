@@ -336,7 +336,7 @@ function rellenarInputProducto(event) {
 }
 
 function getProveedores() {
-    fetch('http://localhost/oliver/backend/proveedores/listarProveedor.php').then(res=>res.json()).then(response=>{
+    fetch('backend/proveedores/listarProveedor.php').then(res=>res.json()).then(response=>{
         let template = '';
         response.forEach(proveedor => {
             template += `
