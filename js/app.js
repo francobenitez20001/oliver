@@ -66,25 +66,31 @@ cerrarSesion.addEventListener("click",()=>{
     })
 })
 
+
+let checkAll = false;
+
 function modalExport(url) {
     Swal.fire({
         title: 'Indique Fechas',
         html:
             '<input id="inicio" name="inicio" type="date" class="swal2-input">' +
             '<input id="fin" name="fin" type="date" class="swal2-input">' +
-            '<input id="all" name="fin" type="checkbox" class="">Exportar todo',
+            '<input id="all" type="checkbox" class="">Exportar todo',
         focusConfirm: false,
         showCancelButton: true,
         preConfirm: () => {
-            if(document.getElementById('all').value=='on'){
+            if(document.getElementById('all').checked){
+                console.log('todo')
                 return window.location.assign(url);
-            };
+            };  
             inicio = document.getElementById('inicio').value;
             fin = document.getElementById('fin').value;
+            console.log(url+'?inicio='+inicio+'&fin='+fin)
             return window.location.assign(url+'?inicio='+inicio+'&fin='+fin);
         },
     })
 }
+
 
 function modalDelete(titulo) {
     return Swal({

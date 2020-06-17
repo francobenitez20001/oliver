@@ -6,8 +6,16 @@
             $link = Conexion::conectar();
             $sql = "SELECT idEnvio,env.cliente,ubicacion,telefono,env.estado,fecha,descripcionUbicacion,producto,email 
                     FROM envios AS env, ventas AS ven 
-                    WHERE env.idVenta = ven.idVenta;";
+                    WHERE env.idVenta = ven.idVenta ";
+            if(isset($_GET['inicio']) && isset($_GET['fin'])){
+                $sql .= "AND fecha BETWEEN :inicio AND :fin ";
+            }
+            $sql .= "ORDER BY fecha DESC";
             $stmt = $link->prepare($sql);
+            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
+                $stmt->bindParam(':inicio',$_GET['inicio'],PDO::PARAM_STR);
+                $stmt->bindParam(':fin',$_GET['fin'],PDO::PARAM_STR);
+            }
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $json = array();

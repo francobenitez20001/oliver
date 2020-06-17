@@ -12,20 +12,37 @@ function getEnvios() {
             }else{
                 buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarEnvio(${reg.idEnvio})"></i>`;
             }
-            template += `
-            <tr>
-                <th scope="row">${reg.cliente}</th>
-                <td>${reg.email}</td>
-                <td>${reg.ubicacion}</td>
-                <td>${reg.descripcionUbicacion}</td>
-                <td>${reg.telefono}</td>
-                <td>${reg.estado}</td>
-                <td>${reg.fecha}</td>
-                <td>
-                    ${buttons}
-                </td>
-            </tr>
-            `;
+            if(reg.estado == 'Sin entregar'){
+                template += `
+                <tr class="bg-yellow">
+                    <th scope="row">${reg.cliente}</th>
+                    <td>${reg.email}</td>
+                    <td>${reg.ubicacion}</td>
+                    <td>${reg.descripcionUbicacion}</td>
+                    <td>${reg.telefono}</td>
+                    <td>${reg.estado}</td>
+                    <td>${reg.fecha}</td>
+                    <td>
+                        ${buttons}
+                    </td>
+                </tr>
+                `;
+            }else{
+                template += `
+                <tr class="bg-success">
+                    <th scope="row">${reg.cliente}</th>
+                    <td>${reg.email}</td>
+                    <td>${reg.ubicacion}</td>
+                    <td>${reg.descripcionUbicacion}</td>
+                    <td>${reg.telefono}</td>
+                    <td>${reg.estado}</td>
+                    <td>${reg.fecha}</td>
+                    <td>
+                        ${buttons}
+                    </td>
+                </tr>
+                `;
+            }
         });
         bodyTable.innerHTML = template;
     })
