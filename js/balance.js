@@ -1,5 +1,5 @@
-let btnGuardar = document.getElementById('btn-guardar');
-btnGuardar.addEventListener('click',guardar);
+let btnBalance = document.getElementById('btn-balance');
+btnBalance.addEventListener('click',verBalance);
 
 let ventasTotal = document.getElementById('ventasTotal');
 let tablaVentas = document.getElementById('tabla-ventas');
@@ -16,7 +16,19 @@ let productoMasVendido = document.getElementById('producto-mas-vendido');
 
 let alerta = document.getElementById('alerta');
 
-let datosBalance = [];
+let datosBalance = {
+  ventas:{
+    dia:0,
+    mes:0
+  },
+  pedidos:{
+    dia:0,
+    mes:0
+  },
+  servicios:{
+    mes:0
+  }
+};
 
 let recaudacionFinal = 0;
 
@@ -36,38 +48,26 @@ window.onload = ()=>{
   getVentasTarjeta(null).then(()=>{
     getVentasTarjeta(true).then(()=>{
       getProductoMasVendido();
-      recaudacionFinal = datosBalance.ventas-datosBalance.pedidos;
-      if(recaudacionFinal>0){
-        document.getElementById('cardRecaudacionFinal').classList.toggle('bg-success');
-      }else{
-        document.getElementById('cardRecaudacionFinal').classList.toggle('bg-danger');
-      }
-      document.getElementById('recaudacionFinal').innerHTML = '$'+recaudacionFinal;
     })
   })
 }
 
-function guardar() {
-    Swal.fire({
-        title: 'Seguro que desea guardar las acciones de hoy?',
-        text: "Puede volver a guardar posteriormente",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Guardar'
-    }).then((result) => {
-        if (result.value) {
-          Swal.fire(
-            'Listo!',
-            'Se han guardado las acciones del día de la fecha',
-            'success'
-          )
-        }
-    })
+function verBalance() {
+  let containerEstado = document.getElementById('containerEstado');
+  getVentasTotal('mes',false);
+  getPedidos('mes',false);
+  getServicios('mes',false);
+  recaudacionFinal = datosBalance.ventas.mes-(datosBalance.pedidos.mes+datosBalance.servicios.mes);
+  if(recaudacionFinal>0){
+    document.getElementById('cardRecaudacionFinal').classList.add('bg-success');
+  }else{
+    document.getElementById('cardRecaudacionFinal').classList.add('bg-danger');
+  }
+  document.getElementById('recaudacionFinal').innerHTML = '$'+recaudacionFinal;
+  return containerEstado.classList.toggle('d-none');
 }
 
-function getVentasTotal(criterio=null) {
+function getVentasTotal(criterio=null,render=true) {
   url = 'backend/ventas/listarVentaMonto.php?dia='+dia;
   switch (criterio) {
     case 'mes':
@@ -92,7 +92,8 @@ function getVentasTotal(criterio=null) {
   .then(res=>res.json())
   .then(response=>{
     response.forEach(venta => {
-      datosBalance.ventas =  parseInt(venta.ventas_total);
+      if(criterio=='mes'&&!render){datosBalance.ventas.mes =  parseInt(venta.ventas_total);return null};
+      (criterio==null)?datosBalance.ventas.dia =  parseInt(venta.ventas_total):null;
       ventasTotal.innerHTML = '$'+venta.ventas_total
       if (venta.ventas_total == null) {
         ventasTotal.innerHTML = '$0';
@@ -138,7 +139,7 @@ function getPedidosLimit() {
   })
 }
 
-function getPedidos(criterio=null) {
+function getPedidos(criterio=null,render=true) {
   url = 'backend/pedidos/listarPedidosMonto.php?fecha='+dia;
   if (criterio!=null) {
     url = 'backend/pedidos/listarPedidosMonto.php?fecha='+mes+'&criterio=mes';
@@ -147,7 +148,11 @@ function getPedidos(criterio=null) {
   .then(res=>res.json())
   .then(response=>{
     response.forEach(pedido=>{
-      datosBalance.pedidos =  parseInt(pedido.pedidos_total);
+      if(criterio!=null&&!render){
+        datosBalance.pedidos.mes =  parseInt(pedido.pedidos_total);
+        return;
+      }
+      datosBalance.pedidos.dia =  parseInt(pedido.pedidos_total);
       pedidosTotal.innerHTML = '$'+pedido.pedidos_total;
       if (pedido.pedidos_total == null) {
         pedidosTotal.innerHTML = '$0';
@@ -156,7 +161,7 @@ function getPedidos(criterio=null) {
   })
 }
 
-function getServicios(criterio=null) {
+function getServicios(criterio=null,render=true) {
   url = 'backend/servicios/listarServiciosMonto.php?criterio=mes&fecha='+mes;
   if (criterio!=null) {
     url = 'backend/servicios/listarServiciosMonto.php?fecha='+mes;
@@ -165,7 +170,7 @@ function getServicios(criterio=null) {
   .then(res=>res.json())
   .then(response=>{
     response.forEach(servicio=>{
-      datosBalance.servicio =  parseInt(servicio.servicio_total);
+      if(criterio!=null&&!render){datosBalance.servicios.mes =  parseInt(servicio.servicio_total);return;};
       serviciosTotal.innerHTML = '$'+servicio.servicio_total;
       if (servicio.servicio_total == null) {
         serviciosTotal.innerHTML = '$0';
