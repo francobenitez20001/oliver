@@ -29,8 +29,8 @@ inputDia.value = semana[diaSemana-1];
 
 //stocks
 let stockParcial = parseInt(document.getElementById('stockParcial').value);
-let stockSuelto = parseInt(document.getElementById('stockSuelto').value);
-let cantidad = parseInt(document.getElementById('cantidad').value);
+let stockSuelto = parseFloat(document.getElementById('stockSuelto').value);
+let cantidad = parseFloat(document.getElementById('cantidad').value);
 
 // select para elegir cantidad menor o igual al stock disponible
 let selectCantidad = document.getElementById('cantidad');
@@ -47,7 +47,7 @@ window.onload = ()=>{
     infoStock.innerHTML = 'Te quedan ' + stockParcial + ' unidades en stock';
     cantidad_dos.setAttribute('required','');
     datosVenta.precio = precio;
-    datosVenta.cantidad = parseInt(selectCantidad.value);
+    datosVenta.cantidad = parseFloat(selectCantidad.value);
     datosVenta.descuento = 0;
     calcularTotal(datosVenta.precio,datosVenta.cantidad);
 }
@@ -64,7 +64,7 @@ inputDescuento.addEventListener('keyup',event=>{
 //funcion para actualizar el total cada vez que el usuario tipea un valor en la cantidad SUELTO
 cantidadSuelto.addEventListener('keyup',event=>{
     datosVenta.precio = precioKilo;
-    datosVenta.cantidad = parseInt(cantidadSuelto.value);
+    datosVenta.cantidad = parseFloat(cantidadSuelto.value);
     calcularTotal(datosVenta.precio,datosVenta.cantidad);
 })
 
@@ -80,6 +80,7 @@ formVentaProducto.addEventListener('submit',event=>{
     })
     .then(res=>res.json())
     .then(newRes=>{
+        console.log(newRes)
         if (newRes) {
             Swal.fire({
                 title: newRes.info,

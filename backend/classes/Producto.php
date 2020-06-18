@@ -84,17 +84,17 @@ class Producto
             $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
             $stmt->bindParam(':idMarca',$idMarca,PDO::PARAM_INT);
             $stmt->bindParam(':idCategoria',$idCategoria,PDO::PARAM_INT);
-            $stmt->bindParam(':precioPublico',$precioPublico,PDO::PARAM_INT);
-            $stmt->bindParam(':precioUnidad',$precioUnidad,PDO::PARAM_INT);
-            $stmt->bindParam(':precioKilo',$precioKilo,PDO::PARAM_INT);
+            $stmt->bindParam(':precioPublico',$precioPublico,PDO::PARAM_STR);
+            $stmt->bindParam(':precioUnidad',$precioUnidad,PDO::PARAM_STR);
+            $stmt->bindParam(':precioKilo',$precioKilo,PDO::PARAM_STR);
             $stmt->bindParam(':stock',$stock,PDO::PARAM_INT);
             $stmt->bindParam(':idProveedor',$idProveedor,PDO::PARAM_INT);
             $stmt->bindParam(':porcentaje_ganancia',$porcentaje_ganancia,PDO::PARAM_INT);
-            $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_INT);
-            $stmt->bindParam(':precioCosto',$precioCosto,PDO::PARAM_INT);
+            $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_STR);
+            $stmt->bindParam(':precioCosto',$precioCosto,PDO::PARAM_STR);
             $stmt->bindParam(':cantidadUnitario',$cantidadUnitario,PDO::PARAM_INT);
             $stmt->bindParam(':codigoProducto',$codigoProducto,PDO::PARAM_INT);
-            $stmt->bindParam(':cantidadPorKilo',$cantidadPorKilo,PDO::PARAM_INT);
+            $stmt->bindParam(':cantidadPorKilo',$cantidadPorKilo,PDO::PARAM_STR);
             $stmt->bindParam(':porcentajeGananciaPorKilo',$porcentajeGananciaKilo,PDO::PARAM_INT);
             $resultado = $stmt->execute();
             if ($resultado) {
@@ -155,17 +155,17 @@ class Producto
                 $stmt->bindParam(':producto', $producto , PDO::PARAM_STR);
                 $stmt->bindParam(':idMarca', $idMarca , PDO::PARAM_INT);
                 $stmt->bindParam(':idCategoria', $idCategoria , PDO::PARAM_INT);
-                $stmt->bindParam(':precioPublico', $precioPublico , PDO::PARAM_INT);
-                $stmt->bindParam(':precioUnidad', $precioUnidad , PDO::PARAM_INT);
-                $stmt->bindParam(':precioKilo', $precioKilo , PDO::PARAM_INT);
-                $stmt->bindParam(':precioCosto',$precioCosto, PDO::PARAM_INT);
+                $stmt->bindParam(':precioPublico', $precioPublico , PDO::PARAM_STR);
+                $stmt->bindParam(':precioUnidad', $precioUnidad , PDO::PARAM_STR);
+                $stmt->bindParam(':precioKilo', $precioKilo , PDO::PARAM_STR);
+                $stmt->bindParam(':precioCosto',$precioCosto, PDO::PARAM_STR);
                 $stmt->bindParam(':stock', $stock , PDO::PARAM_INT);
                 $stmt->bindParam(':idProveedor', $idProveedor , PDO::PARAM_INT);
                 $stmt->bindParam(':porcentaje_ganancia', $porcentaje_ganancia , PDO::PARAM_INT);
-                $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_INT);
+                $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_STR);
                 $stmt->bindParam(':cantidadUnitario',$cantidadUnitario,PDO::PARAM_INT);
                 $stmt->bindParam(':codigoProducto',$codigoProducto,PDO::PARAM_INT);
-                $stmt->bindParam(':cantidadPorKilo',$cantidadPorKilo,PDO::PARAM_INT);
+                $stmt->bindParam(':cantidadPorKilo',$cantidadPorKilo,PDO::PARAM_STR);
                 $stmt->bindParam(':porcentajeGananciaPorKilo',$porcentajeGananciaKilo,PDO::PARAM_INT);
                 $bool = $stmt->execute();
                 if ($bool) {

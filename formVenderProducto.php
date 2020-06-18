@@ -100,7 +100,7 @@
               <select class="form-control" onchange="actualizarTotal(event,true)" name="cantidad" id="cantidad">
                 <!--Viene desde ventas.js-->
               </select>
-              <input type="number" class="form-control d-none" name="cantidadSuelto" id="cantidadSuelto">
+              <input type="number" class="form-control d-none" name="cantidadSuelto" id="cantidadSuelto" step="any">
             </div>
             <div class="col-12 col-md-5">
                 <p>Selecciona una marca</p>

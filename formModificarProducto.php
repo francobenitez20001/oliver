@@ -135,14 +135,14 @@
                   <div class="input-group-prepend">
                     <div class="input-group-text">Cantidad por kilo</div>
                   </div>
-                  <input type="number" name="cantidadKilo" id="cantidadKilo" value="<?php echo $reg['cantidadPorKilo']; ?>" class="form-control input-disable">
+                  <input type="number" name="cantidadKilo" id="cantidadKilo" value="<?php echo $reg['cantidadPorKilo']; ?>" class="form-control input-disable" step="any">
                 </div>
                 <div class="col-md-2"></div>
                 <div class="input-group col-12 col-md-5 mb-4">
                   <div class="input-group-prepend">
                     <div class="input-group-text">% extra por Kilo</div>
                   </div>
-                  <input type="number" name="porcentajePorKilo" id="porcentajePorKilo" value="<?php echo $reg['porcentajeGananciaPorKilo']; ?>" class="form-control input-disable">
+                  <input type="number" name="porcentajePorKilo" id="porcentajePorKilo" value="<?php echo $reg['porcentajeGananciaPorKilo']; ?>" class="form-control input-disable" step="any">
                 </div>
               <?php } else { ?>
                 <div class="input-group col-12 col-md-5 mb-4">
@@ -158,14 +158,14 @@
                   <div class="input-group-prepend">
                     <div class="input-group-text">Cantidad por kilo</div>
                   </div>
-                  <input type="number" name="cantidadKilo" id="cantidadKilo" class="form-control input-disable" disabled="true">
+                  <input type="number" name="cantidadKilo" id="cantidadKilo" class="form-control input-disable" disabled="true" step="any">
                 </div>
                 <div class="col-md-2"></div>
                 <div class="input-group col-12 col-md-5 mb-4">
                   <div class="input-group-prepend">
                     <div class="input-group-text">% extra por Kilo</div>
                   </div>
-                  <input type="number" name="porcentajePorKilo" id="porcentajePorKilo" class="form-control input-disable" disabled="true">
+                  <input type="number" name="porcentajePorKilo" id="porcentajePorKilo" class="form-control input-disable" disabled="true" step="any">
                 </div>
               <?php }; ?>
             <div class="input-group col-12 col-md-5 mb-4">
@@ -179,7 +179,7 @@
                 <div class="input-group-prepend">
                   <div class="input-group-text">Stock suelto</div>
                 </div>
-                <input type="text" name="stockSuelto" id="stock" class="form-control" value="<?php echo $reg['stock_suelto'] ?>">
+                <input type="number" name="stockSuelto" id="stock" class="form-control" value="<?php echo $reg['stock_suelto'] ?>"step="any">
             </div>
             <div class="input-group col-12 col-md-5 mb-4">
               <div class="input-group-prepend">
@@ -197,7 +197,7 @@
               <div class="input-group-prepend">
                 <div class="input-group-text">% Ganancia</div>
               </div>
-              <input type="text" name="porcentaje_ganancia" id="porcentaje_ganancia" class="form-control" value="<?php echo $reg['porcentaje_ganancia'] ?>">
+              <input type="number" name="porcentaje_ganancia" id="porcentaje_ganancia" class="form-control" value="<?php echo $reg['porcentaje_ganancia'] ?>" step="any">
             </div>
             <div class="input-group col-12 col-md-5 mb-4 d-none userPrivate">
               <div class="input-group-prepend">

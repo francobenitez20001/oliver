@@ -28,11 +28,11 @@
                             :fecha,:dia,:estado,:tipo_pago,:cliente)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':producto', $producto,PDO::PARAM_STR);
-            $stmt->bindParam(':cantidad', $cantidad,PDO::PARAM_INT);
+            $stmt->bindParam(':cantidad', $cantidad,PDO::PARAM_STR);//En este caso uso str para que me tome el decimal
             // $stmt->bindParam(':idProducto', $idProducto ,PDO::PARAM_INT);
             $stmt->bindParam(':idMarca', $idMarca,PDO::PARAM_INT);
             $stmt->bindParam(':idCategoria', $idCategoria,PDO::PARAM_INT);
-            $stmt->bindParam(':total', $total,PDO::PARAM_INT);
+            $stmt->bindParam(':total', $total,PDO::PARAM_STR);//En este caso uso str para que me tome el decimal
             $stmt->bindParam(':fecha', $fecha,PDO::PARAM_STR);
             $stmt->bindParam(':dia', $dia,PDO::PARAM_STR);
             $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
@@ -42,7 +42,7 @@
             if ($resultado) {
                 $actualizarStock = $this->actualizarStock();
                 if ($actualizarStock) {
-                    return json_encode(array('status'=>200,'info'=>'Venta agregada', 'idVenta'=>$link->lastInsertId()));//trae el ultimo id registrado, es el id de la venta cargada.   
+                    return json_encode(array('status'=>200,'info'=>'Venta agregada', 'idVenta'=>$link->lastInsertId(),'total'=>$total,'cantidad'=>$cantidad));//trae el ultimo id registrado, es el id de la venta cargada.   
                 }
                 return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el stock'));
             }
@@ -64,7 +64,7 @@
                 $sql = 'UPDATE productos SET stock_suelto = :stock WHERE producto = :producto';
             }
             $stmt = $link->prepare($sql);
-            $stmt->bindParam(':stock',$stock,PDO::PARAM_INT);
+            $stmt->bindParam(':stock',$stock,PDO::PARAM_STR);
             $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
             $resultado = $stmt->execute();
             if ($resultado) {
