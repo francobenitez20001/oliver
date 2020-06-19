@@ -16,6 +16,9 @@ let pedidosRecibidos = 0,
     montoTotal = [],
     montoPagado = [];
 
+let btnAdjuntarComprobante = document.getElementById('btn-adjuntarComprobante');
+btnAdjuntarComprobante.addEventListener('click',subirComprobante);
+
 window.onload = ()=>{
     getPedidos();
     getProveedores('proveedor');
@@ -23,7 +26,7 @@ window.onload = ()=>{
 }
 
 function getPedidos() {
-    fetch('backend/pedidos/listarPedidos.php')
+    fetch('backend/pedidos/listarPedidos.php?mes='+mes)
     .then(res=>res.json())
     .then(newRes=>{
         listadoPedidos = newRes;
@@ -40,8 +43,7 @@ function render(data) {
             buttons = `<i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar"onclick="recibirPedido(${reg.idPedido})"></i>
             <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"`;
         }else{
-            buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"></i>
-            <i class="fas fa-file-alt" id="boton-entregar" style="cursor:pointer;color:black;font-size:20px"onclick="verComprobante(${reg.idPedido})"></i>`;
+            buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"></i>`;
             if(reg.total !== reg.pagado){
                 buttons += ` <i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px"id="boton-eliminar" onclick="recibirPedido(${reg.idPedido},true)"></i>`;
             }
@@ -119,20 +121,20 @@ function eliminarPedido(id) {
 
 function recibirPedido(id=null,pagoCompleto=false) {
     document.getElementById('idPedido').value = id;
-    inputFile = document.getElementsByName('comprobante')[0];
+    // inputFile = document.getElementsByName('comprobante')[0];
     inputTotal = document.getElementsByName('total')[0];
     inputPago = document.getElementsByName('pago')[0];
     indicadorValores = document.getElementById('indicadorValores');
-    inputFile.classList.remove('d-none');
+    //inputFile.classList.remove('d-none');
     if(!indicadorValores.classList.contains('d-none') && inputTotal.value != ''){
         inputTotal.value = '';
         inputTotal.removeAttribute('disabled');
         indicadorValores.classList.add('d-none');
     }
     if(pagoCompleto){
-        inputFile.classList.add('d-none');
-        inputFile.removeAttribute('required');
-        inputTotal.setAttribute('disabled',true);
+        //inputFile.classList.add('d-none');
+        //inputFile.removeAttribute('required');
+        //inputTotal.setAttribute('disabled',true);
         document.getElementById('pagarDeuda').value='true';
         fetch(`backend/pedidos/verPedidoPorId.php?idPedido=${id}`).then(res=>res.json()).then(response=>{
             if (response.status == 200) {
@@ -166,39 +168,30 @@ document.getElementById('cargarComprobante').addEventListener('submit',event=>{
     alertLoading.classList.remove('d-none');
     let data = new FormData(formCargarComprobante);
     if(document.getElementById('pagarDeuda').value != 'true'){
-        fetch('backend/pedidos/cargarComprobante.php',{
+        fetch('backend/pedidos/recibirPedido.php',{
             method:'POST',
             body:data
         }).then(res=>res.json()).then(response=>{
-            if(response.status == 400){
+            if (response.status == 400) {
                 alertLoading.classList.add('d-none');
                 alertError.innerHTML = response.info;
                 alertError.classList.remove('d-none');
                 return;
             }
-            fetch(`backend/pedidos/recibirPedido.php?idPedido=${response.data.idPedido}&total=${response.data.total}&comprobante=${response.data.comprobante}&pago=${response.data.pago}`).then(res=>res.json()).then(response=>{
-                if (response.status == 400) {
-                    alertLoading.classList.add('d-none');
-                    alertError.innerHTML = response.info;
-                    alertError.classList.remove('d-none');
-                    return;
+            fetch('backend/producto/modificarStock.php?producto='+response.producto+'&cantidad='+response.cantidad)
+            .then(res=>res.json()).then(response=>{
+                console.log(response)
+                if (response.status == 200) {
+                    Swal.fire(
+                        'Listo!',
+                        response.info,
+                        'success'
+                    );
+                    setTimeout(() => {
+                        window.location.assign('adminPedidos.html')
+                        return;
+                    }, 1000);
                 }
-                fetch('backend/producto/modificarStock.php?producto='+response.producto+'&cantidad='+response.cantidad)
-                .then(res=>res.json()).then(response=>{
-                    console.log(response)
-                    if (response.status == 200) {
-                        Swal.fire(
-                            'Listo!',
-                            response.info,
-                            'success'
-                        );
-                        getPedidos();
-                        setTimeout(() => {
-                            window.location.assign('adminPedidos.html')
-                            return;
-                        }, 1000);
-                    }
-                })
             })
         })
     }else{
@@ -366,6 +359,7 @@ function getPedidosPorProveedor(event){
 }
 
 function getReporteEstadisticas(filtrados) {
+    console.log(filtrados);
     pedidosRecibidos = 0;
     pedidosNoRecibidos = 0;
     pedidosRecibidosPorPagar = 0;
@@ -386,4 +380,46 @@ function getReporteEstadisticas(filtrados) {
     reporteProveedoresDom.sinPagarTodo.innerText = pedidosRecibidosPorPagar;
     reporteProveedoresDom.saldo.innerText = pagadoNumero-totalNumero;
     document.getElementById('reporteProveedores').classList.remove('d-none');
+
+    document.getElementById('btnVerComprobantes').setAttribute('href','adminComprobantes.html?idProveedor='+parseInt(document.getElementById('filtroPedidoPorProveedor').value));
+}
+
+function subirComprobante() {
+    let idProveedor = parseInt(document.getElementById('filtroPedidoPorProveedor').value);
+    Swal.fire({
+        title: 'Adjuntar comprobantes',
+        html:`<form id="cargarComprobanteProveedor">
+                <input id="comprobante" name="comprobante" type="file" class="swal2-input">
+                <input id="" name="descripcion" type="text" class="swal2-input">
+                <input id="idProveedor" name="idProveedor" value="${idProveedor}" type="hidden">
+              </form>`,
+        focusConfirm: false,
+        preConfirm: () => {
+            document.getElementById('slider').classList.remove('d-none');
+            let data = new FormData(document.getElementById('cargarComprobanteProveedor'));
+            fetch('backend/comprobantes/cargarComprobante.php',{
+                method:'POST',
+                body:data
+            }).then(res=>res.json()).then(data=>{
+                if(data.status==200){
+                    fetch(`backend/comprobantes/agregarComprobante.php?idProveedor=${data.data.idProveedor}&comprobante=${data.data.comprobante}&descripcion=${data.data.descripcion}`).then(res=>res.json()).then(response=>{
+                        document.getElementById('slider').classList.add('d-none');
+                        if(response.status==400){
+                            Swal.fire(
+                                'error',
+                                'Oops...',
+                                response.info
+                            )
+                            return;
+                        }
+                        return Swal.fire(
+                            'Comprobante cargado',
+                            response.info,
+                            'success'
+                        )
+                    })
+                }
+            })
+        }
+    })
 }

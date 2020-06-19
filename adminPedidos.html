@@ -56,7 +56,7 @@
   </nav><!--menu-->
 
   <div class="banner-form" id="banner-form">
-    <div class="row align-items-center">
+    <div class="row align-items-center mb-3">
       <div class="col-12 col-md-8">
         <h3 class="my-4">Panel de administración de pedidos</h3>
 
@@ -109,6 +109,8 @@
                 </div>
             </div>
           </div>
+          <button type="button" id="btn-adjuntarComprobante" class="btn btn-warning ml-3">Adjuntar comprobante</button>
+          <a id="btnVerComprobantes" target="blank" class="btn btn-success ml-2">Ver comprobantes</a>
         </div>
       </div>
       <div class="col-12 col-md-4">
@@ -157,7 +159,7 @@
           <div class="row align-items-center">
             <div class="col-6">
               <select name="" onchange="getPedidosPorProveedor(value)" id="filtroPedidoPorProveedor" class="form-control">
-                <option value="all">Traer todos</option>
+                <option value="all">Traer de todos los proveedores</option>
               </select>
             </div>
             <div class="col-6">
@@ -212,10 +214,10 @@
 
   <div class="cargarComprobante d-none" id="cargarComprobante">
     <form id="formCargarComprobante" class="form-group" enctype="multipart/form-data">
-      <label>Adjuntar comprobante</label>
+      <!-- <label>Adjuntar comprobante</label>
       <br>
       <input type="file" accept="image/*" name="comprobante" id="" required>
-      <br>
+      <br> -->
       <input type="number" name="total" id="total" required class="form-control col-12 mt-3" placeholder="Ingese el total del pedido">
       <br>
       <span id="indicadorValores" class="text-muted d-none">Pagado: <b>$600</b>. Por pagar <b>$500</b></span>
@@ -237,6 +239,17 @@
       <div class="alert alert-success text-center d-none" id="alert-load">Servicio actualizado</div>
       <div class="alert alert-danger text-center d-none" id="alert-error"></div>
     </form>
+  </div>
+
+  <div id="slider" class="container__slider d-none">
+    <div class="sk-chase">
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+      <div class="sk-chase-dot"></div>
+    </div>
   </div>
 
 

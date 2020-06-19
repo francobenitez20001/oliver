@@ -5,11 +5,13 @@
         public function listarPedidos()
         {
             $link = Conexion::conectar();
+            $mes = $_GET['mes'];
             $sql = "SELECT idPedido,descripcion,cantidad,p.estado,total,p.idProveedor,proveedor,fecha,pagado,comprobante 
                     FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ";
             if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
                 $sql .= "AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
             }else{
+                $sql .= "AND fecha LIKE '".$mes."%'"; 
                 $sql .= "ORDER BY idPedido DESC";
             };
             $stmt = $link->prepare($sql);
@@ -64,20 +66,17 @@
         public function recibirPedido()
         {
             $link = Conexion::conectar();
-            $idPedido = $_GET['idPedido'];
-            $total = $_GET['total'];
-            $pago = $_GET['pago'];
-            $comprobante = $_GET['comprobante'];
+            $idPedido = $_POST['idPedido'];
+            $total = $_POST['total'];
+            $pago = $_POST['pago'];
             $sql = "UPDATE pedidos SET estado = 'Recibido',
                                        total = :total,
-                                       pagado = :pagado,
-                                       comprobante = :comprobante
+                                       pagado = :pagado
                     WHERE idPedido = :idPedido";
             $stmt = $link->prepare($sql);
-            $stmt->bindParam(':total',$total,PDO::PARAM_INT);
+            $stmt->bindParam(':total',$total,PDO::PARAM_STR);
             $stmt->bindParam(':idPedido',$idPedido,PDO::PARAM_INT);
-            $stmt->bindParam(':pagado',$pago,PDO::PARAM_INT);
-            $stmt->bindParam(':comprobante',$comprobante,PDO::PARAM_STR);
+            $stmt->bindParam(':pagado',$pago,PDO::PARAM_STR);
             $bool = $stmt->execute();
             if ($bool) {
                 //obtener la descripcion del producto recientemente recibido para actualizar el stock
@@ -127,43 +126,6 @@
                 return json_encode(true);
             }
             return json_encode(false);
-        }
-
-        public function cargarComprobante()
-        {
-            $link = Conexion::conectar();
-            $idPedido = $_POST['idPedido'];
-            // $comprobante = $_FILES['comprobante'];
-            $ruta = '../../comprobantes/';
-            $imagen = $_FILES['comprobante']['name'];
-            if ($_FILES['comprobante']['error']==0) {
-                $imagenTMP = $_FILES['comprobante']['tmp_name'];
-                $bool = move_uploaded_file($imagenTMP,$ruta.$imagen);
-                if ($bool) {
-                    return json_encode(array(
-                        'status'=>200,
-                        'data'=>array('idPedido'=>$idPedido,'comprobante'=>$imagen,'total'=>$_POST['total'],'pago'=>$_POST['pago']),
-                        'info'=>'Comprobante cargado'));
-                };
-                return json_encode(array(
-                    'status'=>400,
-                    'error'=>$link->error,
-                    'data'=>array('nombre'=>$imagen,'tmp'=>$imagenTMP,'ruta'=>$ruta,'size'=>$_FILES['comprobante']['error']),
-                    'info'=>'Problemas al cargar el componente'
-                ));
-            }
-        }
-
-        public function verComprobante()
-        {
-            $idPedido = $_GET['idPedido'];
-            $link = Conexion::conectar();
-            $sql = "SELECT comprobante FROM pedidos WHERE idPedido = :idPedido";
-            $stmt = $link->prepare($sql);
-            $stmt->bindParam(':idPedido',$idPedido,PDO::PARAM_INT);
-            $stmt->execute();
-            $result = $stmt->fetchAll();
-            return $result;
         }
 
         public function verPedidoPorId()
