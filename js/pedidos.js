@@ -121,20 +121,20 @@ function eliminarPedido(id) {
 
 function recibirPedido(id=null,pagoCompleto=false) {
     document.getElementById('idPedido').value = id;
-    // inputFile = document.getElementsByName('comprobante')[0];
     inputTotal = document.getElementsByName('total')[0];
     inputPago = document.getElementsByName('pago')[0];
     indicadorValores = document.getElementById('indicadorValores');
-    //inputFile.classList.remove('d-none');
+    let inputCantidadLlegada = document.getElementById('cantidadFinal');
+    inputCantidadLlegada.classList.remove('d-none');
+    inputCantidadLlegada.setAttribute('required','');
     if(!indicadorValores.classList.contains('d-none') && inputTotal.value != ''){
         inputTotal.value = '';
         inputTotal.removeAttribute('disabled');
         indicadorValores.classList.add('d-none');
     }
     if(pagoCompleto){
-        //inputFile.classList.add('d-none');
-        //inputFile.removeAttribute('required');
-        //inputTotal.setAttribute('disabled',true);
+        inputCantidadLlegada.removeAttribute('required');
+        inputCantidadLlegada.classList.add('d-none');
         document.getElementById('pagarDeuda').value='true';
         fetch(`backend/pedidos/verPedidoPorId.php?idPedido=${id}`).then(res=>res.json()).then(response=>{
             if (response.status == 200) {

@@ -1,17 +1,3 @@
-<?php
-    require 'backend/classes/Conexion.php';
-    require 'backend/classes/Producto.php';
-    require 'backend/classes/Marca.php';
-    require 'backend/classes/Categoria.php';
-    $producto = new Producto;
-    $marca = new Marca;
-    $categoria = new Categoria;
-    $reg = $producto->verProductoPorId();
-    // $listadoMarca = $marca->listarMarca();
-    // $listadoCategoria = $categoria->listarCategoria();
-    // $arrayMarca = json_decode($listadoMarca,true);
-    // $arrayCategoria = json_decode($listadoCategoria,true);
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,7 +60,7 @@
     <hr>
     <h1>Nueva venta</h1>
     <hr>
-    <form id="formVentaProducto" class="form-group">
+    <form id="formVentaProducto" class="form-group d-none">
         <div class="row">
             <div class="input-group col-12 col-md-5 mb-5">
               <div class="input-group-prepend">
@@ -89,8 +75,11 @@
             <div class="col-12 col-md-5 text-center mb-4 pt-3 alert alert-info" id="infoStock">
               
             </div>
-            <div class="col-12 col-md-5 mb-4">
-            <input type="text" name="producto" id="producto" class="form-control" value="<?php echo $reg['producto'] ?>" required>
+            <div class="col-12 col-md-5 mb-4 input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Producto</div>
+                </div>
+                <input type="text" name="producto" id="producto" class="form-control" value="" required>
             </div>
             <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
@@ -102,71 +91,90 @@
               </select>
               <input type="number" class="form-control d-none" name="cantidadSuelto" id="cantidadSuelto" step="any">
             </div>
-            <div class="col-12 col-md-5">
-                <p>Selecciona una marca</p>
-                <select class="form-control mb-4" name="idMarca" id="idMarca" required>
-                    <option value="<?php echo $reg['idMarca'] ?>"><?php echo $reg['marcaNombre'] ?></option>
+            <div class="col-12 col-md-5 input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Marca</div>
+                </div>
+                <select class="form-control" name="idMarca" id="idMarca" required>
+                    <option value=""></option>
                 </select>
             </div>
             <div class="col-md-2"></div>
-            <div class="col-12 col-md-5">
-                <p>Selecciona una categoria</p>
-                <select class="form-control mb-4" name="idCategoria" id="idCategoria" required>
-                    <option value="<?php echo $reg['idCategoria'] ?>"><?php echo $reg['categoriaNombre'] ?></option>
+            <div class="col-12 col-md-5 input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Categoria</div>
+                </div>
+                <select class="form-control" name="idCategoria" id="idCategoria" required>
+                    <option value=""></option>
                 </select>
             </div>
-            <div class="col-12 col-md-5">
-                <p>Selecciona el estado de la compra</p>
-                <select class="form-control mb-4" name="estado" id="estado" required>
-                    <option value="Pago">Abonado en el momento</option>
-                    <option value="Debe">Sumarlo a deudores</option>
-                </select>
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-12 col-md-5">
-              <p>Selecciona la forma de pago</p>
-              <select name="tipo_pago" id="tipo_pago" onchange="habilitarInput(event)" class="form-control" id="">
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta">Tarjeta</option>
-              </select>
-            </div>
-            <div class="input-group col-12 col-md-5 my-4" id="div-descuento">
-              <div class="input-group-prepend">
-                <div class="input-group-text">Descuento</div>
-              </div>
-              <select name="descuento" onchange="habilitarDescuento(event)" class="form-control" id="">
-                <option value="no">No</option>
-                <option value="si">Si</option>
-              </select>
-            </div>
-            <div class="col-md-2" id="col-separador"></div>
-            <div class="input-group col-12 col-md-5 d-none my-4" id="selectDescuento">
-              <div class="input-group-prepend">
-                <div class="input-group-text">Valor descuento</div>
-              </div>
-              <input type="number" class="form-control" id="inputDescuento" name="inputDescuento">
-            </div>
-            <div class="col-12 col-md-5 d-none my-4" id="nombreCliente">
-              <input type="text" class="form-control" name="cliente" placeholder="Nombre del cliente">
-            </div>
-            <input type="hidden" name="idProducto" value="<?php echo $reg['idProducto'] ?>">
+            
+            <input type="hidden" name="idProducto" value="">
             <div class="col-12 col-md-5 mb-4">
             <!-- campos ocultos importantes para backend -->
             <input type="hidden" name="fecha" id="inputFecha">
             <input type="hidden" name="dia" id="inputDia">
-            <input type="hidden" value="<?php echo $reg['stock']?>" name="stockParcial" id="stockParcial">
-            <input type="hidden" value="<?php echo $reg['stock_suelto']?>"name="stockSuelto" id="stockSuelto">
+            <input type="hidden" value="" name="stockParcial" id="stockParcial">
+            <input type="hidden" value=""name="stockSuelto" id="stockSuelto">
             <input type="hidden" name="stock" id="stockFinal">
-            <input type="hidden" name="precio" id="precio" value="<?php echo $reg['precioPublico'] ?>">
-            <input type="hidden" name="precioKilo" id="precioKilo" value="<?php echo $reg['precioKilo']; ?>">
+            <input type="hidden" name="precio" id="precio" value="">
+            <input type="hidden" name="precioKilo" id="precioKilo" value="">
             <input type="hidden" name="total" id="total">
           </div>
         </div>
-        <div class="alert alert-info text-center" id="alert-total"></div>
-        <center><input type="submit" class="btn btn-outline-info mr-2" value="Agregar">
-        <input type="button" class="btn btn-outline-success" onclick="carrito.agregarProducto()" value="Agregar al carrito"></center>
+        <hr>
+
+
+
+        <input type="submit" class="btn btn-outline-info mr-2" value="Compra completada">
     </form>
+    <input type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#staticBackdrop" value="Agregar al carrito">
   </div>
+
+
+
+
+
+
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 70% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Productos</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="venta.renderFormVenta()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-12 mb-3">
+                        <div class="col-12 mb-2" id="label-productos">
+                            
+                        </div>
+                        <input type="text" id="productoSearch" class="form-control" placeholder="Busque su producto">
+                    </div>
+                    <label class="col-12" for="">Resultados:</label>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="list-group" id="lista-productos-modal" role="tablist">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+
+
+
+
+
 
   <div class="container mt-3 fadeIn fast d-none" id="form-agregar-div">
     <h1>Detalle del envío</h1>
@@ -218,6 +226,6 @@
     <script src="js/bootstrap/bootstrap.min.js"></script>
     <script src="js/sweetalert2.js"></script>
     <script src="js/menu.js"></script>
-    <script src="js/ventas.js"></script>
+    <script src="js/ventaTest.js"></script>
     <script src="js/app.js"></script>
 </body>

@@ -33,6 +33,7 @@
     background-color: #e9ecef;
     padding: 15px 20px;
     border-color: #dee2e6;
+    width: 450px;
  }
 
 
@@ -204,4 +205,14 @@ footer p{color:#fff;font-size:16px;font-family: 'Open Sans',sans-serif;}
 
 #reporteProveedores .card .p-balance{
   font-size: 25px;
+}
+
+
+
+.badge{
+  margin: 0px 10px !important;
+}
+
+.eliminarProductoCarrito{
+  cursor: pointer;
 }

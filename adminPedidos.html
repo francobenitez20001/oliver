@@ -214,15 +214,13 @@
 
   <div class="cargarComprobante d-none" id="cargarComprobante">
     <form id="formCargarComprobante" class="form-group" enctype="multipart/form-data">
-      <!-- <label>Adjuntar comprobante</label>
+      <input type="text" name="cantidadFinal" id="cantidadFinal" required class="form-control col-12 mt-3" placeholder="Ingrese la cantidad que llego del pedido (unidades)">
       <br>
-      <input type="file" accept="image/*" name="comprobante" id="" required>
-      <br> -->
-      <input type="number" name="total" id="total" required class="form-control col-12 mt-3" placeholder="Ingese el total del pedido">
+      <input type="number" step="any" name="total" id="total" required class="form-control col-12 mt-3" placeholder="Ingese el total del pedido">
       <br>
       <span id="indicadorValores" class="text-muted d-none">Pagado: <b>$600</b>. Por pagar <b>$500</b></span>
       <br>
-      <input type="number" name="pago" id="pago" required class="form-control col-12 mt-3" placeholder="Ingese cuanto pagó">
+      <input type="number" step="any" name="pago" id="pago" required class="form-control col-12 mt-3" placeholder="Ingese cuanto pagó">
       <br><br>
       <div class="row">
         <div class="col-6">
