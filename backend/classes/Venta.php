@@ -40,7 +40,7 @@
             $stmt->bindParam(':cliente',$cliente,PDO::PARAM_STR);
             $resultado = $stmt->execute();
             if ($resultado) {
-                $actualizarStock = $this->actualizarStock();
+                $actualizarStock = $this->actualizarStock('normal');
                 if ($actualizarStock) {
                     return json_encode(array('status'=>200,'info'=>'Venta agregada', 'idVenta'=>$link->lastInsertId(),'total'=>$total,'cantidad'=>$cantidad));//trae el ultimo id registrado, es el id de la venta cargada.   
                 }
@@ -49,22 +49,71 @@
             return json_encode(array('status'=>400,'info'=>'Problemas al agregar la venta'));
         }
 
-        public function actualizarStock()
+        public function agregarVentaJson()
         {
-            $producto = $_POST['producto'];
-            $stockParcial = $_POST['stockParcial'];
-            $stockSuelto = $_POST['stockSuelto'];
-            $cantidad = $_POST['cantidad'];
-            $stock = $stockParcial - $cantidad;
+            /// Obtenemos el json enviado
+            $data = file_get_contents('php://input');
+            // Los convertimos en un array
+            $data = json_decode( $data, true );
+            $estado = $data['estado'];
+            $fecha = $data['fecha'];
+            $dia = $data['dia'];
+            $cliente = $data['cliente'];
+            $tipo_pago = $data['tipo_pago'];
+            $prd_count = count($data['productos']);//cantidad de productos que cargo el usuario;
+            $logResponse = array();
             $link = Conexion::conectar();
-            $sql = "UPDATE productos SET stock = :stock WHERE producto = :producto";
-            if ($_POST['cantidadSuelto']!='') {
-                $cantidad = $_POST['cantidadSuelto'];
-                $stock = $stockSuelto - $cantidad;
-                $sql = 'UPDATE productos SET stock_suelto = :stock WHERE producto = :producto';
+            for ($i=0; $i < $prd_count; $i++) {
+                $totalSingle = $data['productos'][$i]['total'] - ($data['productos'][$i]['total'] * $data['procentaje'] / 100);
+                $sql = "INSERT INTO ventas (producto,cantidad,idMarca,idCategoria,
+                                        total,fecha,dia,estado,tipo_pago,cliente)
+                        VALUES (:producto,:cantidad,:idMarca,:idCategoria,:total,
+                            :fecha,:dia,:estado,:tipo_pago,:cliente)";
+                $stmt = $link->prepare($sql);
+                $stmt->bindParam(':producto', $data['productos'][$i]['producto'],PDO::PARAM_STR);
+                $stmt->bindParam(':cantidad', $data['productos'][$i]['cantidad'],PDO::PARAM_STR);//En este caso uso str para que me tome el decimal
+                $stmt->bindParam(':idMarca', $data['productos'][$i]['idMarca'],PDO::PARAM_INT);
+                $stmt->bindParam(':idCategoria', $data['productos'][$i]['idCategoria'],PDO::PARAM_INT);
+                $stmt->bindParam(':total', $totalSingle,PDO::PARAM_STR);//En este caso uso str para que me tome el decimal
+                $stmt->bindParam(':fecha', $fecha,PDO::PARAM_STR);
+                $stmt->bindParam(':dia', $dia,PDO::PARAM_STR);
+                $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
+                $stmt->bindParam(':tipo_pago',$tipo_pago,PDO::PARAM_STR);
+                $stmt->bindParam(':cliente',$cliente,PDO::PARAM_STR);
+                $resultado = $stmt->execute();
+                if ($resultado) {
+                    $actualizarStock = $this->actualizarStock($data['productos'][$i]['tipoDeVenta'],$data['productos'][$i]['cantidad'],$data['productos'][$i]['producto']);
+                    if ($actualizarStock) {
+                        array_push($logResponse,true);   
+                    }
+                }else{
+                    array_push($logResponse,false);
+                }
+            }
+            if(in_array(false,$logResponse)){
+                return json_encode(array('status'=>400,'info'=>'Problemas al cargar la venta'));
+            }
+            return json_encode(array('status'=>200,'info'=>'Venta cargada'));;
+        }
+
+        public function actualizarStock($tipoVenta=null,$cantidad=null,$producto=null)
+        {
+            $link = Conexion::conectar();
+            if(!is_null($tipoVenta)){
+                if($tipoVenta == 'normal'){
+                    $sql = "UPDATE productos SET stock = stock - :cantidad WHERE producto = :producto";
+                }else{
+                    $sql = 'UPDATE productos SET stock_suelto = stock_suelto - :cantidad WHERE producto = :producto';
+                }
+            }else{
+                $producto = $_POST['producto'];
+                $stockParcial = $_POST['stockParcial'];
+                $stockSuelto = $_POST['stockSuelto'];
+                $cantidad = $_POST['cantidad'];
+                $stock = $stockParcial - $cantidad; 
             }
             $stmt = $link->prepare($sql);
-            $stmt->bindParam(':stock',$stock,PDO::PARAM_STR);
+            $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_STR);
             $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
             $resultado = $stmt->execute();
             if ($resultado) {

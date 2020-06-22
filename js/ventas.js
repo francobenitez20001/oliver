@@ -208,22 +208,3 @@ function actualizarTotal(event,unitario){
     }
     calcularTotal(datosVenta.precio,datosVenta.cantidad);  
 }
-
-class Carrito{
-    constructor(){
-        this.carrito = [];
-        this.dom = {
-            form:document.getElementById('formVentaProducto')
-        }
-    }
-
-    agregarProducto(){
-        let producto = new FormData(this.dom.form);
-        this.carrito.push(producto);
-        console.log(this.carrito);
-        
-        this.dom.form.reset();
-    }
-}
-
-let carrito = new Carrito();

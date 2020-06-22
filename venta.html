@@ -61,74 +61,10 @@
     <h1>Nueva venta</h1>
     <hr>
     <form id="formVentaProducto" class="form-group d-none">
-        <div class="row">
-            <div class="input-group col-12 col-md-5 mb-5">
-              <div class="input-group-prepend">
-                <div class="input-group-text">Tipo de venta</div>
-              </div>
-              <select name="tipoDeVenta" onchange="cambiarTipoDeCompra(event)" class="form-control" id="">
-                <option value="normal">Normal</option>
-                <option value="suelto">Suelto</option>
-              </select>
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-12 col-md-5 text-center mb-4 pt-3 alert alert-info" id="infoStock">
-              
-            </div>
-            <div class="col-12 col-md-5 mb-4 input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">Producto</div>
-                </div>
-                <input type="text" name="producto" id="producto" class="form-control" value="" required>
-            </div>
-            <div class="col-md-2"></div>
-            <div class="input-group col-12 col-md-5 mb-4">
-              <div class="input-group-prepend">
-                <div class="input-group-text">Cantidad</div>
-              </div>
-              <select class="form-control" onchange="actualizarTotal(event,true)" name="cantidad" id="cantidad">
-                <!--Viene desde ventas.js-->
-              </select>
-              <input type="number" class="form-control d-none" name="cantidadSuelto" id="cantidadSuelto" step="any">
-            </div>
-            <div class="col-12 col-md-5 input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">Marca</div>
-                </div>
-                <select class="form-control" name="idMarca" id="idMarca" required>
-                    <option value=""></option>
-                </select>
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-12 col-md-5 input-group">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">Categoria</div>
-                </div>
-                <select class="form-control" name="idCategoria" id="idCategoria" required>
-                    <option value=""></option>
-                </select>
-            </div>
-            
-            <input type="hidden" name="idProducto" value="">
-            <div class="col-12 col-md-5 mb-4">
-            <!-- campos ocultos importantes para backend -->
-            <input type="hidden" name="fecha" id="inputFecha">
-            <input type="hidden" name="dia" id="inputDia">
-            <input type="hidden" value="" name="stockParcial" id="stockParcial">
-            <input type="hidden" value=""name="stockSuelto" id="stockSuelto">
-            <input type="hidden" name="stock" id="stockFinal">
-            <input type="hidden" name="precio" id="precio" value="">
-            <input type="hidden" name="precioKilo" id="precioKilo" value="">
-            <input type="hidden" name="total" id="total">
-          </div>
-        </div>
-        <hr>
-
-
-
-        <input type="submit" class="btn btn-outline-info mr-2" value="Compra completada">
+      
     </form>
-    <input type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#staticBackdrop" value="Agregar al carrito">
+    <input type="button" class="btn btn-outline-success" id="btn-agregar-productos" data-toggle="modal" data-target="#staticBackdrop" value="Seleccionar productos">
+    <center><button type="button" class="btn btn-success d-none" id="btn-confirmar-venta" onclick="showModalPago()">Confirmar venta</button></center>
   </div>
 
 
@@ -166,6 +102,76 @@
                 </div>
             </div>
         </div>
+    </div>
+
+
+    <div class="modal fade" id="modalPago" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog" style="max-width: 50% !important;">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Pago</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <div class="row">
+                    <div class="col-12 col-md-5">
+                      <p>Selecciona el estado de la compra</p>
+                      <select class="form-control mb-4" onchange="setEstado(event)" required>
+                          <option value="Pago">Abonado en el momento</option>
+                          <option value="Debe">Sumarlo a deudores</option>
+                      </select>
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-12 col-md-5">
+                      <p>Selecciona la forma de pago</p>
+                      <select name="tipo_pago" id="tipo_pago" onchange="habilitarInput(event)" class="form-control" id="">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta">Tarjeta</option>
+                      </select>
+                    </div>
+                    <div class="input-group col-12 col-md-5 my-4" id="div-descuento">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">Descuento</div>
+                      </div>
+                      <select name="descuento" onchange="habilitarDescuento(event)" class="form-control" id="">
+                        <option value="no">No</option>
+                        <option value="si">Si</option>
+                      </select>
+                    </div>
+                    <div class="col-md-2" id="col-separador"></div>
+                    <div class="input-group col-12 col-md-5 d-none my-4" id="selectDescuento">
+                      <div class="input-group-prepend">
+                        <div class="input-group-text">Valor descuento</div>
+                      </div>
+                      <input type="number" class="form-control" oninput="setDescuento(event)" id="inputDescuento" name="inputDescuento">
+                    </div>
+                    <div class="col-12 col-md-5 d-none my-4" id="nombreCliente">
+                      <input type="text" class="form-control" oninput="setCliente(event)" id="cliente" placeholder="Nombre del cliente">
+                    </div>
+                  </div>
+                  <hr>
+                  <div id="infoDeCompra" class="d-none">
+                    <label class="text-muted">Productos:</label>
+                    <ul>
+                      <li><b>Producto 1</b></li>
+                    </ul>
+                    <label class="text-muted">Cliente: <b>Franco Benitez</b></label><br>
+                    <label class="text-muted">Estado: <b>Pago</b></label><br>
+                    <label class="text-muted">Tipo de pago: <b>Efectivo</b></label><br>
+                    <label class="text-muted">Subtotal: <b>1200</b></label><br>
+                    <label class="text-muted">Descuento: <b>5%</b></label><br>
+                    <label class="text-muted">Total: <b>1100</b></label>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <p class="alert-info w-100 py-3 px-3" id="total-info"></p>
+                  <button type="button" class="btn btn-secondary" onclick="venta.verCarrito()">Ver carrito</button>
+                  <button type="button" class="btn btn-info" onclick="venta.cargarVenta()">Cargar</button>
+              </div>
+          </div>
+      </div>
     </div>
     
 
@@ -226,6 +232,6 @@
     <script src="js/bootstrap/bootstrap.min.js"></script>
     <script src="js/sweetalert2.js"></script>
     <script src="js/menu.js"></script>
-    <script src="js/ventaTest.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/ventaTest.js"></script>
 </body>

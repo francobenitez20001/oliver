@@ -19,7 +19,7 @@ class Producto
         public function listarProducto()
         {       
                 $link = Conexion::conectar();
-                $sql = "SELECT idProducto,producto,marcaNombre,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock,stock_suelto,proveedor,porcentaje_ganancia,precio_costo,codigo_producto
+                $sql = "SELECT idProducto,producto,p.idMarca,marcaNombre,p.idCategoria,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock,stock_suelto,proveedor,porcentaje_ganancia,precio_costo,codigo_producto
                         FROM productos p, marcas m, categorias c, proveedor pr
                         WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = pr.idProveedor ";
                 if(isset($_GET['desde']) && !is_null($_GET['desde']) && isset($_GET['hasta']) && !is_null($_GET['hasta'])){
@@ -33,7 +33,9 @@ class Producto
                         $json[] = array(
                                 'idProducto' => $reg['idProducto'],
                                 'producto' => $reg['producto'],
+                                'idMarca' => $reg['idMarca'],
                                 'marcaNombre' => $reg['marcaNombre'],
+                                'idCategoria'=>$reg['idCategoria'],
                                 'categoriaNombre' => $reg['categoriaNombre'],
                                 'precioPublico' => $reg['precioPublico'],
                                 'precioUnidad' => $reg['precioUnidad'],
