@@ -21,7 +21,6 @@ function getEnvios() {
                     <td>${reg.descripcionUbicacion}</td>
                     <td>${reg.telefono}</td>
                     <td>${reg.estado}</td>
-                    <td>${reg.fecha}</td>
                     <td>
                         ${buttons}
                     </td>
@@ -36,7 +35,6 @@ function getEnvios() {
                     <td>${reg.descripcionUbicacion}</td>
                     <td>${reg.telefono}</td>
                     <td>${reg.estado}</td>
-                    <td>${reg.fecha}</td>
                     <td>
                         ${buttons}
                     </td>

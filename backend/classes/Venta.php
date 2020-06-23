@@ -99,18 +99,14 @@
         public function actualizarStock($tipoVenta=null,$cantidad=null,$producto=null)
         {
             $link = Conexion::conectar();
-            if(!is_null($tipoVenta)){
-                if($tipoVenta == 'normal'){
+            if($tipoVenta == 'normal'){
                     $sql = "UPDATE productos SET stock = stock - :cantidad WHERE producto = :producto";
-                }else{
-                    $sql = 'UPDATE productos SET stock_suelto = stock_suelto - :cantidad WHERE producto = :producto';
-                }
             }else{
+                $sql = 'UPDATE productos SET stock_suelto = stock_suelto - :cantidad WHERE producto = :producto';
+            };
+            if(is_null($cantidad) && is_null($producto)){
                 $producto = $_POST['producto'];
-                $stockParcial = $_POST['stockParcial'];
-                $stockSuelto = $_POST['stockSuelto'];
                 $cantidad = $_POST['cantidad'];
-                $stock = $stockParcial - $cantidad; 
             }
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_STR);

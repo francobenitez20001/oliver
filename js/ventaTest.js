@@ -1,4 +1,4 @@
-et f = new Date();
+let f = new Date();
 let fecha = f.getFullYear() + "/" + (f.getMonth() +1) + "/" + f.getDate();
 let semana = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
 let dia = semana[f.getDay()-1];
@@ -201,7 +201,30 @@ class Venta{
         fetch('backend/ventas/agregarVentaJson.php',{
             method:'POST',
             body:JSON.stringify(this.carrito)
-        }).then(res=>res.text()).then(console.log)
+        }).then(res=>res.json()).then(response=>{
+            if(response.status == 200){
+                Swal.fire({
+                    title: response.info,
+                    text: '¿Desea agregar los datos del envio de esta venta?',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Agregar'
+                }).then((result) => {
+                    document.getElementById('modalPago').classList.remove('show');
+                    document.getElementById('modalPago').style.display = 'none';
+                    if (result.value) {
+                        let divVenta = document.getElementById('form-modificar-div');
+                        let divEnvio = document.getElementById('form-agregar-div');
+                        let tipoEnvio = document.getElementById('tipoEnvio');
+                        tipoEnvio.setAttribute('value','varios');
+                        divVenta.classList.add('d-none');
+                        divEnvio.classList.remove('d-none');
+                    }
+                })
+            }
+        })
     }
 } 
 
@@ -295,3 +318,38 @@ function setCliente(event) {
     if(document.getElementById('cliente').value.length<=2){venta.carrito.cliente = 'No registrado';return}
     venta.carrito.cliente = document.getElementById('cliente').value;
 }
+
+//registrar el envio de la venta
+let formEnvio = document.getElementById('formAgregarEnvio');
+formEnvio.addEventListener('submit',event=>{
+    event.preventDefault();
+    let data = new FormData(formEnvio);
+    fetch('backend/envios/agregarEnvio.php',{
+        method: 'POST',
+        body: data
+    })
+    .then(res=>res.json())
+    .then(newRes=>{
+        let divVenta = document.getElementById('form-modificar-div');
+        let divEnvio = document.getElementById('form-agregar-div');
+        divVenta.classList.remove('d-none');
+        divEnvio.classList.add('d-none');
+        if (newRes.status == 200) {   
+            Swal.fire({
+                icon: 'success',
+                title: 'Agregado',
+                text: newRes.info
+            }).then(()=>{
+                window.location.assign('adminVentas.html');
+            })
+        }else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Ups..',
+                text: newRes.info
+            }).then(()=>{
+                window.location.assign('adminVentas.html');
+            })
+        }
+    })
+})
