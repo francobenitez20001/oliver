@@ -121,32 +121,9 @@ function eliminarPedido(id) {
 
 function recibirPedido(id=null,pagoCompleto=false) {
     document.getElementById('idPedido').value = id;
-    inputTotal = document.getElementsByName('total')[0];
-    inputPago = document.getElementsByName('pago')[0];
-    indicadorValores = document.getElementById('indicadorValores');
     let inputCantidadLlegada = document.getElementById('cantidadFinal');
     inputCantidadLlegada.classList.remove('d-none');
     inputCantidadLlegada.setAttribute('required','');
-    if(!indicadorValores.classList.contains('d-none') && inputTotal.value != ''){
-        inputTotal.value = '';
-        inputTotal.removeAttribute('disabled');
-        indicadorValores.classList.add('d-none');
-    }
-    if(pagoCompleto){
-        inputCantidadLlegada.removeAttribute('required');
-        inputCantidadLlegada.classList.add('d-none');
-        document.getElementById('pagarDeuda').value='true';
-        fetch(`backend/pedidos/verPedidoPorId.php?idPedido=${id}`).then(res=>res.json()).then(response=>{
-            if (response.status == 200) {
-                let total = parseInt(response.total);
-                let pagado = parseInt(response.pagado);
-                let debe = total - pagado;
-                inputTotal.value = total;
-                indicadorValores.innerHTML = `Pagado: <b>$${pagado}</b>. Por pagar <b>$${debe}</b>`;
-                indicadorValores.classList.remove('d-none');
-            }
-        })
-    }
     let cargarComponente = document.getElementById('cargarComprobante');
     cargarComponente.classList.toggle('d-none');
     cargarComponente.classList.toggle('swal2-container');
@@ -167,7 +144,6 @@ document.getElementById('cargarComprobante').addEventListener('submit',event=>{
     let alertError = document.getElementById('alert-error');
     alertLoading.classList.remove('d-none');
     let data = new FormData(formCargarComprobante);
-    if(document.getElementById('pagarDeuda').value != 'true'){
         fetch('backend/pedidos/recibirPedido.php',{
             method:'POST',
             body:data
@@ -194,21 +170,6 @@ document.getElementById('cargarComprobante').addEventListener('submit',event=>{
                 }
             })
         })
-    }else{
-        fetch('backend/pedidos/saldarDeudaPedido.php',{
-            method:'POST',
-            body:data
-        }).then(res=>res.json()).then(response=>{
-            alertLoad.innerHTML = response.info;
-            alertLoading.classList.add('d-none');
-            alertLoad.classList.remove('d-none');
-            getPedidos();
-            setTimeout(() => {
-                window.location.assign('adminPedidos.html')
-                return;
-            }, 1000);
-        })
-    }
 })
 
 

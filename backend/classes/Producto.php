@@ -114,7 +114,7 @@ class Producto
                 $idMarca = $_POST['idMarca'];
                 $idCategoria = $_POST['idCategoria'];
                 $precioCosto = $_POST['precio_costo'];
-                $stock = $_POST['stock'];
+                $stock = $_POST['stock'] - $_POST['restaCostoUnitario'];
                 $idProveedor = $_POST['idProveedor'];
                 $porcentaje_ganancia = $_POST['porcentaje_ganancia'];
                 $stockSuelto = $_POST['stockSuelto'];

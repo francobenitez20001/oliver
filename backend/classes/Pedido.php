@@ -67,18 +67,12 @@
         {
             $link = Conexion::conectar();
             $idPedido = $_POST['idPedido'];
-            $total = $_POST['total'];
-            $pago = $_POST['pago'];
             $cantidad = $_POST['cantidadFinal'];
             $sql = "UPDATE pedidos SET estado = 'Recibido',
-                                       total = :total,
-                                       cantidad = :cantidad,
-                                       pagado = :pagado
+                                       cantidad = :cantidad
                     WHERE idPedido = :idPedido";
             $stmt = $link->prepare($sql);
-            $stmt->bindParam(':total',$total,PDO::PARAM_STR);
             $stmt->bindParam(':idPedido',$idPedido,PDO::PARAM_INT);
-            $stmt->bindParam(':pagado',$pago,PDO::PARAM_STR);
             $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_STR);
             $bool = $stmt->execute();
             if ($bool) {
