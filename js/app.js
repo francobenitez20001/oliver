@@ -69,26 +69,61 @@ cerrarSesion.addEventListener("click",()=>{
 
 let checkAll = false;
 
-function modalExport(url) {
-    Swal.fire({
-        title: 'Indique Fechas',
-        html:
-            '<input id="inicio" name="inicio" type="date" class="swal2-input">' +
-            '<input id="fin" name="fin" type="date" class="swal2-input">' +
-            '<input id="all" type="checkbox" class="">Exportar todo',
-        focusConfirm: false,
-        showCancelButton: true,
-        preConfirm: () => {
-            if(document.getElementById('all').checked){
-                console.log('todo')
-                return window.location.assign(url);
-            };  
-            inicio = document.getElementById('inicio').value;
-            fin = document.getElementById('fin').value;
-            console.log(url+'?inicio='+inicio+'&fin='+fin)
-            return window.location.assign(url+'?inicio='+inicio+'&fin='+fin);
-        },
-    })
+function modalExport(url,proveedores) {
+    if(proveedores){
+        let listadoProveedores;
+        let template;
+        fetch('backend/proveedores/listarProveedor.php').then(res=>res.json()).then(data=>{
+            listadoProveedores=data;
+            listadoProveedores.forEach(provedor => {
+                template += `<option value="${provedor.idProveedor}">${provedor.proveedor}</option>`
+            });
+            Swal.fire({
+                title: 'Indique Fechas',
+                html:
+                    `
+                    <select class="form-control" id="idProveedor">
+                        ${template}
+                    </select>
+                    ` +
+                    '<input id="inicio" name="inicio" type="date" class="swal2-input">' +
+                    '<input id="fin" name="fin" type="date" class="swal2-input">' +
+                    '<input id="all" type="checkbox" class="">Exportar todo',
+                focusConfirm: false,
+                showCancelButton: true,
+                preConfirm: () => {
+                    if(document.getElementById('all').checked){
+                        console.log('todo')
+                        return window.location.assign(url);
+                    };  
+                    inicio = document.getElementById('inicio').value;
+                    fin = document.getElementById('fin').value;
+                    idProveedor = document.getElementById('idProveedor').value;
+                    return window.location.assign(url+'?inicio='+inicio+'&fin='+fin+'&idProveedor='+idProveedor);
+                }
+            })
+        });
+    }else{
+        Swal.fire({
+            title: 'Indique Fechas',
+            html:
+                '<input id="inicio" name="inicio" type="date" class="swal2-input">' +
+                '<input id="fin" name="fin" type="date" class="swal2-input">' +
+                '<input id="all" type="checkbox" class="">Exportar todo',
+            focusConfirm: false,
+            showCancelButton: true,
+            preConfirm: () => {
+                if(document.getElementById('all').checked){
+                    console.log('todo')
+                    return window.location.assign(url);
+                };  
+                inicio = document.getElementById('inicio').value;
+                fin = document.getElementById('fin').value;
+                console.log(url+'?inicio='+inicio+'&fin='+fin)
+                return window.location.assign(url+'?inicio='+inicio+'&fin='+fin);
+            },
+        })
+    }
 }
 
 

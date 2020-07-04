@@ -63,46 +63,9 @@
     <form id="formVentaProducto" class="form-group d-none">
       
     </form>
-    <input type="button" class="btn btn-outline-success" id="btn-agregar-productos" data-toggle="modal" data-target="#staticBackdrop" value="Seleccionar productos">
     <center><button type="button" class="btn btn-success d-none" id="btn-confirmar-venta" onclick="showModalPago()">Confirmar venta</button></center>
   </div>
 
-
-
-
-
-
-    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog" style="max-width: 70% !important;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Productos</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="venta.renderFormVenta()">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-12 mb-3">
-                        <div class="col-12 mb-2" id="label-productos">
-                            
-                        </div>
-                        <input type="text" id="productoSearch" class="form-control" placeholder="Busque su producto">
-                    </div>
-                    <label class="col-12" for="">Resultados:</label>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="list-group" id="lista-productos-modal" role="tablist">
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     <div class="modal fade" id="modalPago" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -167,8 +130,8 @@
               </div>
               <div class="modal-footer">
                   <p class="alert-info w-100 py-3 px-3" id="total-info"></p>
-                  <button type="button" class="btn btn-secondary" onclick="venta.verCarrito()">Ver carrito</button>
-                  <button type="button" class="btn btn-info" onclick="venta.cargarVenta()">Cargar</button>
+                  <button type="button" class="btn btn-secondary" onclick="carrito.verCarrito()">Ver carrito</button>
+                  <button type="button" class="btn btn-info" onclick="carrito.cargarVenta()">Cargar</button>
               </div>
           </div>
       </div>
@@ -233,5 +196,5 @@
     <script src="js/sweetalert2.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/ventaTest.js"></script>
+    <script type="module" src="js/venta.js"></script>
 </body>

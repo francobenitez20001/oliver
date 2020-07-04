@@ -2,61 +2,42 @@ let f = new Date();
 let fecha = f.getFullYear() + "/" + (f.getMonth() +1) + "/" + f.getDate();
 let semana = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
 let dia = semana[f.getDay()-1];
-class Venta{
+class Carrito{
     constructor() {
         this.API_PRODUCTOS = 'backend/producto/';
-        this.productos = [];
         this.productosSeleccionados = [];
+        this.productos = [];
         this.carrito = {
             productos:[],
             total:0,
             fecha,
             dia,
-            estado:'Pagado',
+            estado:'Pago',
             tipo_pago:'Efectivo',
             cliente:'No registrado',
             descuento:0
         };
-        this.getProductos();
-    }
-
-    getProductos(){
-        fetch(this.API_PRODUCTOS+'listarProducto.php').then(res=>res.json()).then(data=>{
-            data.forEach(producto=>{
-                this.productos.push(producto);
-            })
-            return this.productos;
-        });
-    }
-
-    filterProductos(input,strict=false){
-        let filtrados;
-        if(strict){
-            filtrados = this.productos.filter(fil=>fil.producto.toLowerCase() == input.toLowerCase());
-        }else{
-            filtrados = this.productos.filter(fil=>fil.producto.toLowerCase().includes(input.toLowerCase()));
-        }
-        return filtrados;
+        //this.getProductos();
     }
 
     agregarProductoSeleccionado(prd){
-        let producto = this.filterProductos(prd,true);
-        this.productosSeleccionados.push(producto[0]);
-        this.renderLabelsCarrito(this.productosSeleccionados);
+        this.productosSeleccionados.push(prd[0]);
+        this.renderLabelsCarrito();
+    }
+
+    renderLabelsCarrito(){
+        template = '';
+        this.productosSeleccionados.forEach(producto=>{
+            template += `<span class="badge badge-secondary">${producto.producto}</span><span class="eliminarProductoCarrito" aria-hidden="true" onclick="producto.carrito.eliminarProductoSeleccionado(${producto.idProducto})">&times;</span>`
+        })
+        return document.getElementById('productosSeleccionadosModal').innerHTML = template;
     }
 
     eliminarProductoSeleccionado(id){
         let productoSeleccionadoNuevo = this.productosSeleccionados.filter(res=>res.idProducto!=id);
         this.productosSeleccionados = productoSeleccionadoNuevo;
-        return this.renderLabelsCarrito(this.productosSeleccionados);
-    }
-
-    renderLabelsCarrito(seleccionados){
-        template = '';
-        seleccionados.forEach(producto=>{
-            template += `<span class="badge badge-secondary">${producto.producto}</span><span class="eliminarProductoCarrito" aria-hidden="true" onclick="venta.eliminarProductoSeleccionado(${producto.idProducto})">&times;</span>`
-        })
-        return dom.labelProductosSeleccionados.innerHTML = template;
+        document.getElementById('indicatorCantidadSeleccionados').innerHTML = `Productos seleccionados: <b>${this.productosSeleccionados.length}<b/>`;
+        return this.renderLabelsCarrito();
     }
 
     agregarAlCarrito(index){
@@ -93,7 +74,6 @@ class Venta{
     }
 
     renderFormVenta(){
-        document.getElementById('btn-agregar-productos').classList.add('d-none');//oculto boton de agregar productos
         document.getElementById('btn-confirmar-venta').classList.remove('d-none');
         let template = '';
         let templateSelectTipoVenta = '';
@@ -112,7 +92,7 @@ class Venta{
                         <div class="input-group-prepend">
                             <div class="input-group-text">Tipo de venta</div>
                         </div>
-                        <select name="tipoDeVenta" onchange="venta.cambiarTipoDeCompra(event,${index})" class="form-control" id="">
+                        <select name="tipoDeVenta" onchange="carrito.cambiarTipoDeCompra(event,${index})" class="form-control" id="">
                             ${templateSelectTipoVenta}
                         </select>
                     </div>
@@ -135,7 +115,7 @@ class Venta{
                         </select>
                         <input type="number" class="form-control d-none cantidadSuelto" name="cantidadSuelto" step="any">
                     </div>
-                    <div class="col-12 text-right"><input type="button" class="btn btn-outline-success mt-4 btn-agregar-carrito" onclick="venta.agregarAlCarrito(${index})" value="Agregar al carrito"></div>
+                    <div class="col-12 text-right"><input type="button" class="btn btn-outline-success mt-4 btn-agregar-carrito" onclick="carrito.agregarAlCarrito(${index})" value="Agregar al carrito"></div>
                 </div>
             </div>
             <hr>
@@ -203,6 +183,7 @@ class Venta{
             body:JSON.stringify(this.carrito)
         }).then(res=>res.json()).then(response=>{
             if(response.status == 200){
+                localStorage.removeItem('productos');//elimino los datos de los productos seleccionados del localStorage
                 Swal.fire({
                     title: response.info,
                     text: '¿Desea agregar los datos del envio de esta venta?',
@@ -221,135 +202,12 @@ class Venta{
                         tipoEnvio.setAttribute('value','varios');
                         divVenta.classList.add('d-none');
                         divEnvio.classList.remove('d-none');
+                    }else{
+                        window.location.assign('adminVentas.html');
                     }
                 })
             }
         })
     }
 } 
-
-let venta = new Venta();
-let dom = {
-    inputSearchProducto:document.getElementById('productoSearch'),
-    itemsFiltradosModal:document.getElementById('lista-productos-modal'),
-    labelProductosSeleccionados:document.getElementById('label-productos'),
-    formVenta:document.getElementById('formVentaProducto')
-};
-
-dom.inputSearchProducto.addEventListener('input',event=>{
-    let f = venta.filterProductos(dom.inputSearchProducto.value);
-    renderItemsFiltrados(f);
-})
-
-const renderItemsFiltrados = filtrados=>{
-    let template = '';
-    filtrados.forEach(prd=>{
-        if(prd.stock == '0'){
-            template += `
-            <a class="list-group-item list-group-item-action disabled" style="cursor:pointer">
-                <span>${prd.producto}</span>
-            </a>
-            `; 
-        }else{
-            template += `
-                <a class="list-group-item list-group-item-action" style="cursor:pointer" onclick="venta.agregarProductoSeleccionado('${prd.producto}')">
-                    <span>${prd.producto}</span>
-                </a>
-            `;
-        }
-    })
-    return dom.itemsFiltradosModal.innerHTML = template;
-}
-
-
-//habilita el input de nombre del cliente para registrarlo en el caso de que se pague con tarjeta
-function habilitarInput(data){
-    let divNombre = document.getElementById('nombreCliente');
-    if (data.target.value == 'Tarjeta') {
-        venta.carrito.tipo_pago = 'Tarjeta';
-        divNombre.classList.remove('d-none');
-    }else{
-        venta.carrito.tipo_pago = 'Efectivo';
-        divNombre.classList.add('d-none');
-    }
-}
-
-//en el caso de que se seleccione descuento 'si', se habilita el input para que ingrese el valor del descuento
-function habilitarDescuento(data) {
-    let selectDescuento = document.getElementById('div-descuento'); //select de decuento (si-no)
-    if (data.target.value == 'si') {
-        document.getElementById('selectDescuento').classList.toggle('d-none');
-        selectDescuento.setAttribute('required','');
-    }else{
-        document.getElementById('inputDescuento').value = '';//limpio por las dudas el input de desc
-        venta.carrito.descuento = 0;
-        document.getElementById('selectDescuento').classList.toggle('d-none');
-        selectDescuento.removeAttribute('required');
-    }
-}
-
-function showModalPago() {
-    document.getElementById('modalPago').classList.add('show');
-    document.getElementById('modalPago').style.display = 'block';
-    document.getElementById('total-info').innerHTML = `El total es <b>$${venta.carrito.total.toFixed(2)}<b>`
-}
-
-function setDescuento(event) {
-    let valorConDescuento;
-    if(document.getElementById('inputDescuento').value == ''){
-        valorConDescuento = venta.carrito.total;
-        return;
-    }else{
-        venta.carrito.descuento = parseFloat(document.getElementById('inputDescuento').value);
-        valorConDescuento = venta.carrito.total - (venta.carrito.total * venta.carrito.descuento / 100);
-    }
-    document.getElementById('total-info').innerHTML = `El total es <b>$${valorConDescuento.toFixed(2)}<b>`
-}
-
-function setEstado(event) {
-    if (event.target.value == 'Debe') {
-        venta.carrito.estado = 'Debe';
-    }else{
-        venta.carrito.estado = 'Pago'
-    }
-}
-
-function setCliente(event) {
-    if(document.getElementById('cliente').value.length<=2){venta.carrito.cliente = 'No registrado';return}
-    venta.carrito.cliente = document.getElementById('cliente').value;
-}
-
-//registrar el envio de la venta
-let formEnvio = document.getElementById('formAgregarEnvio');
-formEnvio.addEventListener('submit',event=>{
-    event.preventDefault();
-    let data = new FormData(formEnvio);
-    fetch('backend/envios/agregarEnvio.php',{
-        method: 'POST',
-        body: data
-    })
-    .then(res=>res.json())
-    .then(newRes=>{
-        let divVenta = document.getElementById('form-modificar-div');
-        let divEnvio = document.getElementById('form-agregar-div');
-        divVenta.classList.remove('d-none');
-        divEnvio.classList.add('d-none');
-        if (newRes.status == 200) {   
-            Swal.fire({
-                icon: 'success',
-                title: 'Agregado',
-                text: newRes.info
-            }).then(()=>{
-                window.location.assign('adminVentas.html');
-            })
-        }else{
-            Swal.fire({
-                icon: 'error',
-                title: 'Ups..',
-                text: newRes.info
-            }).then(()=>{
-                window.location.assign('adminVentas.html');
-            })
-        }
-    })
-})
+export default Carrito;

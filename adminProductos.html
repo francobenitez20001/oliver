@@ -59,11 +59,14 @@
     <div class="row">
       <div class="col-12 col-sm-8 col-md-9">
         <h3 class="my-4">Panel de administración de productos</h3>
+        <button type="button" data-toggle="modal" data-target="#staticBackdrop" class="btn btn-success mb-3 preventa d-none">Ver productos</button>
+        <button type="button" onclick="producto.registrarVenta()" class="btn btn-warning mb-3 preventa d-none">Continuar venta</button>
+        <span class="text-muted preventa d-none" id="indicatorCantidadSeleccionados">Productos seleccionados: <b>4</b></span>
       </div>
       <div class="col-12 col-sm-4 col-md-3">
-        <form id="form-search" onsubmit="submitSearch(event)">
+        <form id="form-search" onsubmit="producto.search(event)">
           <div class="input-group">
-            <select class="input-group-prepend" onchange="changeCriterioBusqueda(event)" style="margin: 24px 0px;">
+            <select class="input-group-prepend" onchange="producto.changeCriterioBusqueda(event)" style="margin: 24px 0px;">
               <option value="producto">Producto</option>
               <option value="codigo">Codigo</option>
             </select>
@@ -86,7 +89,7 @@
           <th scope="col">Precio Unitario</th>
           <th scope="col">Precio por KG</th>
           <th scope="col">
-            <i class="fas fa-plus userPrivate" style="color:blue;cursor:pointer;" id="botonAgregar" onclick="mostrarFormularioAgregar()"></i>
+            <i class="fas fa-plus userPrivate" style="color:blue;cursor:pointer;" id="botonAgregar" onclick="producto.mostrarFormularioAgregar()"></i>
             <a class="userPrivate" href="exports/exportarExcelProductos.php"><i class="fas fa-file-export" style="color:blue;cursor:pointer;"></i></a>
           </th>
         </tr>
@@ -100,7 +103,7 @@
   <!--formulario de agregar-->
   <div class="container mt-3 d-none fadeIn fast" id="form-agregar-div">
     <div class="alert alert-success d-none" id="alert-success">Se ha agregado el producto con éxito</div>
-    <a class="btn btn-warning" onclick="ocultarFormularioAgregar()">Regresar al panel de control</a>
+    <a class="btn btn-warning" onclick="producto.ocultarFormularioAgregar()">Regresar al panel de control</a>
     <h1>Formulario de alta de un nuevo producto</h1>
     <hr>
     <form id="formAgregarProducto" class="form-group">
@@ -136,7 +139,7 @@
             <div class="input-group-prepend">
               <div class="input-group-text">Venta por kilo</div>
             </div>
-            <select onchange="handleChangeVentaKilo(event)" class="form-control" id="ventaKiloSelect">
+            <select onchange="producto.handleChangeVentaKilo(event)" class="form-control" id="ventaKiloSelect">
               <option value="no">No</option>
               <option value="si">Si</option>
             </select>
@@ -187,7 +190,7 @@
     </form>
   </div>
 
-  <center><button class="btn btn-outline-dark mb-2" onclick="loadMore()" id="btnverMas">Ver más</button></center>
+  <center><button class="btn btn-outline-dark mb-2" onclick="producto.loadMore()" id="btnverMas">Ver más</button></center>
 
   <div class="menu-secundary bg-dark animated fadeIn fast d-none" id="menu-secundary">
     <i class="fas fa-times-circle" id="botonVolverSecundary"></i>
@@ -239,6 +242,26 @@
     </form>
   </div>
 
+
+  <!-- modal para ver los productos agregados al carrito -->
+  <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 70% !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Productos</h5>
+            </div>
+            <div class="modal-body">
+                <div class="col-12 mb-3" id="productosSeleccionadosModal">
+                  
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
     <div id="slider" class="container__slider d-none">
       <div class="sk-chase">
         <div class="sk-chase-dot"></div>
@@ -258,7 +281,8 @@
     <script src="js/menu.js"></script>
     <script src="js/sweetalert2.js" charset="utf-8"></script>
     <script src="js/app.js"></script>
-    <script src="js/productos.js"></script>
+    <script type="module" src="js/productos.js"></script>
+    <script src="js/menu-producto.js"></script>
     <!-- <script src="js/formAgregarProducto.js"></script> -->
 </body>
 </html>

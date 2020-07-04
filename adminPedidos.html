@@ -59,59 +59,6 @@
     <div class="row align-items-center mb-3">
       <div class="col-12 col-md-8">
         <h3 class="my-4">Panel de administración de pedidos</h3>
-
-        <div class="row align-items-center animated fadeIn fast d-none" id="reporteProveedores">
-          <div class="col-6 col-md-2">
-            <div class="card bg-light mb-3">
-                <div class="card-header">Recibidos</div>
-                <div class="card-body">
-                    <p class="card-text text-center p-balance" id="recibidos">2</p>
-                </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-2">
-            <div class="card bg-light mb-3">
-                <div class="card-header">Sin recibir</div>
-                <div class="card-body">
-                    <p class="card-text text-center p-balance" id="noRecibidos">2</p>
-                </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-2">
-            <div class="card bg-light mb-3">
-                <div class="card-header">Total</div>
-                <div class="card-body">
-                    <p class="card-text text-center p-balance" id="total">2</p>
-                </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-2">
-            <div class="card bg-light mb-3">
-                <div class="card-header">Pagado</div>
-                <div class="card-body">
-                    <p class="card-text text-center p-balance" id="pagado">2</p>
-                </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-2">
-            <div class="card bg-light mb-3">
-                <div class="card-header">Sin pagar todo</div>
-                <div class="card-body">
-                    <p class="card-text text-center p-balance" id="porPagar">-</p>
-                </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-2">
-            <div class="card bg-light mb-3">
-                <div class="card-header">saldo</div>
-                <div class="card-body">
-                    <p class="card-text text-center p-balance" id="saldo">2</p>
-                </div>
-            </div>
-          </div>
-          <button type="button" id="btn-adjuntarComprobante" class="btn btn-warning ml-3">Adjuntar comprobante</button>
-          <a id="btnVerComprobantes" target="blank" class="btn btn-success ml-2">Ver comprobantes</a>
-        </div>
       </div>
       <div class="col-12 col-md-4">
         <div class="row">
@@ -164,7 +111,7 @@
             </div>
             <div class="col-6">
               <button class="btn btn-outline-info" id="botonAgregar" onclick="mostrarFormularioAgregar()">Nuevo pedido!</button>
-              <a onclick="modalExport('exports/exportarExcelPedidos.php')" class="btn btn-outline-info">Exportar</a> 
+              <a onclick="modalExport('exports/exportarExcelPedidos.php',true)" class="btn btn-outline-info">Exportar</a> 
             </div>
           </div>
         </th>
@@ -216,16 +163,9 @@
     <form id="formCargarComprobante" class="form-group" enctype="multipart/form-data">
       <input type="text" name="cantidadFinal" id="cantidadFinal" required class="form-control col-12 mt-3" placeholder="Ingrese la cantidad que llego del pedido (unidades)">
       <br>
-      <input type="number" step="any" name="total" id="total" required class="form-control col-12 mt-3" placeholder="Ingese el total del pedido">
-      <br>
-      <span id="indicadorValores" class="text-muted d-none">Pagado: <b>$600</b>. Por pagar <b>$500</b></span>
-      <br>
-      <input type="number" step="any" name="pago" id="pago" required class="form-control col-12 mt-3" placeholder="Ingese cuanto pagó">
-      <br><br>
       <div class="row">
         <div class="col-6">
           <input type="hidden" id="idPedido" name="idPedido" value="">
-          <input type="hidden" id="pagarDeuda" name="pagarDeuda" value="">
           <input type="button" onclick="recibirPedido()" class="btn btn-danger btn-block" value="Cancelar">
         </div>
         <div class="col-6">
@@ -233,8 +173,8 @@
         </div>
       </div>
       <br>
-      <div class="alert alert-warning text-center d-none" id="alert-loading">Subiendo comprobante y cambiando el estado del pedido...</div>
-      <div class="alert alert-success text-center d-none" id="alert-load">Servicio actualizado</div>
+      <div class="alert alert-warning text-center d-none" id="alert-loading">Actualizando datos...</div>
+      <div class="alert alert-success text-center d-none" id="alert-load">Pedido actualizado</div>
       <div class="alert alert-danger text-center d-none" id="alert-error"></div>
     </form>
   </div>
@@ -249,6 +189,33 @@
       <div class="sk-chase-dot"></div>
     </div>
   </div>
+
+  <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 70% !important;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Modificar Pedido</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="formModificarPedido" onsubmit="modificarPedido(event)">
+            <div class="modal-body">
+              <div class="row px-4">
+                <input class="col-12 col-md-6 form-control" disabled="true" id="cantidadPrevia"/>
+                <input class="col-12 col-md-6 form-control" required name="cantidadMonto" placeholder="Ingrese cantidad nueva"/>
+                <input type="hidden" id="idPedidoModificar" name="idPedido">
+              <div>
+            </div>
+            <div class="modal-footer w-100">
+                <div class="alert text-center w-100 animated fadeIn fast" id="alert-response"></div>
+                <button type="submit" class="btn btn-info">Cargar</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 
 
     <script src="js/bootstrap/jquery.js"></script>

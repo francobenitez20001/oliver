@@ -2,22 +2,6 @@ let f = new Date();
 let dia = f.getFullYear() + "-0" + (f.getMonth() +1) + "-" + f.getDate();
 let mes = f.getFullYear() + "-0" + (f.getMonth() +1);
 let listadoPedidos;
-let reporteProveedoresDom = {
-    recibidos:document.getElementById('recibidos'),
-    noRecibidos:document.getElementById('noRecibidos'),
-    total:document.getElementById('total'),
-    pagado:document.getElementById('pagado'),
-    sinPagarTodo:document.getElementById('porPagar'),
-    saldo:document.getElementById('saldo')
-}
-let pedidosRecibidos = 0,
-    pedidosNoRecibidos = 0,
-    pedidosRecibidosPorPagar = 0,
-    montoTotal = [],
-    montoPagado = [];
-
-let btnAdjuntarComprobante = document.getElementById('btn-adjuntarComprobante');
-btnAdjuntarComprobante.addEventListener('click',subirComprobante);
 
 window.onload = ()=>{
     getPedidos();
@@ -40,28 +24,17 @@ function render(data) {
     buttons = '';
     data.forEach(reg => {
         if (reg.estado == 'No recibido') {
-            buttons = `<i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar"onclick="recibirPedido(${reg.idPedido})"></i>
-            <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"`;
+            buttons = `
+            <i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px" data-toggle="modal" data-target="#staticBackdrop" onclick="insertarDatosFormModificar(${reg.idPedido},${reg.cantidad})"></i>
+            <i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar"onclick="recibirPedido(${reg.idPedido})"></i>
+            <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"</i> `;
         }else{
             buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"></i>`;
             if(reg.total !== reg.pagado){
                 buttons += ` <i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px"id="boton-eliminar" onclick="recibirPedido(${reg.idPedido},true)"></i>`;
             }
-        }
-            
-        if(reg.total !== reg.pagado){
-            template += `
-                <tr class="bg-yellow">
-                    <th scope="row">${reg.descripcion}</th>
-                    <td>${reg.cantidad}</td>
-                    <td>${reg.estado}</td>
-                    <td>${reg.proveedor}</td>
-                    <td>
-                        ${buttons}
-                    </td>
-                </tr>
-            `;
-        }else if(reg.estado == 'Recibido' && reg.total == reg.pagado){
+        }    
+        if(reg.estado == 'Recibido'){
             template += `
             <tr class="bg-green">
                 <th scope="row">${reg.descripcion}</th>
@@ -121,32 +94,9 @@ function eliminarPedido(id) {
 
 function recibirPedido(id=null,pagoCompleto=false) {
     document.getElementById('idPedido').value = id;
-    inputTotal = document.getElementsByName('total')[0];
-    inputPago = document.getElementsByName('pago')[0];
-    indicadorValores = document.getElementById('indicadorValores');
     let inputCantidadLlegada = document.getElementById('cantidadFinal');
     inputCantidadLlegada.classList.remove('d-none');
     inputCantidadLlegada.setAttribute('required','');
-    if(!indicadorValores.classList.contains('d-none') && inputTotal.value != ''){
-        inputTotal.value = '';
-        inputTotal.removeAttribute('disabled');
-        indicadorValores.classList.add('d-none');
-    }
-    if(pagoCompleto){
-        inputCantidadLlegada.removeAttribute('required');
-        inputCantidadLlegada.classList.add('d-none');
-        document.getElementById('pagarDeuda').value='true';
-        fetch(`backend/pedidos/verPedidoPorId.php?idPedido=${id}`).then(res=>res.json()).then(response=>{
-            if (response.status == 200) {
-                let total = parseInt(response.total);
-                let pagado = parseInt(response.pagado);
-                let debe = total - pagado;
-                inputTotal.value = total;
-                indicadorValores.innerHTML = `Pagado: <b>$${pagado}</b>. Por pagar <b>$${debe}</b>`;
-                indicadorValores.classList.remove('d-none');
-            }
-        })
-    }
     let cargarComponente = document.getElementById('cargarComprobante');
     cargarComponente.classList.toggle('d-none');
     cargarComponente.classList.toggle('swal2-container');
@@ -163,11 +113,9 @@ function verComprobante(id) {
 document.getElementById('cargarComprobante').addEventListener('submit',event=>{
     event.preventDefault();
     let alertLoading = document.getElementById('alert-loading');
-    let alertLoad = document.getElementById('alert-load');
     let alertError = document.getElementById('alert-error');
     alertLoading.classList.remove('d-none');
     let data = new FormData(formCargarComprobante);
-    if(document.getElementById('pagarDeuda').value != 'true'){
         fetch('backend/pedidos/recibirPedido.php',{
             method:'POST',
             body:data
@@ -194,21 +142,6 @@ document.getElementById('cargarComprobante').addEventListener('submit',event=>{
                 }
             })
         })
-    }else{
-        fetch('backend/pedidos/saldarDeudaPedido.php',{
-            method:'POST',
-            body:data
-        }).then(res=>res.json()).then(response=>{
-            alertLoad.innerHTML = response.info;
-            alertLoading.classList.add('d-none');
-            alertLoad.classList.remove('d-none');
-            getPedidos();
-            setTimeout(() => {
-                window.location.assign('adminPedidos.html')
-                return;
-            }, 1000);
-        })
-    }
 })
 
 
@@ -261,22 +194,6 @@ function ocultarFormularioAgregar() {
     bannerForm.classList.remove('d-none');
     getPedidos();
     // getProductos(0,100);//llamo a la funcion de getData para obtener la tabla actualizada con lo que agregue
-}
-
-
-function getProveedores() {
-    let select = document.getElementById('proveedor');
-    fetch('backend/proveedores/listarProveedor.php')
-    .then(res=>res.json())
-    .then(proveedores=>{
-        let template = '';
-        proveedores.forEach(proveedor => {
-            template += `
-                <option value="${proveedor.idProveedor}">${proveedor.proveedor}</option>
-            `
-        });
-        select.innerHTML = template;
-    })
 }
 
 function getProductos() {
@@ -345,7 +262,6 @@ function getProveedores(domElementId){
 function getPedidosPorProveedor(event){
     let proveedor = event;
     if (proveedor == 'all') {
-        document.getElementById('reporteProveedores').classList.add('d-none');
         render(listadoPedidos);
         return;
     }
@@ -354,72 +270,30 @@ function getPedidosPorProveedor(event){
         render(listadoPedidos);
         return alert('No hay pedidos con este proveedor');
     }
-    getReporteEstadisticas(filtrados);
     return render(filtrados);
 }
 
-function getReporteEstadisticas(filtrados) {
-    console.log(filtrados);
-    pedidosRecibidos = 0;
-    pedidosNoRecibidos = 0;
-    pedidosRecibidosPorPagar = 0;
-    montoPagado.splice(0,montoPagado.length);
-    montoTotal.splice(0,montoTotal.length);
-    filtrados.filter(res=>{
-        (res.estado == 'Recibido')?pedidosRecibidos++:pedidosNoRecibidos++;
-        (res.estado == 'Recibido' && res.total != res.pagado) ?pedidosRecibidosPorPagar++:null;
-        (res.estado == 'Recibido' && res.total != null)?montoTotal.push(parseInt(res.total)):null;
-        (res.estado == 'Recibido' && res.pagado != null)?montoPagado.push(parseInt(res.pagado)):null;
-    });
-    let totalNumero = montoTotal.reduce((a, b) => a + b, 0);
-    let pagadoNumero = montoPagado.reduce((a,b)=> a + b, 0);
-    reporteProveedoresDom.recibidos.innerText = pedidosRecibidos;
-    reporteProveedoresDom.noRecibidos.innerText = pedidosNoRecibidos;
-    reporteProveedoresDom.total.innerText = totalNumero;
-    reporteProveedoresDom.pagado.innerText = pagadoNumero;
-    reporteProveedoresDom.sinPagarTodo.innerText = pedidosRecibidosPorPagar;
-    reporteProveedoresDom.saldo.innerText = pagadoNumero-totalNumero;
-    document.getElementById('reporteProveedores').classList.remove('d-none');
-
-    document.getElementById('btnVerComprobantes').setAttribute('href','adminComprobantes.html?idProveedor='+parseInt(document.getElementById('filtroPedidoPorProveedor').value));
+function insertarDatosFormModificar(id,cantidad) {
+    document.getElementById('cantidadPrevia').value = cantidad;
+    document.getElementById('idPedidoModificar').value = id;
 }
 
-function subirComprobante() {
-    let idProveedor = parseInt(document.getElementById('filtroPedidoPorProveedor').value);
-    Swal.fire({
-        title: 'Adjuntar comprobantes',
-        html:`<form id="cargarComprobanteProveedor">
-                <input id="comprobante" name="comprobante" type="file" class="swal2-input">
-                <input id="" name="descripcion" type="text" class="swal2-input">
-                <input id="idProveedor" name="idProveedor" value="${idProveedor}" type="hidden">
-              </form>`,
-        focusConfirm: false,
-        preConfirm: () => {
-            document.getElementById('slider').classList.remove('d-none');
-            let data = new FormData(document.getElementById('cargarComprobanteProveedor'));
-            fetch('backend/comprobantes/cargarComprobante.php',{
-                method:'POST',
-                body:data
-            }).then(res=>res.json()).then(data=>{
-                if(data.status==200){
-                    fetch(`backend/comprobantes/agregarComprobante.php?idProveedor=${data.data.idProveedor}&comprobante=${data.data.comprobante}&descripcion=${data.data.descripcion}`).then(res=>res.json()).then(response=>{
-                        document.getElementById('slider').classList.add('d-none');
-                        if(response.status==400){
-                            Swal.fire(
-                                'error',
-                                'Oops...',
-                                response.info
-                            )
-                            return;
-                        }
-                        return Swal.fire(
-                            'Comprobante cargado',
-                            response.info,
-                            'success'
-                        )
-                    })
-                }
-            })
+function modificarPedido(event) {
+    event.preventDefault();
+    let data = new FormData(document.getElementById('formModificarPedido'));
+    fetch('backend/pedidos/modificarPedido.php',{
+        method:'POST',
+        body:data
+    }).then(res=>res.json()).then(response=>{
+        if(response.status == 200){
+            document.getElementById('alert-response').classList.add('alert-info');
+        }else{
+            document.getElementById('alert-response').classList.add('alert-danger');
         }
+        document.getElementById('alert-response').innerHTML = response.info;
+        document.getElementById('alert-response').classList.remove('d-none');
+        setTimeout(() => {
+            window.location.assign('adminPedidos.html');
+        }, 1000);
     })
 }

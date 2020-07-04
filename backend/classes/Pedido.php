@@ -6,18 +6,21 @@
         {
             $link = Conexion::conectar();
             $mes = $_GET['mes'];
-            $sql = "SELECT idPedido,descripcion,cantidad,p.estado,total,p.idProveedor,proveedor,fecha,pagado,comprobante 
+            $sql = "SELECT idPedido,descripcion,cantidad,p.estado,p.idProveedor,proveedor,fecha,comprobante 
                     FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ";
-            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
-                $sql .= "AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
+            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin']
+                    && !is_null($_GET['idProveedor']))){
+                $sql .= "AND p.idProveedor = :idProveedor AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
             }else{
                 $sql .= "AND fecha LIKE '".$mes."%'"; 
                 $sql .= "ORDER BY idPedido DESC";
             };
             $stmt = $link->prepare($sql);
-            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
+            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])
+            && !is_null($_GET['idProveedor'])){
                 $stmt->bindParam(':inicio',$_GET['inicio'],PDO::PARAM_STR);
                 $stmt->bindParam(':fin',$_GET['fin'],PDO::PARAM_STR);
+                $stmt->bindParam(':idProveedor',$_GET['idProveedor'],PDO::PARAM_INT);
             }
             $stmt->execute();
             $json = array();
@@ -28,11 +31,9 @@
                     'descripcion' => $reg['descripcion'],
                     'cantidad' => $reg['cantidad'],
                     'estado' => $reg['estado'],
-                    'total' => $reg['total'],
                     'idProveedor'=>$reg['idProveedor'],
                     'proveedor' => $reg['proveedor'],
                     'fecha' => $reg['fecha'],
-                    'pagado' => $reg['pagado'],
                     'comprobante' => $reg['comprobante']
                 );
             }
@@ -63,22 +64,31 @@
             return json_encode(false);
         }
 
+        public function modificarPedido()
+        {
+            $cantidad = $_POST['cantidadMonto'];
+            $idPedido = $_POST['idPedido'];
+            $link = Conexion::conectar();
+            $sql = "UPDATE pedidos SET cantidad = :cantidad WHERE idPedido = :id";
+            $stmt = $link->prepare($sql);
+            $stmt->bindParam(':id',$idPedido,PDO::PARAM_INT);
+            $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_INT);
+            if($stmt->execute()){
+                return json_encode(array('status'=>200,'info'=>'Pedido modificado'));
+            }
+            return json_encode(array('status'=>400,'info'=>'Problemas al modificar el pedido'));
+        }
+
         public function recibirPedido()
         {
             $link = Conexion::conectar();
             $idPedido = $_POST['idPedido'];
-            $total = $_POST['total'];
-            $pago = $_POST['pago'];
             $cantidad = $_POST['cantidadFinal'];
             $sql = "UPDATE pedidos SET estado = 'Recibido',
-                                       total = :total,
-                                       cantidad = :cantidad,
-                                       pagado = :pagado
+                                       cantidad = :cantidad
                     WHERE idPedido = :idPedido";
             $stmt = $link->prepare($sql);
-            $stmt->bindParam(':total',$total,PDO::PARAM_STR);
             $stmt->bindParam(':idPedido',$idPedido,PDO::PARAM_INT);
-            $stmt->bindParam(':pagado',$pago,PDO::PARAM_STR);
             $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_STR);
             $bool = $stmt->execute();
             if ($bool) {
@@ -146,32 +156,6 @@
         }
 
         ######################## BALANCE ########################
-
-        public function obtenerMontoPedidos($criterio = null)//criterio es si filtra por dia o por mes. Si no es null, busca por mes
-        {
-            $link = Conexion::conectar();
-            $fecha = $_GET['fecha'];
-            $sql = "SELECT SUM(total) AS total_pedidos 
-                    FROM pedidos WHERE estado = 'Recibido' and fecha = '". $fecha ."%'";
-            if (!is_null($criterio) && $criterio!='') {
-                $sql = "SELECT SUM(total) AS total_pedidos
-                        FROM pedidos WHERE estado = 'Recibido' AND fecha LIKE '". $fecha ."%'";
-            }
-            $stmt = $link->prepare($sql);
-            // $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
-            if ($stmt->execute()) {
-                $json = array();
-                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($resultado as $pedido) {
-                    $json[] = array(
-                        'pedidos_total' => $pedido['total_pedidos']
-                    );
-                }
-                return json_encode($json);
-            };
-            return json_encode(array('status'=>400,'info'=>'problemas al ejecutar la consulta'));
-        }
-
         public function obtenerPedidosSinEntregar()
         {
             $link = Conexion::conectar();
