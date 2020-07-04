@@ -26,7 +26,7 @@ window.onload = ()=>{
 }
 
 function getPedidos() {
-    fetch('backend/pedidos/listarPedidos.php?mes='+mes)
+    fetch('backend/pedidos/listarPedidos.php')
     .then(res=>res.json())
     .then(newRes=>{
         listadoPedidos = newRes;
