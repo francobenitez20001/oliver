@@ -111,7 +111,7 @@
             </div>
             <div class="col-6">
               <button class="btn btn-outline-info" id="botonAgregar" onclick="mostrarFormularioAgregar()">Nuevo pedido!</button>
-              <a onclick="modalExport('exports/exportarExcelPedidos.php')" class="btn btn-outline-info">Exportar</a> 
+              <a onclick="modalExport('exports/exportarExcelPedidos.php',true)" class="btn btn-outline-info">Exportar</a> 
             </div>
           </div>
         </th>
@@ -189,6 +189,33 @@
       <div class="sk-chase-dot"></div>
     </div>
   </div>
+
+  <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 70% !important;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Modificar Pedido</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form id="formModificarPedido" onsubmit="modificarPedido(event)">
+            <div class="modal-body">
+              <div class="row px-4">
+                <input class="col-12 col-md-6 form-control" disabled="true" id="cantidadPrevia"/>
+                <input class="col-12 col-md-6 form-control" required name="cantidadMonto" placeholder="Ingrese cantidad nueva"/>
+                <input type="hidden" id="idPedidoModificar" name="idPedido">
+              <div>
+            </div>
+            <div class="modal-footer w-100">
+                <div class="alert text-center w-100 animated fadeIn fast" id="alert-response"></div>
+                <button type="submit" class="btn btn-info">Cargar</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 
 
     <script src="js/bootstrap/jquery.js"></script>

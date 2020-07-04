@@ -34,7 +34,6 @@
             <th scope="col">Estado</th>
             <th scope="col">Proveedor</th>
             <th scope="col">Fecha</th>
-            <th scope="col">Total</th>
         </tr>
         </thead>
         <tbody id="bodyTable">
@@ -47,7 +46,6 @@
                         <td><?php echo $pedidosArray[$i]['estado']; ?></td>
                         <td><?php echo $pedidosArray[$i]['proveedor']; ?></td>
                         <td><?php echo $pedidosArray[$i]['fecha']; ?></td>
-                        <td><?php echo $pedidosArray[$i]['total']; ?></td>
                     </tr>
                 <?php }
             }?>

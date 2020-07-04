@@ -208,7 +208,7 @@
             <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
               <div class="input-group-prepend">
-                <div class="input-group-text">Restar al costo unitario</div>
+                <div class="input-group-text">Restar al stock suelto</div>
               </div>
               <input type="number" name="restaCostoUnitario" id="" class="form-control" value="0">
             </div>

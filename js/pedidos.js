@@ -24,28 +24,17 @@ function render(data) {
     buttons = '';
     data.forEach(reg => {
         if (reg.estado == 'No recibido') {
-            buttons = `<i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar"onclick="recibirPedido(${reg.idPedido})"></i>
-            <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"`;
+            buttons = `
+            <i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px" data-toggle="modal" data-target="#staticBackdrop" onclick="insertarDatosFormModificar(${reg.idPedido},${reg.cantidad})"></i>
+            <i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar"onclick="recibirPedido(${reg.idPedido})"></i>
+            <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"</i> `;
         }else{
             buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar"onclick="eliminarPedido(${reg.idPedido})"></i>`;
             if(reg.total !== reg.pagado){
                 buttons += ` <i class="fas fa-money-check-alt" style="cursor:pointer;color:green;font-size:20px"id="boton-eliminar" onclick="recibirPedido(${reg.idPedido},true)"></i>`;
             }
-        }
-            
-        if(reg.total !== reg.pagado){
-            template += `
-                <tr class="bg-yellow">
-                    <th scope="row">${reg.descripcion}</th>
-                    <td>${reg.cantidad}</td>
-                    <td>${reg.estado}</td>
-                    <td>${reg.proveedor}</td>
-                    <td>
-                        ${buttons}
-                    </td>
-                </tr>
-            `;
-        }else if(reg.estado == 'Recibido' && reg.total == reg.pagado){
+        }    
+        if(reg.estado == 'Recibido'){
             template += `
             <tr class="bg-green">
                 <th scope="row">${reg.descripcion}</th>
@@ -282,4 +271,29 @@ function getPedidosPorProveedor(event){
         return alert('No hay pedidos con este proveedor');
     }
     return render(filtrados);
+}
+
+function insertarDatosFormModificar(id,cantidad) {
+    document.getElementById('cantidadPrevia').value = cantidad;
+    document.getElementById('idPedidoModificar').value = id;
+}
+
+function modificarPedido(event) {
+    event.preventDefault();
+    let data = new FormData(document.getElementById('formModificarPedido'));
+    fetch('backend/pedidos/modificarPedido.php',{
+        method:'POST',
+        body:data
+    }).then(res=>res.json()).then(response=>{
+        if(response.status == 200){
+            document.getElementById('alert-response').classList.add('alert-info');
+        }else{
+            document.getElementById('alert-response').classList.add('alert-danger');
+        }
+        document.getElementById('alert-response').innerHTML = response.info;
+        document.getElementById('alert-response').classList.remove('d-none');
+        setTimeout(() => {
+            window.location.assign('adminPedidos.html');
+        }, 1000);
+    })
 }

@@ -6,18 +6,21 @@
         {
             $link = Conexion::conectar();
             $mes = $_GET['mes'];
-            $sql = "SELECT idPedido,descripcion,cantidad,p.estado,total,p.idProveedor,proveedor,fecha,pagado,comprobante 
+            $sql = "SELECT idPedido,descripcion,cantidad,p.estado,p.idProveedor,proveedor,fecha,comprobante 
                     FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ";
-            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
-                $sql .= "AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
+            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin']
+                    && !is_null($_GET['idProveedor']))){
+                $sql .= "AND p.idProveedor = :idProveedor AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
             }else{
                 $sql .= "AND fecha LIKE '".$mes."%'"; 
                 $sql .= "ORDER BY idPedido DESC";
             };
             $stmt = $link->prepare($sql);
-            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
+            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])
+            && !is_null($_GET['idProveedor'])){
                 $stmt->bindParam(':inicio',$_GET['inicio'],PDO::PARAM_STR);
                 $stmt->bindParam(':fin',$_GET['fin'],PDO::PARAM_STR);
+                $stmt->bindParam(':idProveedor',$_GET['idProveedor'],PDO::PARAM_INT);
             }
             $stmt->execute();
             $json = array();
@@ -28,11 +31,9 @@
                     'descripcion' => $reg['descripcion'],
                     'cantidad' => $reg['cantidad'],
                     'estado' => $reg['estado'],
-                    'total' => $reg['total'],
                     'idProveedor'=>$reg['idProveedor'],
                     'proveedor' => $reg['proveedor'],
                     'fecha' => $reg['fecha'],
-                    'pagado' => $reg['pagado'],
                     'comprobante' => $reg['comprobante']
                 );
             }
@@ -61,6 +62,21 @@
                 return json_encode(true);
             }
             return json_encode(false);
+        }
+
+        public function modificarPedido()
+        {
+            $cantidad = $_POST['cantidadMonto'];
+            $idPedido = $_POST['idPedido'];
+            $link = Conexion::conectar();
+            $sql = "UPDATE pedidos SET cantidad = :cantidad WHERE idPedido = :id";
+            $stmt = $link->prepare($sql);
+            $stmt->bindParam(':id',$idPedido,PDO::PARAM_INT);
+            $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_INT);
+            if($stmt->execute()){
+                return json_encode(array('status'=>200,'info'=>'Pedido modificado'));
+            }
+            return json_encode(array('status'=>400,'info'=>'Problemas al modificar el pedido'));
         }
 
         public function recibirPedido()
