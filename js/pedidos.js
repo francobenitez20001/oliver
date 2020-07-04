@@ -2,22 +2,6 @@ let f = new Date();
 let dia = f.getFullYear() + "-0" + (f.getMonth() +1) + "-" + f.getDate();
 let mes = f.getFullYear() + "-0" + (f.getMonth() +1);
 let listadoPedidos;
-let reporteProveedoresDom = {
-    recibidos:document.getElementById('recibidos'),
-    noRecibidos:document.getElementById('noRecibidos'),
-    total:document.getElementById('total'),
-    pagado:document.getElementById('pagado'),
-    sinPagarTodo:document.getElementById('porPagar'),
-    saldo:document.getElementById('saldo')
-}
-let pedidosRecibidos = 0,
-    pedidosNoRecibidos = 0,
-    pedidosRecibidosPorPagar = 0,
-    montoTotal = [],
-    montoPagado = [];
-
-let btnAdjuntarComprobante = document.getElementById('btn-adjuntarComprobante');
-btnAdjuntarComprobante.addEventListener('click',subirComprobante);
 
 window.onload = ()=>{
     getPedidos();
@@ -140,7 +124,6 @@ function verComprobante(id) {
 document.getElementById('cargarComprobante').addEventListener('submit',event=>{
     event.preventDefault();
     let alertLoading = document.getElementById('alert-loading');
-    let alertLoad = document.getElementById('alert-load');
     let alertError = document.getElementById('alert-error');
     alertLoading.classList.remove('d-none');
     let data = new FormData(formCargarComprobante);
@@ -224,22 +207,6 @@ function ocultarFormularioAgregar() {
     // getProductos(0,100);//llamo a la funcion de getData para obtener la tabla actualizada con lo que agregue
 }
 
-
-function getProveedores() {
-    let select = document.getElementById('proveedor');
-    fetch('backend/proveedores/listarProveedor.php')
-    .then(res=>res.json())
-    .then(proveedores=>{
-        let template = '';
-        proveedores.forEach(proveedor => {
-            template += `
-                <option value="${proveedor.idProveedor}">${proveedor.proveedor}</option>
-            `
-        });
-        select.innerHTML = template;
-    })
-}
-
 function getProductos() {
     fetch('backend/producto/listarProducto.php').then(res=>res.json()).then(response=>{
         i = 0;
@@ -306,7 +273,6 @@ function getProveedores(domElementId){
 function getPedidosPorProveedor(event){
     let proveedor = event;
     if (proveedor == 'all') {
-        document.getElementById('reporteProveedores').classList.add('d-none');
         render(listadoPedidos);
         return;
     }
@@ -315,72 +281,5 @@ function getPedidosPorProveedor(event){
         render(listadoPedidos);
         return alert('No hay pedidos con este proveedor');
     }
-    getReporteEstadisticas(filtrados);
     return render(filtrados);
-}
-
-function getReporteEstadisticas(filtrados) {
-    console.log(filtrados);
-    pedidosRecibidos = 0;
-    pedidosNoRecibidos = 0;
-    pedidosRecibidosPorPagar = 0;
-    montoPagado.splice(0,montoPagado.length);
-    montoTotal.splice(0,montoTotal.length);
-    filtrados.filter(res=>{
-        (res.estado == 'Recibido')?pedidosRecibidos++:pedidosNoRecibidos++;
-        (res.estado == 'Recibido' && res.total != res.pagado) ?pedidosRecibidosPorPagar++:null;
-        (res.estado == 'Recibido' && res.total != null)?montoTotal.push(parseInt(res.total)):null;
-        (res.estado == 'Recibido' && res.pagado != null)?montoPagado.push(parseInt(res.pagado)):null;
-    });
-    let totalNumero = montoTotal.reduce((a, b) => a + b, 0);
-    let pagadoNumero = montoPagado.reduce((a,b)=> a + b, 0);
-    reporteProveedoresDom.recibidos.innerText = pedidosRecibidos;
-    reporteProveedoresDom.noRecibidos.innerText = pedidosNoRecibidos;
-    reporteProveedoresDom.total.innerText = totalNumero;
-    reporteProveedoresDom.pagado.innerText = pagadoNumero;
-    reporteProveedoresDom.sinPagarTodo.innerText = pedidosRecibidosPorPagar;
-    reporteProveedoresDom.saldo.innerText = pagadoNumero-totalNumero;
-    document.getElementById('reporteProveedores').classList.remove('d-none');
-
-    document.getElementById('btnVerComprobantes').setAttribute('href','adminComprobantes.html?idProveedor='+parseInt(document.getElementById('filtroPedidoPorProveedor').value));
-}
-
-function subirComprobante() {
-    let idProveedor = parseInt(document.getElementById('filtroPedidoPorProveedor').value);
-    Swal.fire({
-        title: 'Adjuntar comprobantes',
-        html:`<form id="cargarComprobanteProveedor">
-                <input id="comprobante" name="comprobante" type="file" class="swal2-input">
-                <input id="" name="descripcion" type="text" class="swal2-input">
-                <input id="idProveedor" name="idProveedor" value="${idProveedor}" type="hidden">
-              </form>`,
-        focusConfirm: false,
-        preConfirm: () => {
-            document.getElementById('slider').classList.remove('d-none');
-            let data = new FormData(document.getElementById('cargarComprobanteProveedor'));
-            fetch('backend/comprobantes/cargarComprobante.php',{
-                method:'POST',
-                body:data
-            }).then(res=>res.json()).then(data=>{
-                if(data.status==200){
-                    fetch(`backend/comprobantes/agregarComprobante.php?idProveedor=${data.data.idProveedor}&comprobante=${data.data.comprobante}&descripcion=${data.data.descripcion}`).then(res=>res.json()).then(response=>{
-                        document.getElementById('slider').classList.add('d-none');
-                        if(response.status==400){
-                            Swal.fire(
-                                'error',
-                                'Oops...',
-                                response.info
-                            )
-                            return;
-                        }
-                        return Swal.fire(
-                            'Comprobante cargado',
-                            response.info,
-                            'success'
-                        )
-                    })
-                }
-            })
-        }
-    })
 }
