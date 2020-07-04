@@ -4,7 +4,7 @@ btnBalance.addEventListener('click',verBalance);
 let ventasTotal = document.getElementById('ventasTotal');
 let tablaVentas = document.getElementById('tabla-ventas');
 let tablaPedidos = document.getElementById('tablaPedidos');
-let pedidosTotal = document.getElementById('pedidosTotal');
+let pagosTotal = document.getElementById('pagosTotal');
 let serviciosTotal = document.getElementById('serviciosTotal');
 let pedidos_entregar = document.getElementById('pedidos_sin_entregar');
 let servicios_a_pagar = document.getElementById('servicios_sin_pagar');
@@ -21,7 +21,7 @@ let datosBalance = {
     dia:0,
     mes:0
   },
-  pedidos:{
+  pagos:{
     dia:0,
     mes:0
   },
@@ -40,7 +40,7 @@ window.onload = ()=>{
   getVentasTotal();
   getVentasLimit();
   getPedidosLimit();
-  getPedidos();
+  getPagosProveedor();
   getServicios();
   getPedidosSinEntregar();
   getServiciosSinPagar();
@@ -55,15 +55,20 @@ window.onload = ()=>{
 function verBalance() {
   let containerEstado = document.getElementById('containerEstado');
   getVentasTotal('mes',false);
-  getPedidos('mes',false);
+  getPagosProveedor('mes',false);
   getServicios('mes',false);
-  recaudacionFinal = datosBalance.ventas.mes-(datosBalance.pedidos.mes+datosBalance.servicios.mes);
+
+  //evito valores Nan
+  (!datosBalance.servicios.mes>=0)?datosBalance.servicios.mes = 0:null;
+  recaudacionFinal = datosBalance.ventas.mes-(datosBalance.pagos.mes+datosBalance.servicios.mes);
   if(recaudacionFinal>0){
     document.getElementById('cardRecaudacionFinal').classList.add('bg-success');
   }else{
     document.getElementById('cardRecaudacionFinal').classList.add('bg-danger');
   }
   document.getElementById('recaudacionFinal').innerHTML = '$'+recaudacionFinal;
+  console.log(recaudacionFinal);
+  
   return containerEstado.classList.toggle('d-none');
 }
 
@@ -139,23 +144,23 @@ function getPedidosLimit() {
   })
 }
 
-function getPedidos(criterio=null,render=true) {
-  url = 'backend/pedidos/listarPedidosMonto.php?fecha='+dia;
+function getPagosProveedor(criterio=null,render=true) {
+  url = 'backend/pagoProveedores/listarPagosMonto.php?fecha='+dia;
   if (criterio!=null) {
-    url = 'backend/pedidos/listarPedidosMonto.php?fecha='+mes+'&criterio=mes';
+    url = 'backend/pagoProveedores/listarPagosMonto.php?fecha='+mes+'&criterio=mes';
   }
   fetch(url)
   .then(res=>res.json())
   .then(response=>{
-    response.forEach(pedido=>{
+    response.forEach(pago=>{
       if(criterio!=null&&!render){
-        datosBalance.pedidos.mes =  parseInt(pedido.pedidos_total);
+        datosBalance.pagos.mes =  parseInt(pago.pagos_total);
         return;
       }
-      datosBalance.pedidos.dia =  parseInt(pedido.pedidos_total);
-      pedidosTotal.innerHTML = '$'+pedido.pedidos_total;
-      if (pedido.pedidos_total == null) {
-        pedidosTotal.innerHTML = '$0';
+      datosBalance.pagos.dia =  parseInt(pago.pagos_total);
+      pagosTotal.innerHTML = '$'+ pago.pagos_total;
+      if (pago.pagos_total == null) {
+        pagosTotal.innerHTML = '$0';
       }
     })
   })
@@ -283,12 +288,12 @@ function filtrarVentas(valor) {
   }
 }
 
-function filtrarPedidos(valor) {
+function filtrarPagoProveedores(valor) {
   filtro = valor.target.value;
   if (filtro == 'mes') {
-    getPedidos('mes');
+    getPagosProveedor('mes');
   }else if(filtro=='dia'){
-    getPedidos(null);
+    getPagosProveedor(null);
   }
 }
 

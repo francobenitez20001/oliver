@@ -140,32 +140,6 @@
         }
 
         ######################## BALANCE ########################
-
-        public function obtenerMontoPedidos($criterio = null)//criterio es si filtra por dia o por mes. Si no es null, busca por mes
-        {
-            $link = Conexion::conectar();
-            $fecha = $_GET['fecha'];
-            $sql = "SELECT SUM(total) AS total_pedidos 
-                    FROM pedidos WHERE estado = 'Recibido' and fecha = '". $fecha ."%'";
-            if (!is_null($criterio) && $criterio!='') {
-                $sql = "SELECT SUM(total) AS total_pedidos
-                        FROM pedidos WHERE estado = 'Recibido' AND fecha LIKE '". $fecha ."%'";
-            }
-            $stmt = $link->prepare($sql);
-            // $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
-            if ($stmt->execute()) {
-                $json = array();
-                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($resultado as $pedido) {
-                    $json[] = array(
-                        'pedidos_total' => $pedido['total_pedidos']
-                    );
-                }
-                return json_encode($json);
-            };
-            return json_encode(array('status'=>400,'info'=>'problemas al ejecutar la consulta'));
-        }
-
         public function obtenerPedidosSinEntregar()
         {
             $link = Conexion::conectar();

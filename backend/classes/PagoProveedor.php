@@ -97,5 +97,31 @@
             }
             return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el pago'));
         }
+
+
+        // balance
+        public function obtenerMontoPagos($criterio = null)
+        {
+            $link = Conexion::conectar();
+            $fecha = $_GET['fecha'];
+            $sql = "SELECT SUM(total) AS total_pagos 
+                    FROM pagoProveedores WHERE fecha = '". $fecha ."%'";
+            if (!is_null($criterio) && $criterio!='') {
+                $sql = "SELECT SUM(total) AS total_pagos
+                        FROM pagoProveedores WHERE fecha LIKE '". $fecha ."%'";
+            }
+            $stmt = $link->prepare($sql);
+            if ($stmt->execute()) {
+                $json = array();
+                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($resultado as $pagos) {
+                    $json[] = array(
+                        'pagos_total' => $pagos['total_pagos']
+                    );
+                }
+                return json_encode($json);
+            };
+            return json_encode(array('status'=>400,'info'=>'problemas al ejecutar la consulta'));
+        }
     }
     
