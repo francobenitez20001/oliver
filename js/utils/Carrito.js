@@ -12,7 +12,7 @@ class Carrito{
             total:0,
             fecha,
             dia,
-            estado:'Pagado',
+            estado:'Pago',
             tipo_pago:'Efectivo',
             cliente:'No registrado',
             descuento:0
