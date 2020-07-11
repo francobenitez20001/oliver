@@ -216,3 +216,17 @@ footer p{color:#fff;font-size:16px;font-family: 'Open Sans',sans-serif;}
 .eliminarProductoCarrito{
   cursor: pointer;
 }
+
+nav{
+  height: 70px !important;
+}
+
+.nav-link{
+  font-size: 14px;
+}
+
+@media (max-width:768px){
+  nav{
+    height: auto !important;
+  }
+}

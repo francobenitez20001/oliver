@@ -18,8 +18,8 @@ const render = data=>{
     let clase;
     let displayBtn;
     data.forEach(reg => {
-        (reg.total>reg.monto)?clase='bg-yellow':clase='bg-green';
-        (reg.total<=reg.monto)?displayBtn='d-none':displayBtn='d-block';
+        (parseFloat(reg.total)>parseFloat(reg.monto))?clase='bg-yellow':clase='bg-green';
+        (parseFloat(reg.total)<=parseFloat(reg.monto))?displayBtn='d-none':displayBtn='d-block';
         template+=`
             <tr class="${clase}">
                 <th scope="row">${reg.proveedor}</th>
