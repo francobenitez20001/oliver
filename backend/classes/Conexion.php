@@ -10,9 +10,9 @@
 
        $link = new PDO(
              //completar con los datos reales de xrargentina
-             'mysql:host=127.0.0.1;dbname=oliver',
+             'mysql:host=localhost;dbname=oliver',
              'root',
-             'oliverpetshop2020',
+             'villromance22',
              $opciones
              );
        $link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); //reporte de errores
