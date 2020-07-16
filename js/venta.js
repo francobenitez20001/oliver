@@ -1,4 +1,4 @@
-import Carrito from './utils/Carrito.js';
+import Carrito from './utils/Carrito.js?v=1.0.0';
 window.dom = {
     formVenta:document.getElementById('formVentaProducto')
 };
