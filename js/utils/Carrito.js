@@ -1,7 +1,7 @@
 let f = new Date();
 let fecha = f.getFullYear() + "/" + (f.getMonth() +1) + "/" + f.getDate();
-let semana = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
-let dia = semana[f.getDay()-1];
+let semana = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+let dia = semana[f.getDay()];
 class Carrito{
     constructor() {
         this.API_PRODUCTOS = 'backend/producto/';
@@ -63,7 +63,9 @@ class Carrito{
         }else{
             producto.tipoDeVenta='normal';
         };
-        if(document.getElementsByName('tipoDeVenta')[index].value == 'precio'){
+        if(document.getElementsByName('descuentoIndividualEstado')[index].value == 'si'){//si marco un descuento en ese producto..
+            producto.total=parseFloat(window.totalConDescuento);
+        }else if(document.getElementsByName('tipoDeVenta')[index].value == 'precio'){
             producto.total = parseFloat(document.getElementsByName('cantidadPrecio')[index].value); 
         }else{
             producto.total = producto.precio*producto.cantidad;
@@ -75,6 +77,7 @@ class Carrito{
     calcularTotal(carrito,index){
         let totales= [];
         for (let index = 0; index < carrito.productos.length; index++) {
+            console.log(carrito.productos[index].total);
             totales.push(carrito.productos[index].total);
         }
         this.carrito.total = totales.reduce((a, b) => a + b, 0);
@@ -129,7 +132,26 @@ class Carrito{
                         <input type="number" class="form-control d-none cantidadSuelto" name="cantidadSuelto" step="any">
                         <input type="number" class="form-control d-none cantidadPrecio" name="cantidadPrecio" step="any">
                     </div>
-                    <div class="col-12 text-right"><input type="button" class="btn btn-outline-success mt-4 btn-agregar-carrito" onclick="carrito.agregarAlCarrito(${index})" value="Agregar al carrito"></div>
+                    <div class="input-group col-12 col-md-5 mb-4">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Descuento</div>
+                        </div>
+                        <select class="form-control" name="descuentoIndividualEstado" onchange="habilitarDescuentoIndividual(${index})">
+                            <option value="no">No</option>
+                            <option value="si">Si</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="input-group col-12 col-md-5 mb-4 d-none selectDecuentoIndividual">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">% Descuento</div>
+                        </div>
+                        <input type="text" class="form-control" name="descuentoIndividualValor" oninput="setDescuentoIndividual(${index},event)"/>
+                    </div>
+                    <div class="col-12 d-flex" style="justify-content:space-between">
+                        <p class="alert alert-info d-none" name="totalConDescuento">Ingrese descuento..</p>
+                        <input type="button" class="btn btn-outline-success mt-4 btn-agregar-carrito" onclick="carrito.agregarAlCarrito(${index})" value="Agregar al carrito">
+                    </div>
                 </div>
             </div>
             <hr>
@@ -162,14 +184,20 @@ class Carrito{
             cantidadSuelto = document.getElementsByClassName('cantidadSuelto')[indiceProducto],
             cantidadNormal = document.getElementsByClassName('cantidad')[indiceProducto],
             cantidadPrecio = document.getElementsByClassName('cantidadPrecio')[indiceProducto];
-        cantidadSuelto.classList.toggle('d-none');
-        cantidadNormal.classList.toggle('d-none');
         if (tipoDeCompra == 'normal') {
+            document.getElementsByName('descuentoIndividualEstado')[indiceProducto].removeAttribute('disabled','');
+            cantidadSuelto.classList.add('d-none');
+            cantidadNormal.classList.remove('d-none');
+            cantidadPrecio.classList.add('d-none');
             cantidadNormal.setAttribute('required','');
             cantidadSuelto.removeAttribute('required');
             cantidadPrecio.removeAttribute('required');
             document.getElementsByClassName('infoStock')[indiceProducto].innerHTML = `Te quedan ${this.productosSeleccionados[indiceProducto].stock} unidades en stock`;
         }else if(tipoDeCompra == 'suelto'){
+            document.getElementsByName('descuentoIndividualEstado')[indiceProducto].removeAttribute('disabled','');
+            cantidadSuelto.classList.remove('d-none');
+            cantidadNormal.classList.add('d-none');
+            cantidadPrecio.classList.add('d-none');
             cantidadNormal.removeAttribute('required');
             cantidadSuelto.setAttribute('required','');
             cantidadPrecio.removeAttribute('required');
@@ -182,6 +210,11 @@ class Carrito{
             cantidadSuelto.removeAttribute('required');
             cantidadPrecio.setAttribute('required','');
             document.getElementsByClassName('infoStock')[indiceProducto].innerHTML = `Te quedan ${this.productosSeleccionados[indiceProducto].stock_suelto} Kg en stock (Estas por vender por precio)`;
+
+            document.getElementsByClassName('selectDecuentoIndividual')[indiceProducto].classList.add('d-none');
+            document.getElementsByName('totalConDescuento')[indiceProducto].classList.add('d-none');
+            document.getElementsByName('descuentoIndividualEstado')[indiceProducto].value = 'no';
+            document.getElementsByName('descuentoIndividualEstado')[indiceProducto].setAttribute('disabled','true');
         }
     }
 
@@ -215,6 +248,8 @@ class Carrito{
         document.getElementsByClassName('btn-modal-venta')[1].classList.add('d-none');
         this.carrito.total = this.carrito.total - (this.carrito.total * this.carrito.descuento /100);
         this.carrito.total = this.carrito.total.toFixed(2);
+        console.log(this.carrito.total);
+        console.log(this.carrito);
         fetch('backend/ventas/agregarVentaJson.php',{
             method:'POST',
             body:JSON.stringify(this.carrito)
