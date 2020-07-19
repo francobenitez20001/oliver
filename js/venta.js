@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-import Carrito from './utils/Carrito.js?v=1.0.0';
-=======
+
 import Carrito from './utils/Carrito.js?v=1.0.1';
->>>>>>> 46239c159173d784097fa6c8dd4c3078f02068e6
 window.dom = {
     formVenta:document.getElementById('formVentaProducto')
 };
@@ -104,9 +101,6 @@ formEnvio.addEventListener('submit',event=>{
         }
     })
 });
-<<<<<<< HEAD
-=======
-
 window.habilitarDescuentoIndividual = index=>{
     document.getElementsByClassName('selectDecuentoIndividual')[index].classList.toggle('d-none');
     document.getElementsByName('totalConDescuento')[index].classList.toggle('d-none');
@@ -131,4 +125,4 @@ window.setDescuentoIndividual = (index,event)=>{
     window.totalConDescuento = parseFloat(subtotal - (subtotal * valor / 100)).toFixed(2);
     return document.getElementsByName('totalConDescuento')[index].innerHTML = `El total es <b>$${totalConDescuento}</b>`;
 }
->>>>>>> 46239c159173d784097fa6c8dd4c3078f02068e6
+
