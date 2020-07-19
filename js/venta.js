@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import Carrito from './utils/Carrito.js?v=1.0.0';
+=======
+import Carrito from './utils/Carrito.js?v=1.0.1';
+>>>>>>> 46239c159173d784097fa6c8dd4c3078f02068e6
 window.dom = {
     formVenta:document.getElementById('formVentaProducto')
 };
@@ -100,3 +104,31 @@ formEnvio.addEventListener('submit',event=>{
         }
     })
 });
+<<<<<<< HEAD
+=======
+
+window.habilitarDescuentoIndividual = index=>{
+    document.getElementsByClassName('selectDecuentoIndividual')[index].classList.toggle('d-none');
+    document.getElementsByName('totalConDescuento')[index].classList.toggle('d-none');
+}
+
+window.setDescuentoIndividual = (index,event)=>{
+    //index es el indice del elemento de la lista de los productos seleccionados y event el evento del input
+    if(document.getElementsByName('descuentoIndividualValor')[index].value == ''){
+        if(document.getElementsByName('tipoDeVenta')[index].value == 'normal') return document.getElementsByName('totalConDescuento')[index].innerHTML = `El total es <b>$${carrito.productosSeleccionados[index].precioUnidad}</b>`;
+        document.getElementsByName('totalConDescuento')[index].innerHTML = `El total es <b>$${parseFloat(carrito.productosSeleccionados[index].precioKilo * parseFloat(document.getElementsByName('cantidadSuelto')[index].value)).toFixed(2)}</b>`;
+        return;
+    }
+    let valor = parseInt(event.target.value);
+    let cantidad = parseInt(document.getElementsByName('cantidad')[index].value);
+    let precio= parseFloat(carrito.productosSeleccionados[index].precioUnidad).toFixed(2);
+    if(document.getElementsByName('tipoDeVenta')[index].value == 'suelto'){
+        precio = parseFloat(carrito.productosSeleccionados[index].precioKilo).toFixed(2);
+        cantidad = parseFloat(document.getElementsByName('cantidadSuelto')[index].value);
+    }
+    console.log(precio,cantidad,valor);
+    let subtotal = precio * cantidad;
+    window.totalConDescuento = parseFloat(subtotal - (subtotal * valor / 100)).toFixed(2);
+    return document.getElementsByName('totalConDescuento')[index].innerHTML = `El total es <b>$${totalConDescuento}</b>`;
+}
+>>>>>>> 46239c159173d784097fa6c8dd4c3078f02068e6
