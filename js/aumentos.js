@@ -1,3 +1,5 @@
+let productosArray = [];
+
 function getProveedores() {
     fetch('backend/proveedores/listarProveedor.php')
     .then(res=>res.json())
@@ -27,8 +29,24 @@ function getMarcas() {
     })
 }
 
-getProveedores();
-getMarcas();
+function getProductos() {
+    fetch('backend/producto/listarProducto.php').then(res=>res.json()).then(res=>{
+        i = 0;
+        res.forEach(producto => {
+            productosArray[i]= {
+                'producto':producto.producto,
+                'idProducto':producto.idProducto
+            };
+            i++;
+        });
+    })
+}
+
+window.onload = ()=>{
+    getProveedores();
+    getMarcas();
+    getProductos();
+}
 
 let form = document.getElementById('formAumentarPorProveedor');
 form.addEventListener('submit',event=>{
@@ -62,7 +80,10 @@ function enviar(e,tipo) {
     let url = 'backend/producto/aumentarPorProveedor.php';
     if (tipo == 'marca') {
         url = 'backend/producto/aumentarPorMarca.php';
+    }else if(tipo == 'producto'){
+        url = 'backend/producto/aumentarPorProducto.php';
     };
+
     fetch(url,{
         method:'POST',
         body:data
@@ -83,4 +104,41 @@ function enviar(e,tipo) {
             )
         }
     })
+}
+
+let desplegableProducto = document.getElementById('productosBusqueda');
+
+let inputProducto = document.getElementById('producto');
+inputProducto.addEventListener('keyup',event=>{
+    console.log(1);
+    if (inputProducto.value.length > 2) {
+        desplegableProducto.classList.remove('d-none');
+        searchProducto(inputProducto.value);   
+    }else{
+        desplegableProducto.classList.add('d-none');
+    }
+})
+
+function searchProducto(producto) {
+    productoFiltrado = productosArray.filter((prd) =>
+        prd.producto.toLowerCase().indexOf(producto.toLowerCase()) > -1
+    );
+    return renderDesplegableProducto(productoFiltrado);
+}
+
+function renderDesplegableProducto(producto) {
+    let template = '';
+    producto.forEach( prd => {
+        template += `
+            <option onclick="rellenarInputProducto(event,${prd.idProducto})" value="${prd.producto}">${prd.producto}</option>
+        `
+    });
+    return desplegableProducto.innerHTML = template;
+}
+
+function rellenarInputProducto(event,idProducto) {
+    producto = event.target.value;
+    inputProducto.value = producto;
+    document.getElementById('idProducto').value = idProducto;
+    desplegableProducto.classList.add('d-none');
 }

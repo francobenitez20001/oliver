@@ -99,6 +99,27 @@
                 </div>
             </form>
         </div>
+        <hr/>
+        <h3>Aumentar producto individual</h3>
+        <div class="col-12">
+            <form class="form-group" onsubmit="enviar(event,'producto')" id="formAumentarPorProducto"> 
+                <div class="row">
+                    <div class="col-12 col-md-5 pt-2">
+                        <input type="text" name="producto" id="producto" autocomplete="off" class="form-control" placeholder="Producto" required>
+                        <div id="productosBusqueda" class="col-12 d-none">
+                          <option onclick="rellenarInputProducto(event)" value=""></option>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-5 pt-2">
+                        <input type="number" step="any" name="porcentaje_aumento" class="form-control" placeholder="Ingrese el porcentaje de aumento" required>
+                    </div>
+                    <input type="hidden" name="idProducto" id="idProducto" value="">
+                    <div class="col-12 col-md-2 pt-2">
+                        <input type="submit" class="btn btn-outline-info btn-block" name="" id="" value="Aplicar aumento">
+                    </div>
+                </div>
+            </form>
+        </div>
 
     </div>
     <script src="js/bootstrap/jquery.js"></script>
@@ -107,6 +128,6 @@
     <script src="js/sweetalert2.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/aumentos.js"></script>
+    <script src="js/aumentos.js?v=1.0.0"></script>
 </body>
 </html>

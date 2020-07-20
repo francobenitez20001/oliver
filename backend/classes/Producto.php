@@ -274,6 +274,26 @@ class Producto
                 return json_encode(array('status'=>400,'info'=>'Problemas al actualizar los precios'));
         }
 
+        public function aumentarPorProducto()
+        {
+                $idProducto = $_POST['idProducto'];
+                $link = Conexion::conectar();
+                $porcentajeAumento = $_POST['porcentaje_aumento'];
+                $sql = "UPDATE productos SET precioPublico = precioPublico + (precioPublico*:porcentaje/100),
+                                             precioUnidad = precioUnidad + (precioUnidad*:porcentaje/100),
+                                             precioKilo = precioKilo + (precioKilo*:porcentaje/100),
+                                             precio_costo = precio_costo + (precio_costo*:porcentaje/100)
+                        WHERE idProducto = :id";
+                $stmt = $link->prepare($sql);
+                $stmt->bindParam(':porcentaje',$porcentajeAumento,PDO::PARAM_STR);
+                $stmt->bindParam(':id',$idProducto,PDO::PARAM_INT);
+                $bool = $stmt->execute();
+                if ($bool) {
+                        return json_encode(array('status'=>200,'info'=>'Se actualizaron los precios de manera correcta'));
+                }
+                return json_encode(array('status'=>400,'info'=>'Problemas al actualizar los precios'));
+        }
+
         public function modificarStock()
         {
                 $link = Conexion::conectar();
