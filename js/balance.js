@@ -1,5 +1,4 @@
-let btnBalance = document.getElementById('btn-balance');
-btnBalance.addEventListener('click',verBalance);
+
 
 let ventasTotal = document.getElementById('ventasTotal');
 let tablaVentas = document.getElementById('tabla-ventas');
@@ -26,6 +25,7 @@ let datosBalance = {
     mes:0
   },
   servicios:{
+    dia:0,
     mes:0
   }
 };
@@ -47,7 +47,7 @@ window.onload = ()=>{
   getVentasLimit();
   getPedidosLimit();
   getPagosProveedor();
-  getServicios();
+  getServicios('porpagar');
   getPedidosSinEntregar();
   getServiciosSinPagar();
   getDeudores();
@@ -58,25 +58,43 @@ window.onload = ()=>{
   })
 }
 
-function verBalance() {
-  let containerEstado = document.getElementById('containerEstado');
-  getVentasTotal('mes',false);
-  getPagosProveedor('mes',false);
-  getServicios('mes',false);
-
-  //evito valores Nan
-  (!datosBalance.servicios.mes>=0)?datosBalance.servicios.mes = 0:null;
-  recaudacionFinal = datosBalance.ventas.mes-(datosBalance.pagos.mes+datosBalance.servicios.mes);
-  if(recaudacionFinal>0){
-    document.getElementById('cardRecaudacionFinal').classList.add('bg-success');
-  }else{
-    document.getElementById('cardRecaudacionFinal').classList.add('bg-danger');
+const verBalance = async criterio=>{
+  try { 
+    let containerEstado = document.getElementById('containerEstado');
+    await getVentasTotal(criterio,false);
+    await getPagosProveedor(criterio,false);
+    await getServicios(criterio,false);
+    //evito valores Nan
+    (datosBalance.servicios.mes<=0)?datosBalance.servicios.mes = 0:null;
+    console.log(datosBalance.servicios.mes);
+    if(criterio == 'mes'){
+      recaudacionFinal = datosBalance.ventas.mes-(datosBalance.pagos.mes+datosBalance.servicios.mes);
+    }else{
+      recaudacionFinal = datosBalance.ventas.dia-(datosBalance.pagos.dia+datosBalance.servicios.dia);
+    }
+    if(recaudacionFinal>0){
+      document.getElementById('cardRecaudacionFinal').classList.remove('bg-danger');
+      document.getElementById('cardRecaudacionFinal').classList.add('bg-success');
+    }else{
+      document.getElementById('cardRecaudacionFinal').classList.remove('bg-success');
+      document.getElementById('cardRecaudacionFinal').classList.add('bg-danger');
+    }
+    document.getElementById('recaudacionFinal').innerHTML = '$'+recaudacionFinal;
+    return containerEstado.classList.remove('d-none');
+  } catch (error) {
+    console.log(error);
   }
-  document.getElementById('recaudacionFinal').innerHTML = '$'+recaudacionFinal;
-  return containerEstado.classList.toggle('d-none');
 }
 
-function getVentasTotal(criterio=null,render=true) {
+const changeCriterioBalance = event=>{
+  if(event.target.value == 'dia'){
+    verBalance('dia');
+  }else{
+    verBalance('mes');
+  }
+}
+
+const getVentasTotal = async(criterio=null,render=true)=>{
   url = 'backend/ventas/listarVentaMonto.php?dia='+dia;
   switch (criterio) {
     case 'mes':
@@ -97,11 +115,11 @@ function getVentasTotal(criterio=null,render=true) {
     default:
       break;
   }
-  fetch(url)
+  await fetch(url)
   .then(res=>res.json())
   .then(response=>{
     response.forEach(venta => {
-      if(criterio=='mes'&&!render){datosBalance.ventas.mes =  parseInt(venta.ventas_total);return null};
+      if(criterio=='mes'&&!render){return datosBalance.ventas.mes =  parseInt(venta.ventas_total);return null};
       (criterio==null)?datosBalance.ventas.dia =  parseInt(venta.ventas_total):null;
       ventasTotal.innerHTML = '$'+venta.ventas_total
       if (venta.ventas_total == null) {
@@ -148,18 +166,21 @@ function getPedidosLimit() {
   })
 }
 
-function getPagosProveedor(criterio=null,render=true) {
+const getPagosProveedor = async(criterio=null,render=true)=>{
   url = 'backend/pagoProveedores/listarPagosMonto.php?fecha='+dia;
-  if (criterio!=null) {
+  if (criterio=='mes') {
     url = 'backend/pagoProveedores/listarPagosMonto.php?fecha='+mes+'&criterio=mes';
+  }else if(criterio == 'pagoDia' || criterio == 'dia'){
+    url = 'backend/pagoProveedores/listarPagosMonto.php?fecha='+dia+'&estado=pago';
+  }else if(criterio == 'pagoMes'){
+    url = 'backend/pagoProveedores/listarPagosMonto.php?fecha='+mes+'&criterio=mes&estado=pago';
   }
-  fetch(url)
+  await fetch(url)
   .then(res=>res.json())
   .then(response=>{
     response.forEach(pago=>{
-      if(criterio!=null&&!render){
-        datosBalance.pagos.mes =  parseInt(pago.pagos_total);
-        return;
+      if(criterio!=null && criterio == 'mes' &&!render){
+        return datosBalance.pagos.mes =  parseInt(pago.pagos_total);
       }
       datosBalance.pagos.dia =  parseInt(pago.pagos_total);
       pagosTotal.innerHTML = '$'+ pago.pagos_total;
@@ -170,21 +191,30 @@ function getPagosProveedor(criterio=null,render=true) {
   })
 }
 
-function getServicios(criterio=null,render=true) {
-  url = 'backend/servicios/listarServiciosMonto.php?criterio=mes&fecha='+mes;
-  if (criterio!=null) {
-    url = 'backend/servicios/listarServiciosMonto.php?fecha='+mes;
+const getServicios = async(criterio=null,render=true)=>{
+  url = 'backend/servicios/listarServiciosMonto.php?fecha='+dia;//trae todos los del mes
+  if(criterio == 'porpagar' || criterio == null){
+    url = 'backend/servicios/listarServiciosMonto.php?criterio=nopago&fecha='+mes;//los que faltan pagar
+  }else if(criterio == 'dia'){
+    url = 'backend/servicios/listarServiciosMonto.php?fecha='+dia+'&criterio=pago';
   }
-  fetch(url)
+  await fetch(url)
   .then(res=>res.json())
   .then(response=>{
-    response.forEach(servicio=>{
-      if(criterio!=null&&!render){datosBalance.servicios.mes =  parseInt(servicio.servicio_total);return;};
-      serviciosTotal.innerHTML = '$'+servicio.servicio_total;
-      if (servicio.servicio_total == null) {
+      if(criterio=='dia'&&!render){ 
+        console.log('esta en dia');
+        return datosBalance.servicios.dia =  parseInt(response[0].servicio_total);
+      }else if(criterio=='mes' && !render){
+        console.log('esta en mes');
+        datosBalance.servicios.mes =  parseInt(response[0].servicio_total);
+        
+        return;
+      };
+      console.log('normal');
+      serviciosTotal.innerHTML = '$'+response[0].servicio_total;
+      if (response[0].servicio_total == null) {
         serviciosTotal.innerHTML = '$0';
       }
-    })
   })
 }
 
@@ -298,6 +328,10 @@ function filtrarPagoProveedores(valor) {
     getPagosProveedor('mes');
   }else if(filtro=='dia'){
     getPagosProveedor(null);
+  }else if(filtro == 'pagoDia'){
+    getPagosProveedor('pagoDia')
+  }else if(filtro == 'pagoMes'){
+    getPagosProveedor('pagoMes')
   }
 }
 

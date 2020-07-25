@@ -26,7 +26,6 @@ const render = data=>{
                 <td>${reg.monto}</td>
                 <td>${reg.total}</td>
                 <td>
-                    <i class="fas fa-money-check-alt ${displayBtn}" style="cursor:pointer;color:green;font-size:20px" onClick="insertarDatosEnForm(${reg.id},${reg.total})" data-toggle="modal" data-target="#staticBackdrop"></i>
                     <i class="fas fa-trash-alt" style="cursor:pointer;color:black;font-size:20px" onClick="eliminarPago(${reg.id})"></i>
                 </td>
             </tr>

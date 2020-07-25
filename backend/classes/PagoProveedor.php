@@ -104,12 +104,21 @@
         {
             $link = Conexion::conectar();
             $fecha = $_GET['fecha'];
-            $sql = "SELECT SUM(total) AS total_pagos 
+            if(isset($_GET['estado']) && $_GET['estado'] != ''){
+                $sql = "SELECT SUM(monto) AS total_pagos 
                     FROM pagoProveedores WHERE fecha = '". $fecha ."%'";
-            if (!is_null($criterio) && $criterio!='') {
-                $sql = "SELECT SUM(total) AS total_pagos
-                        FROM pagoProveedores WHERE fecha LIKE '". $fecha ."%'";
-            }
+                if (!is_null($criterio) && $criterio!='') {
+                    $sql = "SELECT SUM(monto) AS total_pagos
+                            FROM pagoProveedores WHERE fecha LIKE '". $fecha ."%'";
+                }
+            }else{
+                $sql = "SELECT SUM(total) AS total_pagos 
+                        FROM pagoProveedores WHERE fecha = '". $fecha ."%'";
+                if (!is_null($criterio) && $criterio!='') {
+                    $sql = "SELECT SUM(total) AS total_pagos
+                            FROM pagoProveedores WHERE fecha LIKE '". $fecha ."%'";
+                }
+            }   
             $stmt = $link->prepare($sql);
             if ($stmt->execute()) {
                 $json = array();

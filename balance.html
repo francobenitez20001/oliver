@@ -99,6 +99,8 @@
                       <select name="" onchange="filtrarPagoProveedores(event)" class="form-control bg-danger" style="color:#fff" id="">
                         <option value="dia">Pagos del dia</option>
                         <option value="mes">Pagos del mes</option>
+                        <option value="pagoDia">Monto pagado del día</option>
+                        <option value="pagoMes">Monto pagado del mes</option>
                       </select>
                     </div>
                   </div>
@@ -106,7 +108,7 @@
                       <p class="card-text text-center p-balance" id="pagosTotal">$3000</p>
                   </div>
                 </div>
-                <a href="adminPedidos.html">Ver en detalle</a>
+                <a href="adminProveedores.html">Ver en detalle</a>
             </div>
             <div class="col-12 col-md-4">
                 <div class="card text-white bg-warning mb-3">
@@ -162,14 +164,22 @@
             </div>
             <div class="col-12 mt-3 d-none" id="containerEstado">
               <div class="card text-white mb-3" id="cardRecaudacionFinal">
-                  <div class="card-header text-center">ESTADO DE RECAUDACION FINAL (VENTAS-GASTOS)</div>
+                  <div class="card-header row align-items-center">
+                    <div class="col-9">ESTADO DE RECAUDACION FINAL (VENTAS-GASTOS)</div>
+                    <div class="col-3">
+                      <select class="form-control" onchange="changeCriterioBalance(event)">
+                        <option value="mes">Estado del mes</option>
+                        <option value="dia">Estado del día</option>
+                      </select>
+                    </div>
+                  </div>
                   <div class="card-body">
                   <p class="card-text text-center p-balance" id="recaudacionFinal">8</p>
                   </div>
               </div>
             </div>
             <div class="col-12 text-right mt-3">
-                <button class="btn btn-primary" id="btn-balance">Ver estado actual</button>
+                <button class="btn btn-primary" id="btn-balance" onclick="verBalance('mes')">Ver estado actual</button>
             </div>
         </div>
     </div>
@@ -263,6 +273,6 @@
   <script src="js/sweetalert2.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/app.js"></script>
-  <script src="js/balance.js?v=1.0.0"></script>
+  <script src="js/balance.js?v=2.0.0"></script>
 </body>
 </html>

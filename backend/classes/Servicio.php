@@ -145,9 +145,13 @@
              $fecha = $_GET['fecha'];
              $sql = "SELECT SUM(total) AS total_servicios 
                      FROM servicios WHERE fecha LIKE '". $fecha ."%'";
-             if (!is_null($criterio) && $criterio!='') {
+             if (!is_null($criterio) && $criterio=='nopago') {
                  $sql = "SELECT SUM(total) AS total_servicios
                          FROM servicios WHERE estado = 'No pago' AND fecha LIKE '". $fecha ."%'";
+             }else if((!is_null($criterio) && $criterio=='pago')){
+                //pedidos del dia pagos
+                $sql = "SELECT SUM(total) AS total_servicios
+                         FROM servicios WHERE estado = 'Pago' AND fecha LIKE '". $fecha ."'";
              }
              $stmt = $link->prepare($sql);
              // $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
