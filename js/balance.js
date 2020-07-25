@@ -66,6 +66,7 @@ const verBalance = async criterio=>{
     await getServicios(criterio,false);
     //evito valores Nan
     (datosBalance.servicios.mes<=0)?datosBalance.servicios.mes = 0:null;
+    (!datosBalance.pagos.dia>0)?datosBalance.pagos.dia =0:null;
     console.log(datosBalance.servicios.mes);
     if(criterio == 'mes'){
       recaudacionFinal = datosBalance.ventas.mes-(datosBalance.pagos.mes+datosBalance.servicios.mes);
@@ -167,7 +168,7 @@ function getPedidosLimit() {
 }
 
 const getPagosProveedor = async(criterio=null,render=true)=>{
-  url = 'backend/pagoProveedores/listarPagosMonto.php?fecha='+dia;
+  url = 'backend/pagoProveedores/listarPagosMonto.php?fecha='+mes;
   if (criterio=='mes') {
     url = 'backend/pagoProveedores/listarPagosMonto.php?fecha='+mes+'&criterio=mes';
   }else if(criterio == 'pagoDia' || criterio == 'dia'){
@@ -192,7 +193,7 @@ const getPagosProveedor = async(criterio=null,render=true)=>{
 }
 
 const getServicios = async(criterio=null,render=true)=>{
-  url = 'backend/servicios/listarServiciosMonto.php?fecha='+dia;//trae todos los del mes
+  url = 'backend/servicios/listarServiciosMonto.php?fecha='+mes;//trae todos los del mes
   if(criterio == 'porpagar' || criterio == null){
     url = 'backend/servicios/listarServiciosMonto.php?criterio=nopago&fecha='+mes;//los que faltan pagar
   }else if(criterio == 'dia'){
