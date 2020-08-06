@@ -121,6 +121,7 @@ class Producto
                 $stockSuelto = $_POST['stockSuelto'];
                 $precioPublico = $precioCosto + ($precioCosto*$porcentaje_ganancia/100);//precio publico dinamico
                 $cantidadUnitario = $_POST['cantidadUnitario'];
+                $stockDeposito = $_POST['stockDeposito'];
                 $precioUnidad = $precioPublico/$cantidadUnitario;
                 $precioKilo = 0;
                 $cantidadPorKilo = 0;
@@ -151,7 +152,8 @@ class Producto
                                                 cantidadUnitario = :cantidadUnitario,
                                                 codigo_producto = :codigoProducto,
                                                 cantidadPorKilo = :cantidadPorKilo,
-                                                porcentajeGananciaPorKilo = :porcentajeGananciaPorKilo
+                                                porcentajeGananciaPorKilo = :porcentajeGananciaPorKilo,
+                                                stock_deposito = :stockDeposito
                                         WHERE idProducto = :idProducto";
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':idProducto', $idProducto , PDO::PARAM_INT);
@@ -170,6 +172,7 @@ class Producto
                 $stmt->bindParam(':codigoProducto',$codigoProducto,PDO::PARAM_INT);
                 $stmt->bindParam(':cantidadPorKilo',$cantidadPorKilo,PDO::PARAM_STR);
                 $stmt->bindParam(':porcentajeGananciaPorKilo',$porcentajeGananciaKilo,PDO::PARAM_INT);
+                $stmt->bindParam(':stockDeposito',$stockDeposito,PDO::PARAM_INT);
                 $bool = $stmt->execute();
                 if ($bool) {
                         return json_encode(true);
@@ -195,7 +198,7 @@ class Producto
         {
                 $link = Conexion::conectar();
                 $idProducto = $_GET['idProducto'];
-                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,precio_costo,stock,p.idProveedor,proveedor,porcentaje_ganancia,stock_suelto,cantidadUnitario,codigo_producto,cantidadPorKilo,porcentajeGananciaPorKilo FROM productos p, marcas m, categorias c, proveedor prov
+                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,precio_costo,stock,p.idProveedor,proveedor,porcentaje_ganancia,stock_suelto,cantidadUnitario,codigo_producto,cantidadPorKilo,porcentajeGananciaPorKilo,stock_deposito FROM productos p, marcas m, categorias c, proveedor prov
                         WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = prov.idProveedor AND idProducto = :idProducto";
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':idProducto', $idProducto, PDO::PARAM_INT);

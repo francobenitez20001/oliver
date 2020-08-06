@@ -182,6 +182,13 @@
                 <input type="number" name="stockSuelto" id="stock" class="form-control" value="<?php echo $reg['stock_suelto'] ?>"step="any">
             </div>
             <div class="input-group col-12 col-md-5 mb-4">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">Stock desposito</div>
+                </div>
+                <input type="number" name="stockDeposito" id="stockDeposito" class="form-control" value="<?php echo $reg['stock_deposito'] ?>">
+            </div>
+            <div class="col-md-2"></div>
+            <div class="input-group col-12 col-md-5 mb-4">
               <div class="input-group-prepend">
                 <div class="input-group-text">Proveedor</div>
               </div>
@@ -192,20 +199,19 @@
                     <?php } ?>
               </select>
             </div>
-            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4 d-none userPrivate">
               <div class="input-group-prepend">
                 <div class="input-group-text">% Ganancia</div>
               </div>
               <input type="number" name="porcentaje_ganancia" id="porcentaje_ganancia" class="form-control" value="<?php echo $reg['porcentaje_ganancia'] ?>" step="any">
             </div>
+            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4 d-none userPrivate">
               <div class="input-group-prepend">
                 <div class="input-group-text">Precio de costo</div>
               </div>
               <input type="text" name="precio_costo" id="precioCosto" class="form-control" value="<?php echo $reg['precio_costo'] ?>">
             </div>
-            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
               <div class="input-group-prepend">
                 <div class="input-group-text">Restar al stock suelto</div>
