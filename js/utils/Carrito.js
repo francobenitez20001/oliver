@@ -9,6 +9,7 @@ class Carrito{
         this.productos = [];
         this.carrito = {
             productos:[],
+            subtotal:0,
             total:0,
             fecha,
             dia,
@@ -80,7 +81,7 @@ class Carrito{
             console.log(carrito.productos[index].total);
             totales.push(carrito.productos[index].total);
         }
-        this.carrito.total = totales.reduce((a, b) => a + b, 0);
+        this.carrito.subtotal = totales.reduce((a, b) => a + b, 0);
         document.getElementsByClassName('btn-agregar-carrito')[index].classList.add('d-none');
         document.getElementsByClassName('alert-carrito')[index].classList.remove('d-none');
     }
@@ -236,9 +237,9 @@ class Carrito{
             <label class="text-muted">Cliente: <b>${this.carrito.cliente}</b></label><br>
             <label class="text-muted">Estado: <b>${this.carrito.estado}</b></label><br>
             <label class="text-muted">Tipo de pago: <b>${this.carrito.tipo_pago}</b></label><br>
-            <label class="text-muted">Subtotal: $<b>${this.carrito.total}</b></label><br>
+            <label class="text-muted">Subtotal: $<b>${this.carrito.subtotal}</b></label><br>
             <label class="text-muted">Descuento: <b>${this.carrito.descuento}%</b></label><br>
-            <label class="text-muted">Total: <b>$${this.carrito.total - (this.carrito.total * this.carrito.descuento / 100)}</b></label>
+            <label class="text-muted">Total: <b>$${this.carrito.subtotal - (this.carrito.subtotal * this.carrito.descuento / 100)}</b></label>
         `;
         div.classList.toggle('d-none');
     }
@@ -246,7 +247,7 @@ class Carrito{
     cargarVenta(){
         document.getElementsByClassName('btn-modal-venta')[0].classList.add('d-none');
         document.getElementsByClassName('btn-modal-venta')[1].classList.add('d-none');
-        this.carrito.total = this.carrito.total - (this.carrito.total * this.carrito.descuento /100);
+        this.carrito.total = this.carrito.subtotal - (this.carrito.subtotal * this.carrito.descuento /100);
         this.carrito.total = this.carrito.total.toFixed(2);
         console.log(this.carrito.total);
         console.log(this.carrito);
@@ -255,28 +256,43 @@ class Carrito{
             body:JSON.stringify(this.carrito)
         }).then(res=>res.json()).then(response=>{
             if(response.status == 200){
-                localStorage.removeItem('productos');//elimino los datos de los productos seleccionados del localStorage
-                Swal.fire({
-                    title: response.info,
-                    text: '¿Desea agregar los datos del envio de esta venta?',
-                    icon: 'success',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Agregar'
-                }).then((result) => {
-                    document.getElementById('modalPago').classList.remove('show');
-                    document.getElementById('modalPago').style.display = 'none';
-                    if (result.value) {
-                        let divVenta = document.getElementById('form-modificar-div');
-                        let divEnvio = document.getElementById('form-agregar-div');
-                        let tipoEnvio = document.getElementById('tipoEnvio');
-                        tipoEnvio.setAttribute('value','varios');
-                        divVenta.classList.add('d-none');
-                        divEnvio.classList.remove('d-none');
-                    }else{
-                        window.location.assign('adminVentas.html');
+                fetch('backend/productosVenta/insertarProductos.php',{
+                    method:'POST',
+                    body:JSON.stringify({
+                        idVenta:response.idVenta,
+                        carrito:this.carrito
+                    })
+                }).then(res=>res.json()).then(response=>{
+                    if(response.status == 400){
+                        return Swal.fire(
+                            'Venta agregada pero con problemas',
+                            response.info,
+                            'warning'
+                        )
                     }
+                    localStorage.removeItem('productos');//elimino los datos de los productos seleccionados del localStorage
+                    Swal.fire({
+                        title: response.info,
+                        text: '¿Desea agregar los datos del envio de esta venta?',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Agregar'
+                    }).then((result) => {
+                        document.getElementById('modalPago').classList.remove('show');
+                        document.getElementById('modalPago').style.display = 'none';
+                        if (result.value) {
+                            let divVenta = document.getElementById('form-modificar-div');
+                            let divEnvio = document.getElementById('form-agregar-div');
+                            let tipoEnvio = document.getElementById('tipoEnvio');
+                            tipoEnvio.setAttribute('value','varios');
+                            divVenta.classList.add('d-none');
+                            divEnvio.classList.remove('d-none');
+                        }else{
+                            window.location.assign('adminVentas.html');
+                        }
+                    })
                 })
             }
         })

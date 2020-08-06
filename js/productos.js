@@ -1,4 +1,4 @@
-import Carrito from './utils/Carrito.js';
+import Carrito from './utils/Carrito.js?v=1.0.2';
 import {getMarcas,getCategorias,getProveedores} from './utils/helpers.js';
 
 class Producto{
@@ -42,7 +42,7 @@ class Producto{
         }
         let permiso = this.checkUserSession();
         data.forEach(reg => {
-            if(reg.stock <=0 && reg.stock_suelto==0){
+            if(reg.stock <=0 && reg.stock_suelto<=0){
                 template += `
                     <tr>
                         <td scope="row">${reg.producto}</td>

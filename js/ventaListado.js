@@ -15,12 +15,12 @@ function getVentas(filtro=null) {
             }
             template += `
             <tr>
-                <th scope="row">${reg.producto}</th>
-                <td>${reg.cantidad}</td>
                 <td>${reg.fecha}</td>
-                <td>${reg.total}</td>
                 <td>${reg.tipo_pago}</td>
                 <td>${reg.cliente}</td>
+                <td>${reg.subtotal}</td>
+                <td>${reg.descuento}%</td>
+                <td>${reg.total}</td>
                 <td>
                     ${buttons}
                 </td>

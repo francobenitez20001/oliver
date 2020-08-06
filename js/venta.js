@@ -39,17 +39,17 @@ window.habilitarDescuento = function habilitarDescuento(data) {
 window.showModalPago = function showModalPago() {
     document.getElementById('modalPago').classList.add('show');
     document.getElementById('modalPago').style.display = 'block';
-    document.getElementById('total-info').innerHTML = `El total es <b>$${carrito.carrito.total.toFixed(2)}<b>`
+    document.getElementById('total-info').innerHTML = `El total es <b>$${carrito.carrito.subtotal.toFixed(2)}<b>`
 }
 
 window.setDescuento = function setDescuento(event) {
     let valorConDescuento;
     if(document.getElementById('inputDescuento').value == ''){
-        valorConDescuento = carrito.carrito.total;
+        valorConDescuento = carrito.carrito.subtotal;
         return;
     }else{
         carrito.carrito.descuento = parseFloat(document.getElementById('inputDescuento').value);
-        valorConDescuento = carrito.carrito.total - (carrito.carrito.total * carrito.carrito.descuento / 100);
+        valorConDescuento = carrito.carrito.subtotal - (carrito.carrito.subtotal * carrito.carrito.descuento / 100);
     }
     document.getElementById('total-info').innerHTML = `El total es <b>$${valorConDescuento.toFixed(2)}<b>`
 }

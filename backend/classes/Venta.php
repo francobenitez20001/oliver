@@ -1,99 +1,50 @@
 <?php
     class Venta 
     {
-        public function agregarVenta()
-        {
-            $producto = $_POST['producto'];
-            $idProducto = $_POST['producto'];
-            $idMarca = $_POST['idMarca'];
-            $idCategoria = $_POST['idCategoria'];
-            $estado = $_POST['estado'];
-            $precio = $_POST['precio'];
-            $fecha = $_POST['fecha'];
-            $dia = $_POST['dia'];
-            $cantidad = $_POST['cantidad'];
-            if (isset($_POST['cantidadSuelto']) && !is_null($_POST['cantidadSuelto']) && $_POST['cantidadSuelto']!='') {
-                $cantidad = $_POST['cantidadSuelto'];
-            }
-            $tipo_pago = $_POST['tipo_pago'];
-            $cliente = 'No registrado';
-            if (isset($_POST['cliente']) && $_POST['cliente']!='') {
-                $cliente = $_POST['cliente'];
-            }
-            $total = $_POST['total'];
-            $link = Conexion::conectar();
-            $sql = "INSERT INTO ventas (producto,cantidad,idMarca,idCategoria,
-                                        total,fecha,dia,estado,tipo_pago,cliente)
-                    VALUES (:producto,:cantidad,:idMarca,:idCategoria,:total,
-                            :fecha,:dia,:estado,:tipo_pago,:cliente)";
-            $stmt = $link->prepare($sql);
-            $stmt->bindParam(':producto', $producto,PDO::PARAM_STR);
-            $stmt->bindParam(':cantidad', $cantidad,PDO::PARAM_STR);//En este caso uso str para que me tome el decimal
-            // $stmt->bindParam(':idProducto', $idProducto ,PDO::PARAM_INT);
-            $stmt->bindParam(':idMarca', $idMarca,PDO::PARAM_INT);
-            $stmt->bindParam(':idCategoria', $idCategoria,PDO::PARAM_INT);
-            $stmt->bindParam(':total', $total,PDO::PARAM_STR);//En este caso uso str para que me tome el decimal
-            $stmt->bindParam(':fecha', $fecha,PDO::PARAM_STR);
-            $stmt->bindParam(':dia', $dia,PDO::PARAM_STR);
-            $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
-            $stmt->bindParam(':tipo_pago',$tipo_pago,PDO::PARAM_STR);
-            $stmt->bindParam(':cliente',$cliente,PDO::PARAM_STR);
-            $resultado = $stmt->execute();
-            if ($resultado) {
-                $actualizarStock = $this->actualizarStock('normal');
-                if ($actualizarStock) {
-                    return json_encode(array('status'=>200,'info'=>'Venta agregada', 'idVenta'=>$link->lastInsertId(),'total'=>$total,'cantidad'=>$cantidad));//trae el ultimo id registrado, es el id de la venta cargada.   
-                }
-                return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el stock'));
-            }
-            return json_encode(array('status'=>400,'info'=>'Problemas al agregar la venta'));
-        }
-
         public function agregarVentaJson()
         {
             /// Obtenemos el json enviado
             $data = file_get_contents('php://input');
             // Los convertimos en un array
             $data = json_decode( $data, true );
-            $estado = $data['estado'];
             $fecha = $data['fecha'];
             $dia = $data['dia'];
-            $cliente = $data['cliente'];
+            $total = $data['total'];
+            $estado = $data['estado'];
             $tipo_pago = $data['tipo_pago'];
-            $prd_count = count($data['productos']);//cantidad de productos que cargo el usuario;
-            $logResponse = array();
+            $cliente = $data['cliente'];
+            $descuento = $data['descuento'];
+            $subtotal = $data['subtotal'];
+            
             $link = Conexion::conectar();
-            for ($i=0; $i < $prd_count; $i++) {
-                $totalSingle = $data['productos'][$i]['total'] - ($data['productos'][$i]['total'] * $data['procentaje'] / 100);
-                $sql = "INSERT INTO ventas (producto,cantidad,idMarca,idCategoria,
-                                        total,fecha,dia,estado,tipo_pago,cliente)
-                        VALUES (:producto,:cantidad,:idMarca,:idCategoria,:total,
-                            :fecha,:dia,:estado,:tipo_pago,:cliente)";
-                $stmt = $link->prepare($sql);
-                $stmt->bindParam(':producto', $data['productos'][$i]['producto'],PDO::PARAM_STR);
-                $stmt->bindParam(':cantidad', $data['productos'][$i]['cantidad'],PDO::PARAM_STR);//En este caso uso str para que me tome el decimal
-                $stmt->bindParam(':idMarca', $data['productos'][$i]['idMarca'],PDO::PARAM_INT);
-                $stmt->bindParam(':idCategoria', $data['productos'][$i]['idCategoria'],PDO::PARAM_INT);
-                $stmt->bindParam(':total', $totalSingle,PDO::PARAM_STR);//En este caso uso str para que me tome el decimal
-                $stmt->bindParam(':fecha', $fecha,PDO::PARAM_STR);
-                $stmt->bindParam(':dia', $dia,PDO::PARAM_STR);
-                $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
-                $stmt->bindParam(':tipo_pago',$tipo_pago,PDO::PARAM_STR);
-                $stmt->bindParam(':cliente',$cliente,PDO::PARAM_STR);
-                $resultado = $stmt->execute();
-                if ($resultado) {
+            $sql = "INSERT INTO ventas (fecha,dia,total,estado,tipo_pago,cliente,descuento,subtotal)
+                    VALUES (:fecha,:dia,:total,:estado,:tipo_pago,:cliente,:descuento,:subtotal)";
+            $stmt = $link->prepare($sql);
+            $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
+            $stmt->bindParam(':dia',$dia,PDO::PARAM_STR);
+            $stmt->bindParam(':total',$total,PDO::PARAM_STR);
+            $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
+            $stmt->bindParam(':tipo_pago',$tipo_pago,PDO::PARAM_STR);
+            $stmt->bindParam(':cliente',$cliente,PDO::PARAM_STR);
+            $stmt->bindParam(':descuento',$descuento,PDO::PARAM_STR);
+            $stmt->bindParam(':subtotal',$subtotal,PDO::PARAM_STR);
+            if($stmt->execute()){
+                $prd_count = count($data['productos']);//cantidad de productos que cargo el usuario;
+                $logResponse = array();
+                for ($i=0; $i < $prd_count; $i++) {
                     $actualizarStock = $this->actualizarStock($data['productos'][$i]['tipoDeVenta'],$data['productos'][$i]['cantidad'],$data['productos'][$i]['producto']);
                     if ($actualizarStock) {
                         array_push($logResponse,true);   
+                    }else{
+                        array_push($logResponse,false);
                     }
-                }else{
-                    array_push($logResponse,false);
                 }
+                if(in_array(false,$logResponse)){
+                    return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el stock'));
+                }
+                return json_encode(array('status'=>200,'info'=>'Venta agregada','idVenta'=>$link->lastInsertId(),'produtos'=>$data['productos']));
             }
-            if(in_array(false,$logResponse)){
-                return json_encode(array('status'=>400,'info'=>'Problemas al cargar la venta'));
-            }
-            return json_encode(array('status'=>200,'info'=>'Venta cargada'));;
+            return json_encode(array('status'=>400,'info'=>'No se pudo cargar la venta'));
         }
 
         public function actualizarStock($tipoVenta=null,$cantidad=null,$producto=null)
@@ -145,14 +96,14 @@
             foreach ($result as $reg) {
                 $json[] = array(
                     'idVenta' => $reg['idVenta'],
-                    'producto' => $reg['producto'],
-                    'cantidad' => $reg['cantidad'],
                     'fecha' => $reg['fecha'],
                     'dia' => $reg['dia'],
                     'total' => $reg['total'],
                     'estado' => $reg['estado'],
                     'tipo_pago' => $reg['tipo_pago'],
-                    'cliente' => $reg['cliente']
+                    'cliente' => $reg['cliente'],
+                    'subtotal' => $reg['subtotal'],
+                    'descuento' => $reg['descuento']
                 );
             }
             $jsonString = json_encode($json);
