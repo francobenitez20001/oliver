@@ -19,7 +19,7 @@ class Producto
         public function listarProducto()
         {       
                 $link = Conexion::conectar();
-                $sql = "SELECT idProducto,producto,p.idMarca,marcaNombre,p.idCategoria,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock,stock_suelto,proveedor,porcentaje_ganancia,precio_costo,codigo_producto,stock_logistica
+                $sql = "SELECT idProducto,producto,p.idMarca,marcaNombre,p.idCategoria,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock,stock_suelto,proveedor,porcentaje_ganancia,precio_costo,codigo_producto,stock_deposito
                 FROM productos p, marcas m, categorias c, proveedor pr
                 WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = pr.idProveedor ";
                 if(isset($_GET['desde']) && !is_null($_GET['desde']) && isset($_GET['hasta']) && !is_null($_GET['hasta'])){
@@ -46,7 +46,7 @@ class Producto
                                 'porcentaje_ganancia' => $reg['porcentaje_ganancia'],
                                 'precio_costo' => $reg['precio_costo'],
                                 'codigo_producto' => $reg['codigo_producto'],
-                                'stock_logistica' => $reg['stock_logistica']
+                                'stock_deposito' => $reg['stock_deposito']
                         );
                 }
                 $jsonString = json_encode($json);
@@ -307,6 +307,30 @@ class Producto
                 $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
                 if ($stmt->execute()) {
                         return json_encode(array('status'=>200,'info'=>'Se actualizo el stock y el pedido correctamente','data'=>$producto,'cantidad'=>$cantidad));
+                }
+                return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el stock'));
+        }
+
+        public function modificarStockDeposito()
+        {
+                /// Obtenemos el json enviado
+                $data = file_get_contents('php://input');
+                // Los convertimos en un array
+                $data = json_decode( $data, true );
+                $stockDepositoPrevio = $data['stockDepositoDelProducto'];
+                $nuevoStockDeposito = $data['nuevoStockDeposito'];
+                $nuevoStock = $stockDepositoPrevio - $nuevoStockDeposito;
+                $idProducto = $data['idProducto'];
+                $link = Conexion::conectar();
+                $sql = "UPDATE productos SET stock_deposito = :nuevoStockDeposito,
+                                                stock = stock + :nuevoStock
+                        WHERE idProducto = :id";
+                $stmt = $link->prepare($sql);
+                $stmt->bindParam(':nuevoStockDeposito',$nuevoStockDeposito,PDO::PARAM_INT);
+                $stmt->bindParam(':nuevoStock',$nuevoStock,PDO::PARAM_INT);
+                $stmt->bindParam(':id',$idProducto,PDO::PARAM_INT);
+                if ($stmt->execute()) {
+                        return json_encode(array('status'=>200,'info'=>'Se actualizaron los stocks'));
                 }
                 return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el stock'));
         }

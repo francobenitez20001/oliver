@@ -46,7 +46,9 @@ class Producto{
                 template += `
                     <tr>
                         <td scope="row">${reg.producto}</td>
-                        <td scope="row">${reg.stock_logistica}</td>
+                        <td>
+                            <button type="button" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>
+                            <input type="number" disabled="true" value="${reg.stock_deposito}" id="inputStockDeposito_${reg.idProducto}" style="width:45px"/>
                         <td>
                             <input type="number" onkeyup="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento" style="width:45px"/>
                         </td>
@@ -66,6 +68,10 @@ class Producto{
                 template += `
                     <tr>
                         <td scope="row">${reg.producto}</td>
+                        <td>
+                            <button type="button" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>
+                            <input type="number" disabled="true" value="${reg.stock_deposito}" id="inputStockDeposito_${reg.idProducto}" style="width:45px"/>
+                        </td>
                         <td>
                         <input type="number" onkeyup="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento" style="width:45px"/>
                         </td>
@@ -239,6 +245,52 @@ class Producto{
         if (userSession == 1) {
             return true;
         }
+    }
+
+    habilitarModificacionStockDeposito = id=>{
+        let inputStockDeposito = document.getElementById(`inputStockDeposito_${id}`);
+        let buttonStockDeposito = document.getElementById(`buttonStockDeposito_${id}`);
+        inputStockDeposito.removeAttribute('disabled');
+        buttonStockDeposito.removeAttribute('onclick');
+        buttonStockDeposito.setAttribute('onclick',`producto.modificarStockDeposito(${id})`);
+        buttonStockDeposito.className = 'btn btn-success';
+        buttonStockDeposito.innerHTML = `<i class="fas fa-redo"></i>`; 
+    }
+    
+    modificarStockDeposito = (idProducto)=>{
+        //obtengo el stock en deposito de esta manera porque el valor que hay en el input el usuario lo va cambiar y ya no me sirve porque pierdo la referencia del numero que estaba en un principio.
+        let stockDepositoDelProducto = parseInt(this.listadoProducto.filter(res=>res.idProducto == idProducto)[0].stock_deposito);
+        let nuevoValorStockDeposito = parseInt(document.getElementById(`inputStockDeposito_${idProducto}`).value);
+        let unidadesIngresadas = stockDepositoDelProducto - nuevoValorStockDeposito;
+        Swal({
+            title: '¿Desea Actualizar el stock?',
+            text: `Vas a notificar que ingresaste ${unidadesIngresadas} unidad/es del deposito`,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#30d685',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmo'
+        }).then((result) => {
+            if (result.value) {
+                fetch('backend/producto/actualizarStockDeposito.php',{
+                    method:'POST',
+                    body:JSON.stringify({
+                        idProducto:idProducto,
+                        stockDepositoDelProducto:stockDepositoDelProducto,
+                        nuevoStockDeposito:nuevoValorStockDeposito
+                    })
+                }).then(res=>res.json()).then(response=>{
+                    if(response.status == 400){
+                        return modalError(response.info);
+                    }
+                    Swal.fire(
+                        'Listo!',
+                        response.info,
+                        'success'
+                    ).then(()=>(this.getProductos()))
+                })
+            }
+        });
     }
 }
 
