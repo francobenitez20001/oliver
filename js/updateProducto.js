@@ -48,3 +48,30 @@ function handleChangeVentaKilo(event){
       document.getElementsByClassName('input-disable')[1].value="";
   }
 }
+
+
+function aumentarProducto(e) {
+  e.preventDefault();
+  let data = new FormData(e.target);
+  let url = 'backend/producto/aumentarPorProducto.php';
+  fetch(url,{
+      method:'POST',
+      body:data
+  })
+  .then(res=>res.json())
+  .then(response=>{
+      if (response.status == 200) {
+          Swal.fire(
+              'Listo!',
+              response.info,
+              'success'
+          ).then(()=>(window.location.assign('adminProductos.html')));
+      }else{
+          Swal.fire(
+              'Error!',
+              response.info,
+              'error'
+          )
+      }
+  })
+}

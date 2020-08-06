@@ -222,6 +222,21 @@
         </div>
         <center><input type="submit" class="btn btn-outline-info" value="Modificar"></center>
     </form>
+    <hr/>
+    <h3>Aumentar producto</h3>
+    <div class="col-12 container">
+      <form class="form-group" onsubmit="aumentarProducto(event)" id="formAumentarPorProducto"> 
+          <div class="row">
+              <div class="col-12 col-md-10 pt-2">
+                  <input type="number" step="any" name="porcentaje_aumento" class="form-control" placeholder="Ingrese el porcentaje de aumento" required>
+              </div>
+              <input type="hidden" name="idProducto" id="idProducto" value="<?php echo $reg['idProducto'] ?>">
+              <div class="col-12 col-md-2 pt-2">
+                  <input type="submit" class="btn btn-outline-info btn-block" name="" id="" value="Aplicar aumento">
+              </div>
+          </div>
+      </form>
+    </div>
   </div>
 
   <div class="menu-secundary bg-dark animated fadeIn fast d-none" id="menu-secundary">
@@ -239,6 +254,6 @@
     <script src="js/bootstrap/bootstrap.min.js"></script>
     <script src="js/sweetalert2.js" charset="utf-8"></script>
     <script src="js/app.js"></script>
-    <script src="js/updateProducto.js"></script>
+    <script src="js/updateProducto.js?v=1.0.0"></script>
     <script src="js/menu.js"></script>
 </body>
