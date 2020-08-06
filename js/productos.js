@@ -47,7 +47,10 @@ class Producto{
                     <tr>
                         <td scope="row">${reg.producto}</td>
                         <td>
-                            <button type="button" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>
+                            ${(reg.stock_deposito == 0)?`
+                                <button type="button" disabled="true" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>`:
+                                `<button type="button" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>`
+                            }
                             <input type="number" disabled="true" value="${reg.stock_deposito}" id="inputStockDeposito_${reg.idProducto}" style="width:45px"/>
                         <td>
                             <input type="number" onkeyup="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento" style="width:45px"/>
@@ -69,7 +72,10 @@ class Producto{
                     <tr>
                         <td scope="row">${reg.producto}</td>
                         <td>
-                            <button type="button" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>
+                            ${(reg.stock_deposito == 0)?`
+                                <button type="button" disabled="true" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>`:
+                                `<button type="button" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>`
+                            }
                             <input type="number" disabled="true" value="${reg.stock_deposito}" id="inputStockDeposito_${reg.idProducto}" style="width:45px"/>
                         </td>
                         <td>
