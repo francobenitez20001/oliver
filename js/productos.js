@@ -46,6 +46,7 @@ class Producto{
                 template += `
                     <tr>
                         <td scope="row">${reg.producto}</td>
+                        <td scope="row">${reg.stock_logistica}</td>
                         <td>
                             <input type="number" onkeyup="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento" style="width:45px"/>
                         </td>

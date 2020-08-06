@@ -19,9 +19,9 @@ class Producto
         public function listarProducto()
         {       
                 $link = Conexion::conectar();
-                $sql = "SELECT idProducto,producto,p.idMarca,marcaNombre,p.idCategoria,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock,stock_suelto,proveedor,porcentaje_ganancia,precio_costo,codigo_producto
-                        FROM productos p, marcas m, categorias c, proveedor pr
-                        WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = pr.idProveedor ";
+                $sql = "SELECT idProducto,producto,p.idMarca,marcaNombre,p.idCategoria,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock,stock_suelto,proveedor,porcentaje_ganancia,precio_costo,codigo_producto,stock_logistica
+                FROM productos p, marcas m, categorias c, proveedor pr
+                WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = pr.idProveedor ";
                 if(isset($_GET['desde']) && !is_null($_GET['desde']) && isset($_GET['hasta']) && !is_null($_GET['hasta'])){
                         $sql .= "LIMIT ".$_GET['hasta'];
                 }
@@ -45,7 +45,8 @@ class Producto
                                 'proveedor' => $reg['proveedor'],
                                 'porcentaje_ganancia' => $reg['porcentaje_ganancia'],
                                 'precio_costo' => $reg['precio_costo'],
-                                'codigo_producto' => $reg['codigo_producto']
+                                'codigo_producto' => $reg['codigo_producto'],
+                                'stock_logistica' => $reg['stock_logistica']
                         );
                 }
                 $jsonString = json_encode($json);
