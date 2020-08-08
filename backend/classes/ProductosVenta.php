@@ -34,4 +34,27 @@ class ProductosVenta{
         }
         return json_encode(array('status'=>200,'info'=>'Venta agregada'));
     }
+
+    public function listarProductosPorVenta()
+    {
+        $idVenta = $_GET['idVenta'];
+        $link = Conexion::conectar();
+        $sql = "SELECT producto,tipoVenta,total,cantidad FROM productosVenta AS pv, productos AS pr WHERE pv.idProducto = pr.idProducto AND idVenta = :idVenta";
+        $stmt = $link->prepare($sql);
+        $stmt->bindParam(':idVenta',$idVenta,PDO::PARAM_INT);
+        if($stmt->execute()){
+            $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $json = array();
+            foreach ($productos as $producto) {
+                $json[] = array(
+                    'producto' => $producto['producto'],
+                    'tipoVenta' => $producto['tipoVenta'],
+                    'total' => $producto['total'],
+                    'cantidad' => $producto['cantidad']
+                );
+            }
+            $jsonString = json_encode($json);
+            return $jsonString;
+        }
+    }
 }

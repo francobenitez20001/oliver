@@ -11,7 +11,7 @@ function getVentas(filtro=null) {
                 buttons = `<i class="fas fa-hand-holding-usd" style="cursor:pointer;color:green;font-size:20px" id="boton-eliminar" onclick="SaldarVenta(${reg.idVenta})"></i>
                 <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarVenta(${reg.idVenta})"></i>`;
             }else{
-                buttons = `<i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarVenta(${reg.idVenta})"></i>`;
+                buttons = `<button type="button" onclick="obtenerProductosVenta(${reg.idVenta})" data-toggle="modal" data-target="#exampleModal" class="mx-2 btn btn-success">Detalles</button><i class="fas fa-trash-alt mx-2" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="eliminarVenta(${reg.idVenta})"></i>`;
             }
             template += `
             <tr>
@@ -30,7 +30,7 @@ function getVentas(filtro=null) {
         bodyTable.innerHTML = template;
     })
 }
-getVentas();
+window.onload = ()=>(getVentas());
 
 
 
@@ -82,5 +82,24 @@ function saldarVenta(id) {
                 }
             })
         }
+    })
+}
+
+
+const obtenerProductosVenta = idVenta=>{
+    fetch(`backend/productosVenta/listarProductoPorVenta.php?idVenta=${idVenta}`).then(res=>res.json()).then(data=>{
+        let tabla = document.getElementById('cuerpo-tablaventas');
+        let template = '';
+        data.forEach(producto=>{
+            template += `
+                <tr>
+                    <th scope="col">${producto.producto}</th>
+                    <th scope="col">${producto.tipoVenta}</th>
+                    <th scope="col">${producto.cantidad}</th>
+                    <th scope="col">${producto.total}</th>
+                </tr>
+            `;
+        });
+        return tabla.innerHTML = template;
     })
 }

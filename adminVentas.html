@@ -89,6 +89,41 @@
     </tbody>
   </table><!--tabla productos-->
 
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width:800px">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Detalle de la venta</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <table class="table text-center fadeIn fast" id="">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Producto</th>
+                <th scope="col">Tipo de venta</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpo-tablaventas">
+              <tr>
+                <th scope="col">1</th>
+                <th scope="col">1</th>
+                <th scope="col">1</th>
+                <th scope="col">1</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
     <script src="js/bootstrap/jquery.js"></script>
     <script src="js/bootstrap/popper.min.js"></script>
@@ -96,5 +131,5 @@
     <script src="js/sweetalert2.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/ventaListado.js?v=1.0.1"></script>
+    <script src="js/ventaListado.js?v=1.0.2"></script>
 </body>
