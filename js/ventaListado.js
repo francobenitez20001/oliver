@@ -58,6 +58,7 @@ function eliminarVenta(id) {
     })
 }
 
+
 function saldarVenta(id) {
     Swal.fire({
         title: 'Querés notificar que se saldó la venta?',
