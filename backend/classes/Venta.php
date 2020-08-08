@@ -128,12 +128,17 @@
         {
             $idVenta = $_GET['idVenta'];
             $link = Conexion::conectar();
-            $sql = "DELETE FROM ventas WHERE idVenta = :idVenta";
+            $sql = "DELETE FROM productosVenta WHERE idVenta = ".$idVenta;
             $stmt = $link->prepare($sql);
-            $stmt->bindParam(':idVenta',$idVenta,PDO::PARAM_INT);
             $response = $stmt->execute();
             if ($response) {
-                return json_encode(true);
+                $sql = "DELETE FROM ventas WHERE idVenta = :idVenta";
+                $stmt = $link->prepare($sql);
+                $stmt->bindParam(':idVenta',$idVenta,PDO::PARAM_INT);
+                if($stmt->execute()){
+                    return json_encode(true);
+                }
+                return json_encode(false);
             }
             return json_encode(false);
         }
