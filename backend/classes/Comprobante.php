@@ -66,7 +66,6 @@ class Comprobante
 
     public function cargarComprobante()
         {
-            $link = Conexion::conectar();
             $idProveedor = $_POST['idProveedor'];
             $descripcion = $_POST['descripcion'];
             // $comprobante = $_FILES['comprobante'];
