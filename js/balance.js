@@ -138,9 +138,10 @@ function getVentasLimit() {
     response.forEach(venta=>{
       template += `
         <tr>
-          <th scope="row">${venta.producto}</th>
-          <td>${venta.cantidad}</td>
-          <td>${venta.fecha}</td>
+          <th scope="row">${venta.fecha}</th>
+          <td>${venta.tipo_pago}</td>
+          <td>${venta.estado}</td>
+          <td>${venta.subtotal}</td>
           <td>${venta.total}</td>
         </tr>
       `
@@ -159,7 +160,6 @@ function getPedidosLimit() {
         <tr>
           <th scope="row">${venta.descripcion}</th>
           <td>${venta.cantidad}</td>
-          <td>${venta.total}</td>
         </tr>
       `
     });
@@ -280,8 +280,8 @@ function getVentasTarjeta(criterio){
 function getProductoMasVendido(criterio=null) {
   url = 'backend/ventas/producto_mas_vendido.php?fecha='+mes;
   if (criterio!=null) {
-    url = 'backend/ventas/producto_mas_vendido.php?fecha=2020-4-14&criterio=dia';
-  }
+    url = `backend/ventas/producto_mas_vendido.php?fecha=${dia}&criterio=dia`;
+  } 
   fetch(url)
   .then(res=>res.json())
   .then(response=>{

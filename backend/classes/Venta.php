@@ -154,8 +154,6 @@
             foreach ($result as $reg) {
                 $json[] = array(
                     'idVenta' => $reg['idVenta'],
-                    'producto' => $reg['producto'],
-                    'cantidad' => $reg['cantidad'],
                     'fecha' => $reg['fecha'],
                     'dia' => $reg['dia'],
                     'total' => $reg['total'],
@@ -215,16 +213,17 @@
         public function listarVentaLimit()
         {
             $link = Conexion::conectar();
-            $sql = "SELECT producto,cantidad,fecha,total FROM ventas order by fecha DESC LIMIT 3";
+            $sql = "SELECT fecha,tipo_pago,fecha,total,estado,subtotal FROM ventas order by fecha DESC LIMIT 3";
             $stmt = $link->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $json = array();
             foreach ($result as $venta) {
                 $json[] = array(
-                    'producto' => $venta['producto'],
-                    'cantidad' => $venta['cantidad'],
                     'fecha' => $venta['fecha'],
+                    'tipo_pago' => $venta['tipo_pago'],
+                    'estado' => $venta['estado'],
+                    'subtotal'=>$venta['subtotal'],
                     'total' => $venta['total']
                 );
             }
@@ -258,11 +257,17 @@
         {
             $link = Conexion::conectar();
             $fecha = $_GET['fecha'];
-            $sql = "SELECT producto, count(producto) as cantidad FROM ventas 
-                    WHERE fecha LIKE '". $fecha ."%' GROUP BY producto LIMIT 1";
+            $sql = "SELECT producto, count(pv.idProducto) as cantidad FROM productosVenta AS pv,productos AS pr 
+                    where pv.idProducto = pr.idProducto 
+                    and fecha LIKE '".$fecha."%' 
+                    GROUP BY pv.idProducto
+                    LIMIT 1";
             if (!is_null($criterio)) {
-                $sql = "SELECT producto, count(producto) as cantidad FROM ventas 
-                        WHERE fecha = '". $fecha ."' GROUP BY producto LIMIT 1";
+                $sql = "SELECT producto, count(pv.idProducto) as cantidad FROM productosVenta AS pv,productos AS pr 
+                        where pv.idProducto = pr.idProducto 
+                        and fecha = '$fecha' 
+                        GROUP BY pv.idProducto
+                        LIMIT 1;";
             }
             $stmt = $link->prepare($sql);
             if ($stmt->execute()) {

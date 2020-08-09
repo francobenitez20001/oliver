@@ -178,7 +178,7 @@
         public function listarPedidosLimit()
         {
             $link = Conexion::conectar();
-            $sql = "SELECT descripcion,cantidad,total FROM pedidos order by fecha DESC LIMIT 3";
+            $sql = "SELECT descripcion,cantidad FROM pedidos order by fecha DESC LIMIT 3";
             $stmt = $link->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -186,8 +186,7 @@
             foreach ($result as $venta) {
                 $json[] = array(
                     'descripcion' => $venta['descripcion'],
-                    'cantidad' => $venta['cantidad'],
-                    'total' => $venta['total']
+                    'cantidad' => $venta['cantidad']
                 );
             }
             return json_encode($json);
