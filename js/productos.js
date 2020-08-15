@@ -64,6 +64,7 @@ class Producto{
                         <td>
                             <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
                             <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" id="boton-eliminar" onclick="producto.eliminarProducto(${reg.idProducto})"></i>
+                            <i class="fas fa-barcode" style="cursor:pointer;color:blue;font-size:20px" id="boton-codigo" onclick="producto.modificarCodigo(${reg.idProducto},'${reg.codigo_producto}')"></i>
                         </td>
                     </tr>
                 `;
@@ -91,6 +92,7 @@ class Producto{
                             <a href="formModificarProducto.php?idProducto=${reg.idProducto}"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:20px"></i></a>
                             <i class="fas fa-trash-alt" style="cursor:pointer;color:red;font-size:20px" onclick="producto.eliminarProducto(${reg.idProducto})" id="boton-eliminar"></i>
                             <a onclick="producto.agregarCompra(${reg.idProducto})" class=""id="boton-modificar"><i class="fas fa-shopping-cart" style="cursor:pointer;color:green;font-size:20px"></i></a>
+                            <i class="fas fa-barcode" style="cursor:pointer;color:blue;font-size:20px" id="boton-codigo" onclick="producto.modificarCodigo(${reg.idProducto},'${reg.codigo_producto}')"></i>
                         </td>
                     </tr>
                 `;
@@ -297,6 +299,39 @@ class Producto{
                 })
             }
         });
+    }
+
+    async modificarCodigo(id,codigoRegistrado){
+        try {
+            Swal.fire({
+                title: 'Modificación de código',
+                html:`
+                    Codigo actual: <b>${codigoRegistrado}</b>
+                    <input id="codigoProducto" name="codigoProducto" class="swal2-input">`,
+                focusConfirm: false,
+                preConfirm: () => {
+                    if(document.getElementById('codigoProducto').value === '') return false;
+                    let codigo = document.getElementById('codigoProducto').value;
+                    fetch('backend/producto/modificarCodigo.php',{
+                        method:'POST',
+                        body:JSON.stringify({idProducto:id,codigoProducto:codigo})
+                    }).then(res=>res.json()).then(response=>{
+                        let iconResponse = 'error',titleResponse = 'Ups..';
+                        if(response.status == 200){
+                            iconResponse='success'
+                            titleResponse = 'Listo!'
+                        };
+                        return Swal.fire(
+                            titleResponse,
+                            response.info,
+                            iconResponse
+                        ).then(()=>this.getProductos());
+                    });
+                }
+            })
+        } catch (error) {
+            alert(error);
+        }
     }
 }
 

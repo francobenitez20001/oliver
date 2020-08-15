@@ -79,22 +79,14 @@
     <h1>Formulario de modificación de un producto</h1>
     <hr>
     <form id="formModificarProducto" class="form-group">
-        <div class="row">
+        <div class="row justify-content-between">
           <div class="col-12 col-md-5 input-group mb-4">
             <div class="input-group-prepend">
               <div class="input-group-text">Producto</div>
             </div>
             <input type="text" name="producto" id="producto" class="form-control" value="<?php echo $reg['producto'] ?>" required>
           </div>
-          <div class="col-md-2"></div>
-          <div class="col-12 col-md-5 input-group mb-4">
-            <div class="input-group-prepend">
-              <div class="input-group-text">Codigo producto</div>
-            </div>
-            <input type="text" name="codigoProducto" class="form-control" value="<?php echo $reg['codigo_producto'] ?>">
-          </div>
             <div class="col-12 col-md-5">
-                <p>Selecciona una marca</p>
                 <select class="form-control mb-4" name="idMarca" id="idMarca" required>
                     <option value="<?php echo $reg['idMarca'] ?>"><?php echo $reg['marcaNombre'] ?></option>
                     <?php foreach ($arrayMarca as $mk) {?>
@@ -102,9 +94,7 @@
                     <?php } ?>
                 </select>
             </div>
-            <div class="col-md-2"></div>
             <div class="col-12 col-md-5">
-                <p>Selecciona una categoria</p>
                 <select class="form-control mb-4" name="idCategoria" id="idCategoria" required>
                     <option value="<?php echo $reg['idCategoria'] ?>"><?php echo $reg['categoriaNombre'] ?></option>
                     <?php foreach ($arrayCategoria as $cat) {?>
@@ -118,8 +108,6 @@
               </div>
               <input type="text" name="cantidadUnitario" id="cantidadUnitario" class="form-control" value="<?php echo $reg['cantidadUnitario'] ?>">
             </div>
-            <div class="col-md-2"></div>
-
             <?php
               if ($reg['precioKilo']!=0) {?>
                 <div class="input-group col-12 col-md-5 mb-4">
@@ -137,7 +125,6 @@
                   </div>
                   <input type="number" name="cantidadKilo" id="cantidadKilo" value="<?php echo $reg['cantidadPorKilo']; ?>" class="form-control input-disable" step="any">
                 </div>
-                <div class="col-md-2"></div>
                 <div class="input-group col-12 col-md-5 mb-4">
                   <div class="input-group-prepend">
                     <div class="input-group-text">% extra por Kilo</div>
@@ -160,7 +147,6 @@
                   </div>
                   <input type="number" name="cantidadKilo" id="cantidadKilo" class="form-control input-disable" disabled="true" step="any">
                 </div>
-                <div class="col-md-2"></div>
                 <div class="input-group col-12 col-md-5 mb-4">
                   <div class="input-group-prepend">
                     <div class="input-group-text">% extra por Kilo</div>
@@ -174,7 +160,6 @@
                 </div>
                 <input type="text" name="stock" id="stock" class="form-control" value="<?php echo $reg['stock'] ?>">
             </div>
-            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
                 <div class="input-group-prepend">
                   <div class="input-group-text">Stock suelto</div>
@@ -187,7 +172,6 @@
                 </div>
                 <input type="number" name="stockDeposito" id="stockDeposito" class="form-control" value="<?php echo $reg['stock_deposito'] ?>">
             </div>
-            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4">
               <div class="input-group-prepend">
                 <div class="input-group-text">Proveedor</div>
@@ -205,7 +189,6 @@
               </div>
               <input type="number" name="porcentaje_ganancia" id="porcentaje_ganancia" class="form-control" value="<?php echo $reg['porcentaje_ganancia'] ?>" step="any">
             </div>
-            <div class="col-md-2"></div>
             <div class="input-group col-12 col-md-5 mb-4 d-none userPrivate">
               <div class="input-group-prepend">
                 <div class="input-group-text">Precio de costo</div>

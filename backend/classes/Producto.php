@@ -134,10 +134,6 @@ class Producto
                         $porcentajeGananciaKiloValor = $costoKilo*$porcentajeGananciaKilo/100;
                         $precioKilo = $costoKilo + $porcentajeGananciaKiloValor;
                 };
-                $codigoProducto = null;
-                if (isset($_POST['codigoProducto']) && $_POST['codigoProducto']!=='' && $_POST['codigoProducto']!==0) {
-                        $codigoProducto = $_POST['codigoProducto'];
-                }
                 $sql = "UPDATE productos SET producto = :producto,
                                                 idMarca = :idMarca,
                                                 idCategoria = :idCategoria,
@@ -150,7 +146,6 @@ class Producto
                                                 porcentaje_ganancia = :porcentaje_ganancia,
                                                 stock_suelto = :stockSuelto,
                                                 cantidadUnitario = :cantidadUnitario,
-                                                codigo_producto = :codigoProducto,
                                                 cantidadPorKilo = :cantidadPorKilo,
                                                 porcentajeGananciaPorKilo = :porcentajeGananciaPorKilo,
                                                 stock_deposito = :stockDeposito
@@ -169,7 +164,6 @@ class Producto
                 $stmt->bindParam(':porcentaje_ganancia', $porcentaje_ganancia , PDO::PARAM_INT);
                 $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_STR);
                 $stmt->bindParam(':cantidadUnitario',$cantidadUnitario,PDO::PARAM_INT);
-                $stmt->bindParam(':codigoProducto',$codigoProducto,PDO::PARAM_INT);
                 $stmt->bindParam(':cantidadPorKilo',$cantidadPorKilo,PDO::PARAM_STR);
                 $stmt->bindParam(':porcentajeGananciaPorKilo',$porcentajeGananciaKilo,PDO::PARAM_INT);
                 $stmt->bindParam(':stockDeposito',$stockDeposito,PDO::PARAM_INT);
@@ -350,6 +344,23 @@ class Producto
                 $this->setPrecioPublico($_POST['precioPublico']);
                 $this->setPrecioUnidad($_POST['precioUnidad']);
                 $this->setPrecioKilo($_POST['PrecioKilo']);
+        }
+
+        public function modificarCodigo()
+        {
+                $data = file_get_contents('php://input');
+                $data = json_decode( $data, true );
+                $idProducto = $data['idProducto'];
+                $codigoProducto = $data['codigoProducto'];
+                $link = Conexion::conectar();
+                $sql = "UPDATE productos SET codigo_producto = :codigo WHERE idProducto = :id";
+                $stmt = $link->prepare($sql);
+                $stmt->bindParam(':codigo',$codigoProducto,PDO::PARAM_STR);
+                $stmt->bindParam(':id',$idProducto,PDO::PARAM_INT);
+                if($stmt->execute()){
+                        return json_encode(array('status'=>200,'info'=>'Código actualizado'));
+                }
+                return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el código'));
         }
 
 
