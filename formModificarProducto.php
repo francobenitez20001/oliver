@@ -91,7 +91,7 @@
             <div class="input-group-prepend">
               <div class="input-group-text">Codigo producto</div>
             </div>
-            <input type="number" name="codigoProducto" class="form-control"  value="<?php echo $reg['codigo_producto'] ?>">
+            <input type="text" name="codigoProducto" class="form-control" value="<?php echo $reg['codigo_producto'] ?>">
           </div>
             <div class="col-12 col-md-5">
                 <p>Selecciona una marca</p>
