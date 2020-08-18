@@ -365,6 +365,26 @@ class Producto
 
 
 
+        //interaccion con pagina web
+        public function modifcarStockDesdePagina()
+        {
+                $data = file_get_contents('php://input');
+                $data = json_decode($data,true);
+                $codigoProducto = $data['codigo_producto'];
+                $cantidad = $data['cantidad'];
+                $link = Conexion::conectar();
+                $sql = "UPDATE productos SET stock = (stock - :cantidad) WHERE codigo_producto = :codigo";
+                $stmt = $link->prepare($sql);
+                $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_INT);
+                $stmt->bindParam(':codigo',$codigoProducto,PDO::PARAM_STR);
+                if($stmt->execute()){
+                        return json_encode(array('status'=>200,'info'=>'Stock modificado','cantidad'=>$cantidad));
+                }
+                return json_encode(array('status'=>400,'info'=>'Problemas al modificar el stock'));
+        }
+
+
+
 
         
         //getter and setter
