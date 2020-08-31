@@ -53,6 +53,25 @@ class Producto
                 return $jsonString;
         }
 
+        public function listarProductoParaWeb()
+        {
+                $link = Conexion::conectar();
+                $sql = "SELECT producto,stock,codigo_producto FROM productos";
+                $stmt = $link->prepare($sql);
+                $stmt->execute();
+                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $json = array();
+                foreach ($resultado as $reg) {
+                        $json[] = array(
+                                'producto' => $reg['producto'],
+                                'stock' => $reg['stock'],
+                                'codigo_producto' => $reg['codigo_producto']
+                        );
+                }
+                $jsonString = json_encode($json);
+                return $jsonString; 
+        }
+
         public function agregarProducto()
         {
             $link = Conexion::conectar();
