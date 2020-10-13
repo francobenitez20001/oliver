@@ -36,7 +36,7 @@ let f = new Date();
 let numeroDia;
 let numeroMes;
 (f.getDate()<10)?numeroDia='0'+f.getDate():numeroDia=f.getDate();
-(f.getMonth()<10)?numeroMes='-0'+(f.getMonth()+1):numeroMes=(f.getMonth()+1);
+(f.getMonth()<10)?numeroMes='-'+(f.getMonth()+1):numeroMes=(f.getMonth()+1);
 
 let dia = f.getFullYear() + numeroMes + '-' + numeroDia;
 let mes = f.getFullYear() + numeroMes;
