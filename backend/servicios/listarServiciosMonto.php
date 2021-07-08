@@ -1,6 +1,5 @@
 <?php
-    require '../classes/Conexion.php';
-    require '../classes/Servicio.php';
+    require '../config.php';
     $servicio = new Servicio;
     //si viene criterio es porque quiero filtrar por mes. no por dia.
     if (isset($_GET['criterio']) && $_GET['criterio']!='') {

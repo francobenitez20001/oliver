@@ -1,6 +1,5 @@
 <?php
-    require '../classes/Conexion.php';
-    require '../classes/Pedido.php';
+    require '../config.php';
     $pedido= new Pedido;
     echo $pedido->modificarPedido();
 ?>

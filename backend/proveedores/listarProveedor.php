@@ -1,6 +1,5 @@
 <?php
-    require '../classes/Conexion.php';
-    require '../classes/Proveedor.php';
+    require '../config.php';
     $proveedor = new Proveedor();
     $registros = $proveedor->listarProveedor();
     echo $registros;

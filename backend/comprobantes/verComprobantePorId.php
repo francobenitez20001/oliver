@@ -1,6 +1,5 @@
 <?php
-    require '../classes/Conexion.php';
-    require '../classes/Comprobante.php';
+    require '../config.php';
     $comprobante = new Comprobante;
     $data = $comprobante->verComprobantePorId();
     echo $data;

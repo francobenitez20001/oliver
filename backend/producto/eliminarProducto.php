@@ -1,6 +1,5 @@
 <?php
-    require '../classes/Conexion.php';
-    require '../classes/Producto.php';
+    require '../config.php';
     $producto = new Producto;
     $bool = $producto->eliminarProducto();
     echo $bool;

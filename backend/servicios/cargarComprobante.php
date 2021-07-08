@@ -1,6 +1,5 @@
 <?php
-   require '../classes/Conexion.php';
-   require '../classes/Servicio.php';
+    require '../config.php';
    $servicio = new Servicio;
    $data = $servicio->cargarComprobante();
    echo $data;

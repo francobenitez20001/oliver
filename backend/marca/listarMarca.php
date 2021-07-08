@@ -1,6 +1,5 @@
 <?php
-    require '../classes/Conexion.php';
-    require '../classes/Marca.php';
+    require '../config.php';
     $marca = new Marca();
     $data = $marca->listarMarca();
     echo $data;
