@@ -1,60 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Admin productos</title>
-    <script src="js/autenticacion.js"></script>
-    <link rel="stylesheet" href="css/bootstrap/bootstrap.css">
-    <link rel="stylesheet" href="css/main.css?v=1.0.0">
-    <link rel="stylesheet" href="css/animate.css">
-    <link rel="stylesheet" href="css/fontawesome/css/all.css">
-    <link rel="stylesheet" href="css/sweetalert2.css">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar">
-        <a class="navbar-brand logo" href="home.html">
-        <img src="assets/img/logo.png" class="img-fluid" alt="">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-            <a class="nav-link" href="adminProductos.html">Productos</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="adminPedidos.html">Pedidos</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="adminDeudores.html">Deudores</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="adminEnvios.html">Envíos</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="adminServicios.html">Servícios</a>
-            </li>
-            <!-- <li class="nav-item">
-            <a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> Ingresar</a>
-            </li> -->
-            <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <!--contenido desde menu.js-->
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" id="cerrarSesion">Cerrar sesión</a>
-            </div>
-            </li>
-            <!-- <li class="nav-item" id="icon-menu-li">
-            <a id="icon-menu" class="nav-link d-xs-none d-sm-none d-md-block"><i class="fas fa-bars"></i></a>
-            </li> -->
-        </ul>
-        </div>
-    </nav><!--menu-->
-
+<?php 
+  require 'config/config.php';
+  include('includes/header.php'); 
+?>
     <div class="container mt-5">
         <h3 class="my-4">Aumentos generales</h3>
 
@@ -122,12 +69,7 @@
         </div>
 
     </div>
-    <script src="js/bootstrap/jquery.js"></script>
-    <script src="js/bootstrap/popper.min.js"></script>
-    <script src="js/bootstrap/bootstrap.min.js"></script>
-    <script src="js/sweetalert2.js"></script>
-    <script src="js/menu.js"></script>
-    <script src="js/app.js"></script>
+    <?php include('includes/footer.php'); ?>
     <script src="js/aumentos.js?v=1.0.0"></script>
 </body>
 </html>

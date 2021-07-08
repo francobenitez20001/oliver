@@ -250,7 +250,7 @@ class Producto{
     }
 
     checkUserSession() {
-        if (userSession == 1) {
+        if (localStorage.getItem('admin') && localStorage.getItem('admin') == 1) {
             return true;
         }
     }
@@ -360,6 +360,7 @@ form.addEventListener('submit',event=>{
 })
 
 window.producto = new Producto();
+
 
 //botones del menu
 iconMenu.addEventListener('click',()=>{

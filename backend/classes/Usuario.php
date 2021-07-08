@@ -18,18 +18,21 @@
             if ($cantidad == 0) {
                 return json_encode(false);
             }else{
-                $_SESSION['login']=0;
+                $_SESSION['logueado'] = 1;
+                $_SESSION['admin']=0;
                 foreach ($result as $usuario) {
                     $json[] = array(
                         'usuario' => $usuario['usuario'],
+                        'nombre' => $usuario['nombre'],
                         'superUser' => $usuario['superUser']
                     );
                 }
                 if ($json[0]['superUser'] == 1) {
-                    $_SESSION['login']=1;   
+                    $_SESSION['admin']=1;   
                 }
-                $_SESSION['usuName'] = $json[0]['usuario'];
-                return json_encode($_SESSION['usuName']);
+                $_SESSION['user'] = $json[0]['usuario'];
+                $_SESSION['name'] = $json[0]['nombre'];
+                return json_encode($_SESSION['user']);
             }
         }
 

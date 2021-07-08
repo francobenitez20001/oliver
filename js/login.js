@@ -9,7 +9,6 @@ formLogin.addEventListener('submit',event=>{
     .then(res=>res.json())
     .then(newRes=>{
         if (newRes) {
-            console.log(newRes)
             formLogin.classList.add('d-none');
             nombre = newRes;
             Swal.fire({
@@ -20,10 +19,9 @@ formLogin.addEventListener('submit',event=>{
                 hideClass: {
                   popup: 'animated fadeOutUp faster'
                 }
+            }).then(()=>{
+                window.location.assign('/oliver/home.php');
             })
-            setTimeout(() => {
-                window.location.assign('home.html');
-            }, 3000);
         }else{
             alert = document.getElementById('alert-danger');
             alert.classList.remove('d-none');

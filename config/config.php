@@ -1,13 +1,6 @@
 <?php
 
   session_start();
-
-  function autocarga($clase)
-  {
-    require_once 'backend/classes/'.$clase.'.php';
-    if (!isset($_SESSION['login'])){
-        header('location: adminProductos.html');
-    }
+  if (!isset($_SESSION['logueado'])){
+    header('location: login.html');
   }
-
-  spl_autoload_register('autocarga');

@@ -4,7 +4,7 @@
 
   function autocarga($clase)
   {
-    if (!isset($_SESSION['login'])){
+    if (!isset($_SESSION['logueado'])){
       echo json_encode(array('status'=>403,'info'=>'Authentication Error'));
       return false;
     }
