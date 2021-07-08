@@ -88,7 +88,7 @@ formEnvio.addEventListener('submit',event=>{
                 title: 'Agregado',
                 text: newRes.info
             }).then(()=>{
-                window.location.assign('adminVentas.html');
+                window.location.assign('ventas.php');
             })
         }else{
             Swal.fire({
@@ -96,7 +96,7 @@ formEnvio.addEventListener('submit',event=>{
                 title: 'Ups..',
                 text: newRes.info
             }).then(()=>{
-                window.location.assign('adminVentas.html');
+                window.location.assign('ventas.php');
             })
         }
     })

@@ -140,5 +140,5 @@
   </div><!--menu secundario-->
 
   <?php include('includes/footer.php'); ?>
-  <script type="module" src="js/venta.js?v=1.0.4"></script>
+  <script type="module" src="js/venta.js?v=1.0.5"></script>
 </body>

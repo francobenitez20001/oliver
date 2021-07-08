@@ -307,8 +307,8 @@ function getReporteEstadisticas(idProveedor) {
     reporteProveedoresDom.sinPagarTodo.innerText = pagosPagadosParcialmente;
     reporteProveedoresDom.saldo.innerText = pagadoNumero-totalNumero;
     document.getElementById('reporteProveedores').classList.remove('d-none');
-    document.getElementById('btnVerComprobantes').setAttribute('href','adminComprobantes.html?idProveedor='+parseInt(document.getElementById('filtroPedidoPorProveedor').value));
-    document.getElementById('btnVerPagos').setAttribute('href','adminPagos.html?idProveedor='+parseInt(document.getElementById('filtroPedidoPorProveedor').value));
+    document.getElementById('btnVerComprobantes').setAttribute('href','comprobantes.php?idProveedor='+parseInt(document.getElementById('filtroPedidoPorProveedor').value));
+    document.getElementById('btnVerPagos').setAttribute('href','pagos.php?idProveedor='+parseInt(document.getElementById('filtroPedidoPorProveedor').value));
 }
 
 function subirComprobante() {
@@ -372,7 +372,7 @@ function cargarPago(event) {
         document.getElementById('alert-response').innerHTML = response.info;
         document.getElementById('alert-response').classList.remove('d-none');
         setTimeout(() => {
-            window.location.assign('adminProveedores.html');
+            window.location.assign('proveedores.php');
         }, 1000);
     })
 }

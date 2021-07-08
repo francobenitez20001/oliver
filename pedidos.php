@@ -167,6 +167,6 @@
 
 
   <?php include('includes/footer.php'); ?>
-  <script src="js/pedidos.js"></script>
+  <script src="js/pedidos.js?v=1.0.1"></script>
 </body>
 </html>

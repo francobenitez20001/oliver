@@ -1,4 +1,4 @@
-import Carrito from './utils/Carrito.js?v=1.0.2';
+import Carrito from './utils/Carrito.js?v=1.0.3';
 import {getMarcas,getCategorias,getProveedores} from './utils/helpers.js';
 
 class Producto{
@@ -246,7 +246,7 @@ class Producto{
 
     registrarVenta(){
         localStorage.setItem('productos',JSON.stringify(this.carrito.productosSeleccionados));
-        return window.location.assign('venta.html');
+        return window.location.assign('venta.php');
     }
 
     checkUserSession() {

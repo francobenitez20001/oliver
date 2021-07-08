@@ -27,7 +27,7 @@ class Carrito{
     }
 
     renderLabelsCarrito(){
-        template = '';
+        let template = '';
         this.productosSeleccionados.forEach(producto=>{
             template += `<span class="badge badge-secondary">${producto.producto}</span><span class="eliminarProductoCarrito" aria-hidden="true" onclick="producto.carrito.eliminarProductoSeleccionado(${producto.idProducto})">&times;</span>`
         })
@@ -290,7 +290,7 @@ class Carrito{
                             divVenta.classList.add('d-none');
                             divEnvio.classList.remove('d-none');
                         }else{
-                            window.location.assign('adminVentas.html');
+                            window.location.assign('ventas.php');
                         }
                     })
                 })

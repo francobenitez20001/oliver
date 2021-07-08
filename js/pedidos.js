@@ -134,11 +134,9 @@ document.getElementById('cargarComprobante').addEventListener('submit',event=>{
                         'Listo!',
                         response.info,
                         'success'
-                    );
-                    setTimeout(() => {
-                        window.location.assign('adminPedidos.html')
-                        return;
-                    }, 1000);
+                    ).then(()=>{
+                        window.location.assign('pedidos.php')  
+                    })
                 }
             })
         })
@@ -293,7 +291,7 @@ function modificarPedido(event) {
         document.getElementById('alert-response').innerHTML = response.info;
         document.getElementById('alert-response').classList.remove('d-none');
         setTimeout(() => {
-            window.location.assign('adminPedidos.html');
+            window.location.assign('pedidos.php');
         }, 1000);
     })
 }

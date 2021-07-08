@@ -225,7 +225,7 @@
 
 
   <?php include('includes/footer.php'); ?>
-  <script type="module" src="js/productos.js?v=1.0.4"></script>
+  <script type="module" src="js/productos.js?v=1.0.5"></script>
   <script src="js/menu-producto.js"></script>
   <!-- <script src="js/formAgregarProducto.js"></script> -->
 </body>

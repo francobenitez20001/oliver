@@ -94,8 +94,9 @@ function entregarEnvio(id) {
                         'Listo!',
                         'Actulizaste el estado del envío.',
                         'success'
-                    )
-                    getEnvios();
+                    )-then(()=>{
+                        getEnvios();
+                    })
                 }
             })
         }
