@@ -27,40 +27,70 @@
                   </button>
               </div>
               <div class="modal-body">
-                  <div class="row">
-                    <div class="col-12 col-md-5">
-                      <p>Selecciona el estado de la compra</p>
-                      <select class="form-control mb-4" onchange="setEstado(event)" required>
-                          <option value="Pago">Abonado en el momento</option>
-                          <option value="Debe">Sumarlo a deudores</option>
-                      </select>
-                    </div>
-                    <div class="col-md-2"></div>
-                    <div class="col-12 col-md-5">
-                      <p>Selecciona la forma de pago</p>
-                      <select name="tipo_pago" id="tipo_pago" onchange="habilitarInput(event)" class="form-control" id="">
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="Tarjeta">Tarjeta</option>
-                      </select>
-                    </div>
-                    <div class="input-group col-12 col-md-5 my-4" id="div-descuento">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text">Descuento</div>
+                  <div class="row my-4">
+                    <div class="col-12 col-md-6">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <div class="input-group-text">Estado de compra</div>
+                        </div>
+                        <select class="form-control" onchange="setEstado(event)" required>
+                            <option value="Pago">Abonado en el momento</option>
+                            <option value="Debe">Sumarlo a deudores</option>
+                        </select>
                       </div>
-                      <select name="descuento" onchange="habilitarDescuento(event)" class="form-control" id="">
-                        <option value="no">No</option>
-                        <option value="si">Si</option>
-                      </select>
                     </div>
-                    <div class="col-md-2" id="col-separador"></div>
-                    <div class="input-group col-12 col-md-5 d-none my-4" id="selectDescuento">
-                      <div class="input-group-prepend">
-                        <div class="input-group-text">Valor descuento</div>
+                    <div class="col-12 col-md-6">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <div class="input-group-text">Local</div>
+                        </div>
+                        <select class="form-control" name="idLocal" id="idLocal">
+                          <option value="1">Local 1</option>
+                          <option value="2">Local 2</option>
+                        </select>
                       </div>
-                      <input type="number" class="form-control" oninput="setDescuento(event)" id="inputDescuento" name="inputDescuento">
                     </div>
-                    <div class="col-12 col-md-5 d-none my-4" id="nombreCliente">
-                      <input type="text" class="form-control" oninput="setCliente(event)" id="cliente" placeholder="Nombre del cliente">
+                  </div>
+                  <div class="row my-4">
+                    <div class="col-12 col-md-6">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <div class="input-group-text">Descuento</div>
+                        </div>
+                        <select name="descuento" onchange="habilitarDescuento(event)" class="form-control" id="">
+                          <option value="no">No</option>
+                          <option value="si">Si</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <div class="input-group-text">Valor descuento</div>
+                        </div>
+                        <input type="number" disabled="true" class="form-control" oninput="setDescuento(event)" id="inputDescuento" name="inputDescuento">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row my-4">
+                    <div class="col-12 col-md-6">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <div class="input-group-text">Medio de pago</div>
+                        </div>
+                        <select name="tipo_pago" id="tipo_pago" onchange="handleChangeMedioPago(event)" class="form-control" id="">
+                          <option value="Efectivo">Efectivo</option>
+                          <option value="Tarjeta">Tarjeta</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <div class="input-group-text">Nombre del cliente</div>
+                        </div>
+                        <input disabled="true" type="text" class="form-control" oninput="setCliente(event)" id="cliente" placeholder="Nombre del cliente">
+                      </div>
                     </div>
                   </div>
                   <hr>
@@ -79,7 +109,7 @@
               </div>
               <div class="modal-footer">
                   <p class="alert-info w-100 py-3 px-3" id="total-info"></p>
-                  <button type="button" class="btn btn-modal-venta btn-secondary" onclick="carrito.verCarrito()">Ver carrito</button>
+                  <button type="button" class="btn btn-modal-venta btn-secondary" onclick="carrito.verCarrito()">Ver/ocultar carrito</button>
                   <button type="button" class="btn btn-modal-venta btn-info" onclick="carrito.cargarVenta()">Cargar</button>
               </div>
           </div>

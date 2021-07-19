@@ -11,29 +11,31 @@ window.onload = ()=>{
 }
 
 //habilita el input de nombre del cliente para registrarlo en el caso de que se pague con tarjeta
-window.habilitarInput = function habilitarInput(data){
-    let divNombre = document.getElementById('nombreCliente');
-    if (data.target.value == 'Tarjeta') {
+window.handleChangeMedioPago = function habilitarInput(data){
+    let inputCliente = document.getElementById('cliente');
+    if(inputCliente.hasAttribute('disabled')){
         carrito.carrito.tipo_pago = 'Tarjeta';
-        divNombre.classList.remove('d-none');
-    }else{
-        carrito.carrito.tipo_pago = 'Efectivo';
-        divNombre.classList.add('d-none');
+        inputCliente.setAttribute('required','');
+        inputCliente.removeAttribute('disabled');
+        return;
     }
+    carrito.carrito.tipo_pago = 'Efectivo';
+    inputCliente.removeAttribute('required');
+    inputCliente.value = "";
+    return inputCliente.setAttribute('disabled','true');
 }
 
 //en el caso de que se seleccione descuento 'si', se habilita el input para que ingrese el valor del descuento
 window.habilitarDescuento = function habilitarDescuento(data) {
-    let selectDescuento = document.getElementById('div-descuento'); //select de decuento (si-no)
-    if (data.target.value == 'si') {
-        document.getElementById('selectDescuento').classList.toggle('d-none');
-        selectDescuento.setAttribute('required','');
-    }else{
-        document.getElementById('inputDescuento').value = '';//limpio por las dudas el input de desc
-        carrito.carrito.descuento = 0;
-        document.getElementById('selectDescuento').classList.toggle('d-none');
-        selectDescuento.removeAttribute('required');
+    let inputDescuento = document.getElementById('inputDescuento');
+    if(data.target.value == 'si'){
+        inputDescuento.setAttribute('required','');
+        return inputDescuento.removeAttribute('disabled');
     }
+    carrito.carrito.descuento = 0;
+    inputDescuento.removeAttribute('required');
+    inputDescuento.value = "";
+    return inputDescuento.setAttribute('disabled','true');   
 }
 
 window.showModalPago = function showModalPago() {
