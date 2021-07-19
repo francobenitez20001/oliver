@@ -1,7 +1,7 @@
 <?php
     require '../config.php';
-    $id = $_GET['idLocal'] ? $_GET['idLocal'] : null;
-    $local = new Local($idLocal);
+    $id = isset($_GET['idLocal']) ? $_GET['idLocal'] : null;
+    $local = new Local($id);
     $data = $local->get();
     $json = array();
     foreach ($data as $item) {
@@ -11,5 +11,8 @@
             'estado' => $item['estado']
         );
     }
-    return json_encode($json);
+    echo json_encode(array(
+        'ok'=>"true",
+        'data'=>$json
+    ));
 ?>

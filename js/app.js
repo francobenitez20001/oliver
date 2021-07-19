@@ -148,3 +148,13 @@ function modalError(body) {
         confirmButtonText: 'Ok'
     })    
 }
+
+function modalSuccess(message) {
+    return Swal.fire({
+        title:'Listo',
+        text:message,
+        type:'success',
+        confirmButtonColor: '#30d685',
+        confirmButtonText: 'Ok'
+    })
+}

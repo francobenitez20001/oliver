@@ -5,7 +5,7 @@
         private $local;
         private $estado;
 
-        public function __constructor($idLocal=null,$local=null,$estado=null){
+        public function __construct($idLocal=null,$local=null,$estado=null){
             $this->setIdLocal($idLocal);
             $this->setLocal($local);
             $this->setEstado($estado);
@@ -15,7 +15,7 @@
             $local = $this->getLocal();
             $estado = $this->getEstado();
             $con = Conexion::conectar();
-            $sql = "INSERT INTO locales (nombre,estado) VALUES (:nombre,estado)";
+            $sql = "INSERT INTO locales (nombre,estado) VALUES (:nombre,:estado)";
             $stmt = $con->prepare($sql);
             $stmt->bindParam(':nombre',$local,PDO::PARAM_STR);
             $stmt->bindParam(':estado',$estado,PDO::PARAM_INT);
@@ -48,8 +48,8 @@
             if(!is_null($idLocal)){
                 $sql .= " WHERE idLocal = :id";
             }
-            $sql = " ORDER BY idLocal DESC";
-            $stmt = $link->prepare($sql);
+            $sql .= " ORDER BY idLocal DESC";
+            $stmt = $con->prepare($sql);
             if(!is_null($idLocal)){
                 $stmt->bindParam(':id',$idLocal,PDO::PARAM_INT);
             }
