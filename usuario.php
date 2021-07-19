@@ -1,5 +1,5 @@
 <?php 
-  require 'config/config.php';
+  //require 'config/config.php';
   include('includes/header.php'); 
 ?>
 
@@ -40,10 +40,20 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text">Tipo de usuario</div>
                     </div>
-                    <select name="superUser" id="superUser" class="form-control" id="">
+                    <select name="superUser" id="superUser" class="form-control" id="" onchange="handleChangeTipoUsuario(event)">
                         <option value="0">Normal</option>
                         <option value="1">Administrador</option>
                     </select>
+                </div>
+                <div class="col-12 my-3">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">Local con permiso</div>
+                        </div>
+                        <select class="form-control" name="idLocal" id="idLocal">
+
+                        </select>
+                    </div>
                 </div>
                 <div class="col 12 text-center">
                     <input type="submit" class="btn btn-outline-success btn-block" value="Agregar">
@@ -60,6 +70,6 @@
     </div>
 
   <?php include('includes/footer.php'); ?>
-  <script src="js/usuario.js"></script>
+  <script src="js/usuario.js?v=1.0.1"></script>
 </body>
 </html>

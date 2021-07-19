@@ -11,7 +11,7 @@
         <a href="envios.php" class="list-group-item list-group-item-action">Panel de administracion de envios</a>
         <a href="proveedores.php" class="list-group-item list-group-item-action userPrivate">Panel de administracion de proveedores</a>
         <a href="balance.php" class="list-group-item list-group-item-action userPrivate">Mira tu balance</a>
-        <?php if ($_SESSION['admin']==1) { ?>
+        <?php if ($_SESSION['user']['admin']==1) { ?>
           <a href="locales.php" class="list-group-item list-group-item-action">Manejo de Locales</a>
           <a href="usuario.php" class="list-group-item list-group-item-action userPrivate">Manejo de usuarios</a>
         <?php }; ?> 

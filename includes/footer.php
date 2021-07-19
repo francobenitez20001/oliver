@@ -4,5 +4,5 @@
 <script src="js/sweetalert2.js"></script>
 <script src="js/app.js"></script>
 <script>
-    localStorage.setItem('admin',<?php echo $_SESSION['admin']; ?>)
+    localStorage.setItem('admin',<?php echo $_SESSION['user']['admin']; ?>)
 </script>

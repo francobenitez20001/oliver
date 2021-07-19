@@ -33,6 +33,21 @@ function getUsuarios() {
     })
 }
 
+async function getLocales() {
+    let url = `backend/locales/get.php`;
+    const req = await fetch(url);
+    if(req.status !== 200){
+        return modalError(req.statusText);
+    }
+    const {data} = await req.json();
+    let html = "";
+    console.log(data);
+    data.forEach(local => {
+        html += `<option value="${local.idLocal}">${local.nombre}</option>`
+    });
+    return document.getElementById('idLocal').innerHTML = html;
+}
+
 function validarForm() {
     let dom = {
         nombre:document.getElementById('nombre').value,
@@ -77,6 +92,7 @@ function mostrarFormularioAgregar() {
     formulario.classList.toggle('d-none');
     tablaUsuario.classList.toggle('d-none');
     getUsuarios();
+    getLocales();
 }
 
 function ocultarFormModificar(){
@@ -170,4 +186,15 @@ function modificarUsuario(event) {
         
         // console.log(newRes);
     })
+}
+
+function handleChangeTipoUsuario(e) {
+    let selectLocal = document.getElementById('idLocal');
+    if(e.target.value == "1"){
+        selectLocal.removeAttribute('required');
+        selectLocal.setAttribute('disabled','true');
+        return;
+    }
+    selectLocal.setAttribute('required','');
+    selectLocal.removeAttribute('disabled');
 }
