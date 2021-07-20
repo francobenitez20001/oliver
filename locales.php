@@ -17,9 +17,7 @@
         <th scope="col">Local</th>
         <th scope="col">Estado</th>
         <th scope="col">
-            <?php if($_SESSION['admin'] == 1){?>
-                <button class="btn btn-outline-info" id="botonAgregar">Nuevo local!</button> 
-            <?php }; ?>
+            <button class="btn btn-outline-info" id="botonAgregar">Nuevo local!</button> 
         </th>
       </tr>
     </thead>

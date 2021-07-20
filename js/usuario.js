@@ -33,6 +33,15 @@ function getUsuarios() {
     })
 }
 
+async function getUsuario(id) {
+    const req = await fetch(`backend/usuario/verUsuarioPorId.php?idUsuario=${id}`);
+    if(req.status !== 200){
+        return modalError(req.statusText);
+    }
+    const data = await req.json();
+    return data;
+}
+
 async function getLocales() {
     let url = `backend/locales/get.php`;
     const req = await fetch(url);
@@ -40,12 +49,7 @@ async function getLocales() {
         return modalError(req.statusText);
     }
     const {data} = await req.json();
-    let html = "";
-    console.log(data);
-    data.forEach(local => {
-        html += `<option value="${local.idLocal}">${local.nombre}</option>`
-    });
-    return document.getElementById('idLocal').innerHTML = html;
+    return data;
 }
 
 function validarForm() {
@@ -58,7 +62,7 @@ function validarForm() {
     if(dom.nombre == '' || dom.usuario == '' || dom.pw == '' || dom.superUser == ''){
         return false;
     }
-    console.log(dom);
+    //console.log(dom);
     return true;
 }
 
@@ -87,12 +91,17 @@ function agregarUsuario(event) {
 }
 
 
-function mostrarFormularioAgregar() {
+async function mostrarFormularioAgregar() {
     //ocultar listado de eventos y mostrar el form para agregar
     formulario.classList.toggle('d-none');
     tablaUsuario.classList.toggle('d-none');
-    getUsuarios();
-    getLocales();
+    //getUsuarios();
+    let locales = await getLocales();
+    let html = "";
+    locales.forEach(local => {
+        html += `<option value="${local.idLocal}">${local.nombre}</option>`
+    });
+    return document.getElementById('idLocal').innerHTML = html;
 }
 
 function ocultarFormModificar(){
@@ -101,56 +110,64 @@ function ocultarFormModificar(){
     getUsuarios();
 }
 
-function mostrarModificarUsuario(id) {
+async function mostrarModificarUsuario(id) {
     formModificar.classList.toggle('d-none');
     tablaUsuario.classList.toggle('d-none');
-    fetch('backend/usuario/verUsuarioPorId.php?idUsuario='+id).then(res=>res.json()).then(response=>{
-        superUser = '';
-        response.forEach(user => {
-            if (user.superUser == 1) {
-                superUser += `
-                    <option value="${user.superUser}">Administrador</option>
-                    <option value="0">Normal</option>
-                `;
-            }else{
-                superUser += `
-                    <option value="${user.superUser}">Normal</option>
-                    <option value="1">Administrador</option>
-                `;
-            }
-            templatee += `
-                <div class="col-12">
-                    <button type="button" class="btn btn-outline-warning mb-1" onclick="ocultarFormModificar()">Volver al listado</button>
-                    <div class="alert text-center" id="alerta-update"></div>
+    let locales = await getLocales();
+    let usuario = await getUsuario(id);
+    const user = usuario[0];
+    let superUserTemplate = `
+        <option value="${user.superUser}">Normal</option>
+        <option value="1">Administrador</option>
+    `;
+    let localesTemplate = `<option value="${user.idLocal}">${user.local}</option>`;
+    let template = '';
+
+    if (user.superUser == 1) {
+        superUserTemplate = `
+            <option value="${user.superUser}">Administrador</option>
+            <option value="0">Normal</option>
+        `;
+    }
+
+    locales.forEach(local => {
+        localesTemplate += (local.idLocal == user.idLocal) ? '' : `<option value="${local.idLocal}">${local.nombre}</option>`;
+    });
+
+    template += `
+        <div class="col-12">
+            <button type="button" class="btn btn-outline-warning mb-1" onclick="ocultarFormModificar()">Volver al listado</button>
+            <div class="alert text-center" id="alerta-update"></div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-md-4 px-2 my-3">
+                <input type="text" class="form-control" id="nombre" required name="nombre" value="${user.nombre}">
+            </div>
+            <div class="col-12 col-md-4 px-2 my-3 input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Local</div>
                 </div>
-                <div class="row">
-                    <div class="col-12 col-md-6 px-2 mb-3">
-                        <input type="text" class="form-control" id="nombre" required name="nombre" value="${user.nombre}">
-                    </div>
-                    <div class="col-12 col-md-6 px-2 mb-3">
-                        <input type="text" class="form-control" id="usuario" required name="usuario"  value="${user.usuario}">
-                    </div>
-                    <div class="col-12 col-md-6 px-2 my-3">
-                        <input type="text" class="form-control" id="pw" required name="pw" value="${user.pw}">
-                    </div>
-                    <div class="col-12 col-md-6 px-2 my-3 input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">Tipo de usuario</div>
-                        </div>
-                        <select name="superUser" id="superUser" required class="form-control" id="">
-                            ${superUser}
-                        </select>
-                    </div>
-                    <div class="col 12 text-center">
-                        <input type="hidden" name="idUsuario" value="${user.idUsuario}">
-                        <input type="submit" class="btn btn-outline-success btn-block" value="Modificar">
-                    </div>
+                <select name="idLocal" id="idLocal" required class="form-control" id="" ${user.superUser=="1" ? 'disabled="true' : ''}>
+                    ${localesTemplate}
+                </select>
+            </div>
+            <div class="col-12 col-md-4 px-2 my-3 input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Tipo de usuario</div>
                 </div>
-            `;
-        });
-        formModificar.innerHTML = templatee;
-        templatee = '';
-    })
+                <select name="superUser" id="superUser" required class="form-control" id="" onchange="handleChangeTipoUsuario(event)">
+                    ${superUserTemplate}
+                </select>
+            </div>
+            <div class="col 12 text-center">
+                <input type="hidden" name="idUsuario" value="${user.idUsuario}">
+                <input type="submit" class="btn btn-outline-success btn-block" value="Modificar">
+            </div>
+        </div>
+    `;
+
+    return formModificar.innerHTML = template;
+
 }
 
 function eliminarUsuario(id) {
@@ -172,7 +189,7 @@ function eliminarUsuario(id) {
 
 function modificarUsuario(event) {
     let data = new FormData(document.getElementById('formModificar'));
-    event.preventDefault(); 
+    event.preventDefault();
     fetch('backend/usuario/modificarUsuario.php',{
         method:'POST',
         body: data
@@ -183,18 +200,18 @@ function modificarUsuario(event) {
             document.getElementById('alerta-update').classList.add('alert-success');
             document.getElementById('alerta-update').innerHTML = newRes.info;
         }
-        
-        // console.log(newRes);
     })
 }
 
 function handleChangeTipoUsuario(e) {
-    let selectLocal = document.getElementById('idLocal');
-    if(e.target.value == "1"){
-        selectLocal.removeAttribute('required');
-        selectLocal.setAttribute('disabled','true');
-        return;
-    }
-    selectLocal.setAttribute('required','');
-    selectLocal.removeAttribute('disabled');
+    let selectsLocal = [...document.querySelectorAll('#idLocal')];
+    selectsLocal.forEach(select=>{
+        if(e.target.value == "1"){
+            select.removeAttribute('required');
+            select.setAttribute('disabled','true');
+            return;
+        }
+        select.setAttribute('required','');
+        select.removeAttribute('disabled');
+    })
 }

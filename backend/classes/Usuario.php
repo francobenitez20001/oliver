@@ -93,7 +93,17 @@
         public function listarUsuarioPorId(){
             $link = Conexion::conectar();
             $idUsuario = $_GET['idUsuario'];
-            $sql = "SELECT idUsuario,nombre,idLocal,superUser FROM usuarios WHERE idUsuario = :idUsuario";
+            $sql = "SELECT usu.idUsuario AS idUsuario,
+                        usu.nombre AS nombre,
+                        usu.superUser AS superUser,
+                        usu.idLocal as idLocal,
+                    CASE 
+                        WHEN usu.idLocal is null THEN 'Sin local'
+                        ELSE  loc.nombre  
+                    END AS local
+                    FROM usuarios AS usu
+                    LEFT JOIN locales AS loc ON usu.idLocal = loc.idLocal 
+                    WHERE usu.idUsuario = :idUsuario";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':idUsuario',$idUsuario,PDO::PARAM_INT);
             $stmt->execute();
@@ -103,8 +113,9 @@
                 $json[] = array(
                     'idUsuario' => $user['idUsuario'],
                     'nombre' => $user['nombre'],
+                    'superUser' => $user['superUser'],
                     'idLocal' => $user['idLocal'], 
-                    'superUser' => $user['superUser']
+                    'local' => $user['local']
                 );
             };
             return json_encode($json); 

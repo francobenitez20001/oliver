@@ -10,7 +10,7 @@ formLogin.addEventListener('submit',event=>{
     .then(newRes=>{
         if (newRes) {
             formLogin.classList.add('d-none');
-            nombre = newRes;
+            nombre = newRes.user;
             Swal.fire({
                 title: 'Bienvenido ' + nombre,
                 showClass: {
@@ -20,7 +20,7 @@ formLogin.addEventListener('submit',event=>{
                   popup: 'animated fadeOutUp faster'
                 }
             }).then(()=>{
-                window.location.assign('/oliver/home.php');
+                window.location.assign('home.php');
             })
         }else{
             alert = document.getElementById('alert-danger');
