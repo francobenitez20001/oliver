@@ -40,7 +40,7 @@
                     <div class="input-group-prepend">
                         <div class="input-group-text">Tipo de usuario</div>
                     </div>
-                    <select name="superUser" id="superUser" class="form-control" id="" onchange="handleChangeTipoUsuario(event)">
+                    <select name="superUser" id="superUser" class="form-control" id="">
                         <option value="0">Normal</option>
                         <option value="1">Administrador</option>
                     </select>

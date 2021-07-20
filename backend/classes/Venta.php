@@ -32,7 +32,7 @@
                 $prd_count = count($data['productos']);//cantidad de productos que cargo el usuario;
                 $logResponse = array();
                 for ($i=0; $i < $prd_count; $i++) {
-                    $actualizarStock = $this->actualizarStock($data['productos'][$i]['tipoDeVenta'],$data['productos'][$i]['cantidad'],$data['productos'][$i]['producto']);
+                    $actualizarStock = $this->actualizarStock($data['productos'][$i]['tipoDeVenta'],$data['productos'][$i]['cantidad'],$data['productos'][$i]['producto'],$idLocal);
                     if ($actualizarStock) {
                         array_push($logResponse,true);   
                     }else{
@@ -47,13 +47,21 @@
             return json_encode(array('status'=>400,'info'=>'No se pudo cargar la venta'));
         }
 
-        public function actualizarStock($tipoVenta=null,$cantidad=null,$producto=null)
-        {
+        public function actualizarStock($tipoVenta=null,$cantidad=null,$producto=null,$idLocal){
             $link = Conexion::conectar();
+            $sql = "";
             if($tipoVenta == 'normal'){
-                    $sql = "UPDATE productos SET stock = stock - :cantidad WHERE producto = :producto";
+                if($idLocal=="1"){
+                    $sql = "UPDATE productos SET stock_local_1 = stock_local_1 - :cantidad WHERE producto = :producto";
+                }else{
+                    $sql = "UPDATE productos SET stock_local_2 = stock_local_2 - :cantidad WHERE producto = :producto";
+                }
             }else{
-                $sql = 'UPDATE productos SET stock_suelto = stock_suelto - :cantidad WHERE producto = :producto';
+                if($idLocal=="1"){
+                    $sql = 'UPDATE productos SET stock_suelto_local_1 = stock_suelto_local_1 - :cantidad WHERE producto = :producto';
+                }else{
+                    $sql = 'UPDATE productos SET stock_suelto_local_2 = stock_suelto_local_2 - :cantidad WHERE producto = :producto';
+                }
             };
             if(is_null($cantidad) && is_null($producto)){
                 $producto = $_POST['producto'];

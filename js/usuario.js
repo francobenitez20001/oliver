@@ -113,26 +113,22 @@ function ocultarFormModificar(){
 async function mostrarModificarUsuario(id) {
     formModificar.classList.toggle('d-none');
     tablaUsuario.classList.toggle('d-none');
+    let template = '';
     let locales = await getLocales();
     let usuario = await getUsuario(id);
     const user = usuario[0];
-    let superUserTemplate = `
-        <option value="${user.superUser}">Normal</option>
-        <option value="1">Administrador</option>
-    `;
-    let localesTemplate = `<option value="${user.idLocal}">${user.local}</option>`;
-    let template = '';
 
-    if (user.superUser == 1) {
-        superUserTemplate = `
-            <option value="${user.superUser}">Administrador</option>
-            <option value="0">Normal</option>
-        `;
-    }
-
-    locales.forEach(local => {
-        localesTemplate += (local.idLocal == user.idLocal) ? '' : `<option value="${local.idLocal}">${local.nombre}</option>`;
+    let localDelUsuario = locales.filter(loc=>loc.idLocal == user.idLocal);
+    let localesTemplate = `<option value="${localDelUsuario[0].idLocal}">${localDelUsuario[0].nombre}</option>`;
+    locales.forEach(local=>{
+        if(local.idLocal == localDelUsuario[0].idLocal) return;
+        localesTemplate += `<option value="${local.idLocal}">${local.nombre}</option>`
     });
+    
+    let superUserTemplate = `
+        <option value="${user.superUser}">${user.superUser == 1 ? 'Administrador' : 'Normal'}</option>
+        <option value="${user.superUser == 1 ? '0' : '1'}">${user.superUser == 1 ? 'Normal' : 'Administrador'}</option>
+    `;
 
     template += `
         <div class="col-12">
@@ -147,7 +143,7 @@ async function mostrarModificarUsuario(id) {
                 <div class="input-group-prepend">
                     <div class="input-group-text">Local</div>
                 </div>
-                <select name="idLocal" id="idLocal" required class="form-control" id="" ${user.superUser=="1" ? 'disabled="true' : ''}>
+                <select name="idLocal" id="idLocal" required class="form-control" id="">
                     ${localesTemplate}
                 </select>
             </div>
@@ -155,7 +151,7 @@ async function mostrarModificarUsuario(id) {
                 <div class="input-group-prepend">
                     <div class="input-group-text">Tipo de usuario</div>
                 </div>
-                <select name="superUser" id="superUser" required class="form-control" id="" onchange="handleChangeTipoUsuario(event)">
+                <select name="superUser" id="superUser" required class="form-control" id="">
                     ${superUserTemplate}
                 </select>
             </div>
@@ -165,9 +161,7 @@ async function mostrarModificarUsuario(id) {
             </div>
         </div>
     `;
-
     return formModificar.innerHTML = template;
-
 }
 
 function eliminarUsuario(id) {
@@ -199,19 +193,9 @@ function modificarUsuario(event) {
         if(newRes.status == 200){
             document.getElementById('alerta-update').classList.add('alert-success');
             document.getElementById('alerta-update').innerHTML = newRes.info;
+            modalSuccess('Listo, inicia sesión nuevamente para ver los cambios').then(()=>{
+                window.location.assign('usuario.php');
+            });
         }
-    })
-}
-
-function handleChangeTipoUsuario(e) {
-    let selectsLocal = [...document.querySelectorAll('#idLocal')];
-    selectsLocal.forEach(select=>{
-        if(e.target.value == "1"){
-            select.removeAttribute('required');
-            select.setAttribute('disabled','true');
-            return;
-        }
-        select.setAttribute('required','');
-        select.removeAttribute('disabled');
     })
 }

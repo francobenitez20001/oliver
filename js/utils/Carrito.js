@@ -257,51 +257,51 @@ class Carrito{
         this.carrito.total = this.carrito.total.toFixed(2);
         console.log(this.carrito.total);
         console.log(this.carrito);
-        // fetch('backend/ventas/agregarVentaJson.php',{
-        //     method:'POST',
-        //     body:JSON.stringify(this.carrito)
-        // }).then(res=>res.json()).then(response=>{
-        //     if(response.status == 200){
-        //         fetch('backend/productosVenta/insertarProductos.php',{
-        //             method:'POST',
-        //             body:JSON.stringify({
-        //                 idVenta:response.idVenta,
-        //                 carrito:this.carrito
-        //             })
-        //         }).then(res=>res.json()).then(response=>{
-        //             if(response.status == 400){
-        //                 return Swal.fire(
-        //                     'Venta agregada pero con problemas',
-        //                     response.info,
-        //                     'warning'
-        //                 )
-        //             }
-        //             localStorage.removeItem('productos');//elimino los datos de los productos seleccionados del localStorage
-        //             Swal.fire({
-        //                 title: response.info,
-        //                 text: '¿Desea agregar los datos del envio de esta venta?',
-        //                 icon: 'success',
-        //                 showCancelButton: true,
-        //                 confirmButtonColor: '#3085d6',
-        //                 cancelButtonColor: '#d33',
-        //                 confirmButtonText: 'Agregar'
-        //             }).then((result) => {
-        //                 document.getElementById('modalPago').classList.remove('show');
-        //                 document.getElementById('modalPago').style.display = 'none';
-        //                 if (result.value) {
-        //                     let divVenta = document.getElementById('form-modificar-div');
-        //                     let divEnvio = document.getElementById('form-agregar-div');
-        //                     let tipoEnvio = document.getElementById('tipoEnvio');
-        //                     tipoEnvio.setAttribute('value','varios');
-        //                     divVenta.classList.add('d-none');
-        //                     divEnvio.classList.remove('d-none');
-        //                 }else{
-        //                     window.location.assign('ventas.php');
-        //                 }
-        //             })
-        //         })
-        //     }
-        // })
+        fetch('backend/ventas/agregarVentaJson.php',{
+            method:'POST',
+            body:JSON.stringify(this.carrito)
+        }).then(res=>res.json()).then(response=>{
+            if(response.status == 200){
+                fetch('backend/productosVenta/insertarProductos.php',{
+                    method:'POST',
+                    body:JSON.stringify({
+                        idVenta:response.idVenta,
+                        carrito:this.carrito
+                    })
+                }).then(res=>res.json()).then(response=>{
+                    if(response.status == 400){
+                        return Swal.fire(
+                            'Venta agregada pero con problemas',
+                            response.info,
+                            'warning'
+                        )
+                    }
+                    localStorage.removeItem('productos');//elimino los datos de los productos seleccionados del localStorage
+                    Swal.fire({
+                        title: response.info,
+                        text: '¿Desea agregar los datos del envio de esta venta?',
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Agregar'
+                    }).then((result) => {
+                        document.getElementById('modalPago').classList.remove('show');
+                        document.getElementById('modalPago').style.display = 'none';
+                        if (result.value) {
+                            let divVenta = document.getElementById('form-modificar-div');
+                            let divEnvio = document.getElementById('form-agregar-div');
+                            let tipoEnvio = document.getElementById('tipoEnvio');
+                            tipoEnvio.setAttribute('value','varios');
+                            divVenta.classList.add('d-none');
+                            divEnvio.classList.remove('d-none');
+                        }else{
+                            window.location.assign('ventas.php');
+                        }
+                    })
+                })
+            }
+        })
     }
 } 
 export default Carrito;
