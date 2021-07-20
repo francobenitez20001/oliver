@@ -130,7 +130,7 @@ window.setDescuentoIndividual = (index,event)=>{
 }
 
 window.renderSelectLocales = async () => {
-    const req = await fetch('backend/locales/get.php');
+    const req = await fetch('backend/locales/get.php?activo=1');
     if(req.status !== 200){
         return modalError(req.statusText);
     }

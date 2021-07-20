@@ -41,17 +41,23 @@
             return false;
         }
 
-        public function get(){
+        public function get($activo=null){
             $idLocal = $this->getIdLocal();
             $con = Conexion::conectar();
-            $sql = "SELECT idLocal,nombre,estado FROM locales";
+            $sql = "SELECT idLocal,nombre,estado FROM locales WHERE 1=1 ";
             if(!is_null($idLocal)){
-                $sql .= " WHERE idLocal = :id";
+                $sql .= "AND idLocal = :id ";
+            }
+            if(!is_null($activo)){
+                $sql .= "AND estado = :estado";
             }
             $sql .= " ORDER BY idLocal DESC";
             $stmt = $con->prepare($sql);
             if(!is_null($idLocal)){
                 $stmt->bindParam(':id',$idLocal,PDO::PARAM_INT);
+            }
+            if(!is_null($activo)){
+                $stmt->bindParam(':estado',$activo,PDO::PARAM_INT);
             }
             if(!$stmt->execute()){
                 return false;

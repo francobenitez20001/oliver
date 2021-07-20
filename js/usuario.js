@@ -43,7 +43,7 @@ async function getUsuario(id) {
 }
 
 async function getLocales() {
-    let url = `backend/locales/get.php`;
+    let url = `backend/locales/get.php?activo=1`;
     const req = await fetch(url);
     if(req.status !== 200){
         return modalError(req.statusText);
