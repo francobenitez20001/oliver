@@ -5,15 +5,16 @@
         public function listarPedidos()
         {
             $link = Conexion::conectar();
-            $mes = $_GET['mes'];
+            $mes = isset($_GET['mes']) ? $_GET['mes'] : null;
             $sql = "SELECT idPedido,descripcion,cantidad,p.estado,p.idProveedor,proveedor,fecha,comprobante 
                     FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ";
             if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin']
                     && !is_null($_GET['idProveedor']))){
                 $sql .= "AND p.idProveedor = :idProveedor AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
             }else{
-                $sql .= "AND fecha LIKE '".$mes."%'"; 
-                $sql .= "ORDER BY idPedido DESC";
+                if(!is_null($mes)){
+                    $sql .= "AND fecha LIKE '".$mes."%' ORDER BY idPedido DESC"; 
+                };
             };
             $stmt = $link->prepare($sql);
             if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])
@@ -41,22 +42,19 @@
             return $jsonString;
         }
 
-        public function agregarPedido()
-        {
+        public function agregarPedido(){
             $link = Conexion::conectar();
             $descripcion = $_POST['descripcion'];
             $cantidad = $_POST['cantidad'];
             $idProveedor = $_POST['idProveedor'];
             $estado = $_POST['estado'];
-            $fecha = $_POST['fecha'];
-            $sql = "INSERT INTO pedidos (descripcion,cantidad,estado,idProveedor,fecha) VALUES (:descripcion,:cantidad,:estado,:idProveedor,:fecha)";
+            $sql = "INSERT INTO pedidos (descripcion,cantidad,estado,idProveedor) VALUES (:descripcion,:cantidad,:estado,:idProveedor)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':descripcion',$descripcion,PDO::PARAM_STR);
             $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_INT);
             $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
             // $stmt->bindParam(':total',$total,PDO::PARAM_INT);
             $stmt->bindParam(':idProveedor',$idProveedor,PDO::PARAM_INT);
-            $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
             $bool = $stmt->execute();
             if ($bool) {
                 return json_encode(true);
