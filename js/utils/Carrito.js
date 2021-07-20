@@ -88,11 +88,17 @@ class Carrito{
         let templateSelectTipoVenta = '';
         let index = 0;
         this.productosSeleccionados.forEach(prd=>{
-            if(prd.stock_suelto_local_1>0 && prd.stock_local_1>0){
+            let stock = prd.stock_local_1;
+            let stockSuelto = prd.stock_suelto_local_1;
+            if(this.carrito.idLocal=="2"){
+                stock = prd.stock_local_2;
+                stockSuelto = prd.stock_suelto_local_2;
+            }
+            if(stockSuelto>0 && stock>0){
                 templateSelectTipoVenta = `<option value="normal">Normal</option>
                 <option value="suelto">Suelto</option>
                 <option value="precio">Por precio</option>`;
-            }else if(prd.stock_suelto_local_1==0 && prd.stock_local_1>0){
+            }else if(stockSuelto==0 && stock>0){
                 templateSelectTipoVenta = `<option value="normal">Normal</option>`; 
             }else{
                 templateSelectTipoVenta = `<option value="suelto">Suelto</option>
@@ -183,6 +189,12 @@ class Carrito{
     }
 
     cambiarTipoDeCompra(event,indiceProducto) {
+        let stock = this.productosSeleccionados[indiceProducto].stock_local_1;
+        let stockSuelto = this.productosSeleccionados[indiceProducto].stock_suelto_local_1;
+        if(this.carrito.idLocal == "2"){
+            stock = this.productosSeleccionados[indiceProducto].stock_local_2;
+            stockSuelto = this.productosSeleccionados[indiceProducto].stock_suelto_local_2;
+        }
         let tipoDeCompra = event.target.value,
             cantidadSuelto = document.getElementsByClassName('cantidadSuelto')[indiceProducto],
             cantidadNormal = document.getElementsByClassName('cantidad')[indiceProducto],
@@ -195,7 +207,7 @@ class Carrito{
             cantidadNormal.setAttribute('required','');
             cantidadSuelto.removeAttribute('required');
             cantidadPrecio.removeAttribute('required');
-            document.getElementsByClassName('infoStock')[indiceProducto].innerHTML = `Te quedan ${this.productosSeleccionados[indiceProducto].stock} unidades en stock`;
+            document.getElementsByClassName('infoStock')[indiceProducto].innerHTML = `Te quedan ${stock} unidades en stock`;
         }else if(tipoDeCompra == 'suelto'){
             document.getElementsByName('descuentoIndividualEstado')[indiceProducto].removeAttribute('disabled','');
             cantidadSuelto.classList.remove('d-none');
@@ -204,7 +216,7 @@ class Carrito{
             cantidadNormal.removeAttribute('required');
             cantidadSuelto.setAttribute('required','');
             cantidadPrecio.removeAttribute('required');
-            document.getElementsByClassName('infoStock')[indiceProducto].innerHTML = `Te quedan ${this.productosSeleccionados[indiceProducto].stock_suelto} Kg en stock`;
+            document.getElementsByClassName('infoStock')[indiceProducto].innerHTML = `Te quedan ${stockSuelto} Kg en stock`;
         }else{
             cantidadSuelto.classList.add('d-none');
             cantidadNormal.classList.add('d-none');
@@ -212,7 +224,7 @@ class Carrito{
             cantidadNormal.removeAttribute('required');
             cantidadSuelto.removeAttribute('required');
             cantidadPrecio.setAttribute('required','');
-            document.getElementsByClassName('infoStock')[indiceProducto].innerHTML = `Te quedan ${this.productosSeleccionados[indiceProducto].stock_suelto} Kg en stock (Estas por vender por precio)`;
+            document.getElementsByClassName('infoStock')[indiceProducto].innerHTML = `Te quedan ${stockSuelto} Kg en stock (Estas por vender por precio)`;
 
             document.getElementsByClassName('selectDecuentoIndividual')[indiceProducto].classList.add('d-none');
             document.getElementsByName('totalConDescuento')[indiceProducto].classList.add('d-none');

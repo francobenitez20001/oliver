@@ -21,6 +21,7 @@ function getVentas(filtro=null) {
                 <td>${reg.subtotal}</td>
                 <td>${reg.descuento}%</td>
                 <td>${reg.total}</td>
+                <td>${reg.vendedor}</td>
                 <td>
                     ${buttons}
                 </td>

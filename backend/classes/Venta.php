@@ -77,18 +77,31 @@
             return false;
         }
 
-        public function listarVenta()
-        {
+        public function listarVenta(){
             $link = Conexion::conectar();
-            $sql = "SELECT * FROM ventas WHERE 1=1 ";
+            $sql = "SELECT ven.idVenta,
+                    ven.fecha,
+                    ven.total,
+                    ven.estado,
+                    ven.tipo_pago,
+                    ven.cliente,
+                    ven.descuento,
+                    ven.subtotal,
+                    IFNULL(usu.nombre,'No registrado') as vendedor,
+                    loc.nombre as local
+            FROM ventas AS ven 
+            LEFT JOIN usuarios AS usu ON ven.idUsuario = usu.idUsuario
+            LEFT JOIN locales AS loc ON ven.idLocal = usu.idLocal
+            WHERE 1=1 ";
+
             if (isset($_GET['tipo-pago']) && $_GET['tipo-pago']!='null') {
                 $tipo_pago = $_GET['tipo-pago'];
-                $sql .= "AND tipo_pago = :tp ";
+                $sql .= "AND ven.tipo_pago = :tp ";
             }
             if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
-                $sql .= "AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
+                $sql .= "AND ven.fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
             }else{
-                $sql .= "ORDER BY idVenta DESC";
+                $sql .= "ORDER BY ven.idVenta DESC";
             }
             $stmt = $link->prepare($sql);
             if (isset($_GET['tipo-pago']) && $_GET['tipo-pago']!='null') {
@@ -105,13 +118,14 @@
                 $json[] = array(
                     'idVenta' => $reg['idVenta'],
                     'fecha' => $reg['fecha'],
-                    'dia' => $reg['dia'],
                     'total' => $reg['total'],
                     'estado' => $reg['estado'],
                     'tipo_pago' => $reg['tipo_pago'],
                     'cliente' => $reg['cliente'],
+                    'descuento' => $reg['descuento'],
                     'subtotal' => $reg['subtotal'],
-                    'descuento' => $reg['descuento']
+                    'vendedor' => $reg['vendedor'],
+                    'local' => $reg['local']
                 );
             }
             $jsonString = json_encode($json);
@@ -132,8 +146,7 @@
             return json_encode(false);
         }
 
-        public function eliminarVenta()
-        {
+        public function eliminarVenta(){
             $idVenta = $_GET['idVenta'];
             $link = Conexion::conectar();
             $sql = "DELETE FROM productosVenta WHERE idVenta = ".$idVenta;
@@ -151,8 +164,7 @@
             return json_encode(false);
         }
 
-        public function listarVentasSaldadas()
-        {
+        public function listarVentasSaldadas(){
             $link = Conexion::conectar();
             $sql = "SELECT * FROM ventas WHERE estado = 'Pago' ORDER BY idVenta DESC";
             $stmt = $link->prepare($sql);
@@ -176,8 +188,7 @@
 
 
         ####################### Balance #######################
-        public function obtenerMontoVenta($dia,$criterio=null)
-        {
+        public function obtenerMontoVenta($dia,$criterio=null){
             $link = Conexion::conectar();
             switch ($criterio) {
                 case !is_null($criterio) && $criterio=='mes':
@@ -218,10 +229,9 @@
             return json_encode($json);
         }
 
-        public function listarVentaLimit()
-        {
+        public function listarVentaLimit(){
             $link = Conexion::conectar();
-            $sql = "SELECT fecha,tipo_pago,fecha,total,estado,subtotal FROM ventas order by fecha DESC LIMIT 3";
+            $sql = "SELECT fecha,tipo_pago,total,estado,subtotal FROM ventas order by fecha DESC LIMIT 3";
             $stmt = $link->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -238,8 +248,7 @@
             return json_encode($json);
         }
 
-        public function getPagosConTarjeta($deuda=null)
-        {
+        public function getPagosConTarjeta($deuda=null){
             $link = Conexion::conectar();
             $fecha = $_GET['fecha'];
             $sql = "SELECT count(tipo_pago) as pagos_tarjeta 
@@ -261,8 +270,7 @@
             }
         }
 
-        public function getProductoMasVendido($criterio=null)
-        {
+        public function getProductoMasVendido($criterio=null){
             $link = Conexion::conectar();
             $fecha = $_GET['fecha'];
             $sql = "SELECT producto, count(pv.idProducto) as cantidad FROM productosVenta AS pv,productos AS pr 

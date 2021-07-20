@@ -20,6 +20,7 @@
         <th scope="col">Subtotal</th>
         <th scope="col">Descuento</th>
         <th scope="col">Total</th>
+        <th scope="col">Vendedor</th>
         <th scope="col">
           <div class="row">
             <div class="col-10">
@@ -78,5 +79,5 @@
   </div>
 
   <?php include('includes/footer.php'); ?>
-  <script src="js/ventaListado.js?v=1.0.2"></script>
+  <script src="js/ventaListado.js?v=1.0.3"></script>
 </body>

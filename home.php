@@ -8,8 +8,8 @@
         <a href="productos.php" class="list-group-item list-group-item-action">Panel de administracion de productos</a>
         <a href="pedidos.php" class="list-group-item list-group-item-action">Panel de administracion de pedidos</a>
         <a href="envios.php" class="list-group-item list-group-item-action">Panel de administracion de envios</a>
-        <a href="balance.php" class="list-group-item list-group-item-action userPrivate">Mira tu balance</a>
         <?php if ($_SESSION['user']['admin']==1) { ?>
+          <a href="balance.php" class="list-group-item list-group-item-action userPrivate">Mira tu balance</a>
           <a href="deudores.php" class="list-group-item list-group-item-action">Panel de administracion de deudores</a>
           <a href="proveedores.php" class="list-group-item list-group-item-action userPrivate">Panel de administracion de proveedores</a>
           <a href="locales.php" class="list-group-item list-group-item-action">Manejo de Locales</a>
