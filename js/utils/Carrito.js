@@ -1,7 +1,3 @@
-let f = new Date();
-let fecha = f.getFullYear() + "/" + (f.getMonth() +1) + "/" + f.getDate();
-let semana = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
-let dia = semana[f.getDay()];
 class Carrito{
     constructor() {
         this.API_PRODUCTOS = 'backend/producto/';
@@ -11,12 +7,12 @@ class Carrito{
             productos:[],
             subtotal:0,
             total:0,
-            fecha,
-            dia,
             estado:'Pago',
             tipo_pago:'Efectivo',
             cliente:'No registrado',
-            descuento:0
+            descuento:0,
+            idLocal:localStorage.getItem('idLocal'),
+            idUsuario:localStorage.getItem('idUsuario')
         };
         //this.getProductos();
     }
@@ -92,11 +88,11 @@ class Carrito{
         let templateSelectTipoVenta = '';
         let index = 0;
         this.productosSeleccionados.forEach(prd=>{
-            if(prd.stock_suelto>0 && prd.stock>0){
+            if(prd.stock_suelto_local_1>0 && prd.stock_local_1>0){
                 templateSelectTipoVenta = `<option value="normal">Normal</option>
                 <option value="suelto">Suelto</option>
                 <option value="precio">Por precio</option>`;
-            }else if(prd.stock_suelto==0 && prd.stock>0){
+            }else if(prd.stock_suelto_local_1==0 && prd.stock_local_1>0){
                 templateSelectTipoVenta = `<option value="normal">Normal</option>`; 
             }else{
                 templateSelectTipoVenta = `<option value="suelto">Suelto</option>
@@ -163,16 +159,22 @@ class Carrito{
         //pintando los select de cantidad segun el producto y su stock
         let selectCantidad = document.getElementsByClassName('selectCantidad');
         let infoStock = document.getElementsByClassName('infoStock');
-        let templateSelectCantidad = '';
+        let localDelUsuario = localStorage.getItem('idLocal');
         for (let index = 0; index < selectCantidad.length; index++) {
-            if(this.productosSeleccionados[index].stock == 0 && this.productosSeleccionados[index].stock_suelto > 0){
+            let stock = this.productosSeleccionados[index].stock_local_1;
+            let stock_suelto = this.productosSeleccionados[index].stock_suelto_local_1;
+            if(localDelUsuario == "2"){
+                stock = this.productosSeleccionados[index].stock_local_2;
+                stock_suelto = this.productosSeleccionados[index].stock_suelto_local_2;
+            } 
+            if(stock == 0 && stock_suelto > 0){
                 selectCantidad[index].classList.add('d-none');
                 document.getElementsByName('cantidadSuelto')[index].classList.remove('d-none');
-                infoStock[index].innerHTML = `Te quedan ${this.productosSeleccionados[index].stock_suelto} Kg en stock`;
+                infoStock[index].innerHTML = `Te quedan ${stock_suelto} Kg en stock`;
             }else{
-                for(let c=1;c<=this.productosSeleccionados[index].stock;c++){
+                for(let c=1; c<=stock ;c++){
                     selectCantidad[index].innerHTML += `<option value="${c}">${c}</option>`;
-                    infoStock[index].innerHTML = `Te quedan ${this.productosSeleccionados[index].stock} unidades en stock`;
+                    infoStock[index].innerHTML = `Te quedan ${stock} unidades en stock`;
                 }
             }
         }
@@ -244,6 +246,10 @@ class Carrito{
         div.classList.toggle('d-none');
     }
 
+    handleChangeLocal = e =>{
+        this.carrito.idLocal = e.target.value;
+    }
+
     cargarVenta(){
         document.getElementsByClassName('btn-modal-venta')[0].classList.add('d-none');
         document.getElementsByClassName('btn-modal-venta')[1].classList.add('d-none');
@@ -251,51 +257,51 @@ class Carrito{
         this.carrito.total = this.carrito.total.toFixed(2);
         console.log(this.carrito.total);
         console.log(this.carrito);
-        fetch('backend/ventas/agregarVentaJson.php',{
-            method:'POST',
-            body:JSON.stringify(this.carrito)
-        }).then(res=>res.json()).then(response=>{
-            if(response.status == 200){
-                fetch('backend/productosVenta/insertarProductos.php',{
-                    method:'POST',
-                    body:JSON.stringify({
-                        idVenta:response.idVenta,
-                        carrito:this.carrito
-                    })
-                }).then(res=>res.json()).then(response=>{
-                    if(response.status == 400){
-                        return Swal.fire(
-                            'Venta agregada pero con problemas',
-                            response.info,
-                            'warning'
-                        )
-                    }
-                    localStorage.removeItem('productos');//elimino los datos de los productos seleccionados del localStorage
-                    Swal.fire({
-                        title: response.info,
-                        text: '¿Desea agregar los datos del envio de esta venta?',
-                        icon: 'success',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Agregar'
-                    }).then((result) => {
-                        document.getElementById('modalPago').classList.remove('show');
-                        document.getElementById('modalPago').style.display = 'none';
-                        if (result.value) {
-                            let divVenta = document.getElementById('form-modificar-div');
-                            let divEnvio = document.getElementById('form-agregar-div');
-                            let tipoEnvio = document.getElementById('tipoEnvio');
-                            tipoEnvio.setAttribute('value','varios');
-                            divVenta.classList.add('d-none');
-                            divEnvio.classList.remove('d-none');
-                        }else{
-                            window.location.assign('ventas.php');
-                        }
-                    })
-                })
-            }
-        })
+        // fetch('backend/ventas/agregarVentaJson.php',{
+        //     method:'POST',
+        //     body:JSON.stringify(this.carrito)
+        // }).then(res=>res.json()).then(response=>{
+        //     if(response.status == 200){
+        //         fetch('backend/productosVenta/insertarProductos.php',{
+        //             method:'POST',
+        //             body:JSON.stringify({
+        //                 idVenta:response.idVenta,
+        //                 carrito:this.carrito
+        //             })
+        //         }).then(res=>res.json()).then(response=>{
+        //             if(response.status == 400){
+        //                 return Swal.fire(
+        //                     'Venta agregada pero con problemas',
+        //                     response.info,
+        //                     'warning'
+        //                 )
+        //             }
+        //             localStorage.removeItem('productos');//elimino los datos de los productos seleccionados del localStorage
+        //             Swal.fire({
+        //                 title: response.info,
+        //                 text: '¿Desea agregar los datos del envio de esta venta?',
+        //                 icon: 'success',
+        //                 showCancelButton: true,
+        //                 confirmButtonColor: '#3085d6',
+        //                 cancelButtonColor: '#d33',
+        //                 confirmButtonText: 'Agregar'
+        //             }).then((result) => {
+        //                 document.getElementById('modalPago').classList.remove('show');
+        //                 document.getElementById('modalPago').style.display = 'none';
+        //                 if (result.value) {
+        //                     let divVenta = document.getElementById('form-modificar-div');
+        //                     let divEnvio = document.getElementById('form-agregar-div');
+        //                     let tipoEnvio = document.getElementById('tipoEnvio');
+        //                     tipoEnvio.setAttribute('value','varios');
+        //                     divVenta.classList.add('d-none');
+        //                     divEnvio.classList.remove('d-none');
+        //                 }else{
+        //                     window.location.assign('ventas.php');
+        //                 }
+        //             })
+        //         })
+        //     }
+        // })
     }
 } 
 export default Carrito;

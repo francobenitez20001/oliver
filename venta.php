@@ -5,7 +5,7 @@
 
   <div class="container mt-3 fadeIn fast" id="form-modificar-div">
     <div class="alert alert-success d-none" id="alert-success">Venta cargada</div>
-    <a class="btn btn-warning" href="adminProductos.html">Regresar al panel de control</a>
+    <a class="btn btn-warning" href="productos.php">Regresar al panel de control</a>
     <hr>
     <h1>Nueva venta</h1>
     <hr>
@@ -44,9 +44,8 @@
                         <div class="input-group-prepend">
                           <div class="input-group-text">Local</div>
                         </div>
-                        <select class="form-control" name="idLocal" id="idLocal">
-                          <option value="1">Local 1</option>
-                          <option value="2">Local 2</option>
+                        <select onchange="carrito.handleChangeLocal(event)" class="form-control" name="idLocal" id="idLocal" <?php if($_SESSION['user']['admin'] == 0){?> disabled="true" <?php }; ?> >
+                          
                         </select>
                       </div>
                     </div>

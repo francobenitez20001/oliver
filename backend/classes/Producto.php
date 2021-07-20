@@ -19,7 +19,7 @@ class Producto
         public function listarProducto()
         {       
                 $link = Conexion::conectar();
-                $sql = "SELECT idProducto,producto,p.idMarca,marcaNombre,p.idCategoria,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock,stock_suelto,proveedor,porcentaje_ganancia,precio_costo,codigo_producto,stock_deposito
+                $sql = "SELECT idProducto,producto,p.idMarca,marcaNombre,p.idCategoria,categoriaNombre,precioPublico,precioUnidad,precioKilo,stock_local_1,stock_suelto_local_1,stock_local_2,stock_suelto_local_2,proveedor,porcentaje_ganancia,precio_costo,codigo_producto,stock_deposito
                 FROM productos p, marcas m, categorias c, proveedor pr
                 WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = pr.idProveedor ";
                 if(isset($_GET['desde']) && !is_null($_GET['desde']) && isset($_GET['hasta']) && !is_null($_GET['hasta'])){
@@ -40,8 +40,10 @@ class Producto
                                 'precioPublico' => $reg['precioPublico'],
                                 'precioUnidad' => $reg['precioUnidad'],
                                 'precioKilo' => $reg['precioKilo'],
-                                'stock' => $reg['stock'],
-                                'stock_suelto' => $reg['stock_suelto'],
+                                'stock_local_1' => $reg['stock_local_1'],
+                                'stock_suelto_local_1' => $reg['stock_suelto_local_1'],
+                                'stock_local_2' => $reg['stock_local_2'],
+                                'stock_suelto_local_2' => $reg['stock_suelto_local_2'],
                                 'proveedor' => $reg['proveedor'],
                                 'porcentaje_ganancia' => $reg['porcentaje_ganancia'],
                                 'precio_costo' => $reg['precio_costo'],
@@ -56,7 +58,7 @@ class Producto
         public function listarProductoParaWeb()
         {
                 $link = Conexion::conectar();
-                $sql = "SELECT producto,stock,codigo_producto FROM productos";
+                $sql = "SELECT producto,stock_local_1,codigo_producto FROM productos";
                 $stmt = $link->prepare($sql);
                 $stmt->execute();
                 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -64,7 +66,7 @@ class Producto
                 foreach ($resultado as $reg) {
                         $json[] = array(
                                 'producto' => $reg['producto'],
-                                'stock' => $reg['stock'],
+                                'stock' => $reg['stock_local_1'],
                                 'codigo_producto' => $reg['codigo_producto']
                         );
                 }

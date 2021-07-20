@@ -1,5 +1,5 @@
 
-import Carrito from './utils/Carrito.js?v=1.0.1';
+import Carrito from './utils/Carrito.js?v=1.0.2';
 window.dom = {
     formVenta:document.getElementById('formVentaProducto')
 };
@@ -8,6 +8,7 @@ window.carrito = new Carrito();
 window.onload = ()=>{
     carrito.productosSeleccionados = JSON.parse(localStorage.getItem('productos'));
     carrito.renderFormVenta();
+    window.renderSelectLocales();
 }
 
 //habilita el input de nombre del cliente para registrarlo en el caso de que se pague con tarjeta
@@ -128,3 +129,18 @@ window.setDescuentoIndividual = (index,event)=>{
     return document.getElementsByName('totalConDescuento')[index].innerHTML = `El total es <b>$${totalConDescuento}</b>`;
 }
 
+window.renderSelectLocales = async () => {
+    const req = await fetch('backend/locales/get.php');
+    if(req.status !== 200){
+        return modalError(req.statusText);
+    }
+    const {data:locales} = await req.json();
+    let selectLocales = document.getElementById('idLocal');
+    let localDelUsuario = locales.filter(loc=>loc.idLocal == localStorage.getItem('idLocal'));
+    let template = `<option value="${localDelUsuario[0].idLocal}">${localDelUsuario[0].nombre}</option>`;
+    locales.forEach(local=>{
+        if(local.idLocal == localDelUsuario[0].idLocal) return;
+        template += `<option value="${local.idLocal}">${local.nombre}</option>`
+    });
+    selectLocales.innerHTML = template;
+}

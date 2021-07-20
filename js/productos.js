@@ -35,6 +35,7 @@ class Producto{
     }
 
     render(data,search=false,loadMore=false) {
+        let localDelUsuario = localStorage.getItem('idLocal');
         let bodyTable = document.getElementById('bodyTable');
         let template = '';
         if(loadMore){
@@ -42,7 +43,11 @@ class Producto{
         }
         let permiso = this.checkUserSession();
         data.forEach(reg => {
-            if(reg.stock <=0 && reg.stock_suelto<=0){
+            let stock = reg.stock_local_1;
+            if(localDelUsuario == "2"){
+                stock = reg.stock_local_2;
+            }
+            if(stock <=0 && stockSuelto<=0){
                 template += `
                     <tr>
                         <td scope="row">${reg.producto}</td>
@@ -57,7 +62,7 @@ class Producto{
                         </td>
                         <td class="userPrivate">$${reg.precio_costo}</td>
                         <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
-                        <td>${reg.stock}</td>
+                        <td>${stock}</td>
                         <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
                         <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
                         <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
@@ -84,7 +89,7 @@ class Producto{
                         </td>
                         <td class="userPrivate">$${reg.precio_costo}</td>
                         <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
-                        <td>${reg.stock}</td>
+                        <td>${stock}</td>
                         <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
                         <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
                         <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>

@@ -6,7 +6,7 @@
             $usuario = $_POST['username'];
             $pw = $_POST['pw'];
             $link = Conexion::conectar();
-            $sql = "SELECT nombre,usuario,pw,superUser,idLocal FROM usuarios WHERE usuario = :usuario";
+            $sql = "SELECT idUsuario,nombre,usuario,pw,superUser,idLocal FROM usuarios WHERE usuario = :usuario";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':usuario', $usuario, PDO::PARAM_STR);
             $stmt->execute();
@@ -28,6 +28,7 @@
             }
             $_SESSION['logueado'] = 1;
             $_SESSION['user'] = array(
+                "idUsuario" => $user['idUsuario'],
                 "user_name" => $user['usuario'],
                 "name" => $user['nombre'],
                 "admin" => 0,

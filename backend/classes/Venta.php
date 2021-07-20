@@ -7,27 +7,27 @@
             $data = file_get_contents('php://input');
             // Los convertimos en un array
             $data = json_decode( $data, true );
-            $fecha = $data['fecha'];
-            $dia = $data['dia'];
             $total = $data['total'];
             $estado = $data['estado'];
             $tipo_pago = $data['tipo_pago'];
             $cliente = $data['cliente'];
             $descuento = $data['descuento'];
             $subtotal = $data['subtotal'];
+            $idUsuario = $data['idUsuario'];
+            $idLocal = $data['idLocal'];
             
             $link = Conexion::conectar();
-            $sql = "INSERT INTO ventas (fecha,dia,total,estado,tipo_pago,cliente,descuento,subtotal)
-                    VALUES (:fecha,:dia,:total,:estado,:tipo_pago,:cliente,:descuento,:subtotal)";
+            $sql = "INSERT INTO ventas (total,estado,tipo_pago,cliente,descuento,subtotal,idUsuario,idLocal)
+                    VALUES (:total,:estado,:tipo_pago,:cliente,:descuento,:subtotal,:idUsuario,:idLocal)";
             $stmt = $link->prepare($sql);
-            $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
-            $stmt->bindParam(':dia',$dia,PDO::PARAM_STR);
             $stmt->bindParam(':total',$total,PDO::PARAM_STR);
             $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
             $stmt->bindParam(':tipo_pago',$tipo_pago,PDO::PARAM_STR);
             $stmt->bindParam(':cliente',$cliente,PDO::PARAM_STR);
             $stmt->bindParam(':descuento',$descuento,PDO::PARAM_STR);
             $stmt->bindParam(':subtotal',$subtotal,PDO::PARAM_STR);
+            $stmt->bindParam(':idUsuario',$idUsuario,PDO::PARAM_INT);
+            $stmt->bindParam(':idLocal',$idLocal,PDO::PARAM_INT);
             if($stmt->execute()){
                 $prd_count = count($data['productos']);//cantidad de productos que cargo el usuario;
                 $logResponse = array();
