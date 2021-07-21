@@ -27,15 +27,17 @@
         <li class="nav-item <?php $_SESSION['REQUEST_URI'] == '/oliver/pedidos.php' ? 'active' : '' ?>">
           <a class="nav-link" href="pedidos.php">Pedidos</a>
         </li>
-        <li class="nav-item <?php $_SESSION['REQUEST_URI'] == '/oliver/deudores.php' ? 'active' : '' ?>">
-          <a class="nav-link" href="deudores.php">Deudores</a>
-        </li>
         <li class="nav-item <?php $_SESSION['REQUEST_URI'] == '/oliver/envios.php' ? 'active' : '' ?>">
           <a class="nav-link" href="envios.php">Envíos</a>
         </li>
-        <li class="nav-item <?php $_SESSION['REQUEST_URI'] == '/oliver/servicios.php' ? 'active' : '' ?>">
-          <a class="nav-link" href="servicios.php">Servícios</a>
-        </li>
+        <?php if (isset($_SESSION['user']) && $_SESSION['user']['admin']==1){?>
+          <li class="nav-item <?php $_SESSION['REQUEST_URI'] == '/oliver/deudores.php' ? 'active' : '' ?>">
+            <a class="nav-link" href="deudores.php">Deudores</a>
+          </li>
+          <li class="nav-item <?php $_SESSION['REQUEST_URI'] == '/oliver/servicios.php' ? 'active' : '' ?>">
+            <a class="nav-link" href="servicios.php">Servícios</a>
+          </li>
+        <?php }; ?>
         <!-- <li class="nav-item">
           <a href="login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i> Ingresar</a>
         </li> -->
