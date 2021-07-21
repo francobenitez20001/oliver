@@ -8,7 +8,7 @@ formLogin.addEventListener('submit',event=>{
     })
     .then(res=>res.json())
     .then(newRes=>{
-        if (newRes) {
+        if (newRes.ok) {
             formLogin.classList.add('d-none');
             nombre = newRes.user;
             Swal.fire({
