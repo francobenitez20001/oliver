@@ -152,7 +152,10 @@ class Balance{
       return;
     }
     const data = await req.json();
-    if(!data.length) return;
+    if(!data.length){
+      this.productosMasVendido = null;
+      return;
+    };
     this.productosMasVendido = {
       nombre:data[0].producto,
       cantidad:data[0].cantidad
@@ -281,7 +284,7 @@ window.onload = ()=>{
       infoMasVendido.innerHTML = "";
     }else{
       productoMasVendido.innerHTML = masVendido.producto;
-      infoMasVendido = "Es el producto más vendido durante el período seleccionado";
+      infoMasVendido.innerHTML = "Es el producto más vendido durante el período seleccionado";
     }
 
     toggleLoader();
@@ -330,8 +333,17 @@ const filtrarServicio = async e => {
   return serviciosTotal.innerHTML = nroServicios;
 }
 
-const changeCriterioBalance = event =>{
-  
+const filtrarProductoMasVendido = async event =>{
+  balance.setFecha(event.target.value);
+  await balance.obtenerProductoMasVendido();
+  const producto = balance.getProductoMasVendido();
+  if(!producto){
+    productoMasVendido.innerHTML = "No hay registros";
+    infoMasVendido.innerHTML = "";
+    return;
+  }
+  productoMasVendido.innerHTML = producto.nombre;
+  infoMasVendido.innerHTML = "Es el producto más vendido durante el período seleccionado";
 }
 
 const renderTablaVentas = data => {

@@ -129,12 +129,9 @@
                       </div>
                     </div>
                     <div class="card-body">
-                    <p class="card-text text-center p-balance" id="recaudacionFinal">8</p>
+                      <p class="card-text text-center p-balance" id="recaudacionFinal">8</p>
                     </div>
                 </div>
-              </div>
-              <div class="col-12 text-right mt-3">
-                  <button class="btn btn-primary" id="btn-balance" onclick="verBalance('mes')">Ver estado actual</button>
               </div>
           </div>
       </div>
@@ -199,7 +196,7 @@
       </div>
       <hr>
       <div class="container my-4">
-        <select name="" onchange="filtrarProductoVendido(event)" class="form-control  col-12 col-md-4" id="filtro-producto-vendido">
+        <select name="" onchange="filtrarProductoMasVendido(event)" class="form-control  col-12 col-md-4" id="filtro-producto-vendido">
           <option value="YYYY-MM-DD">Mostrando datos del dia de hoy</option>
           <option value="YYYY-MM">Mostrando datos del mes</option>
         </select>
