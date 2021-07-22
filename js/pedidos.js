@@ -93,6 +93,7 @@ function eliminarPedido(id) {
 
 
 function recibirPedido(id=null,pagoCompleto=false) {
+    getLocales();
     document.getElementById('idPedido').value = id;
     let inputCantidadLlegada = document.getElementById('cantidadFinal');
     inputCantidadLlegada.classList.remove('d-none');
@@ -116,30 +117,29 @@ document.getElementById('cargarComprobante').addEventListener('submit',event=>{
     let alertError = document.getElementById('alert-error');
     alertLoading.classList.remove('d-none');
     let data = new FormData(formCargarComprobante);
-        fetch('backend/pedidos/recibirPedido.php',{
-            method:'POST',
-            body:data
-        }).then(res=>res.json()).then(response=>{
-            if (response.status == 400) {
-                alertLoading.classList.add('d-none');
-                alertError.innerHTML = response.info;
-                alertError.classList.remove('d-none');
-                return;
+    fetch('backend/pedidos/recibirPedido.php',{
+        method:'POST',
+        body:data
+    }).then(res=>res.json()).then(response=>{
+        if (response.status == 400) {
+            alertLoading.classList.add('d-none');
+            alertError.innerHTML = response.info;
+            alertError.classList.remove('d-none');
+            return;
+        }
+        fetch(`backend/producto/modificarStock.php?producto=${response.producto}&cantidad=${response.cantidad}&idLocal=${data.get('idLocal')}`)
+        .then(res=>res.json()).then(response=>{
+            if (response.status == 200) {
+                Swal.fire(
+                    'Listo!',
+                    response.info,
+                    'success'
+                ).then(()=>{
+                    window.location.assign('pedidos.php')  
+                })
             }
-            fetch('backend/producto/modificarStock.php?producto='+response.producto+'&cantidad='+response.cantidad)
-            .then(res=>res.json()).then(response=>{
-                console.log(response)
-                if (response.status == 200) {
-                    Swal.fire(
-                        'Listo!',
-                        response.info,
-                        'success'
-                    ).then(()=>{
-                        window.location.assign('pedidos.php')  
-                    })
-                }
-            })
         })
+    })
 })
 
 
@@ -294,4 +294,16 @@ function modificarPedido(event) {
             window.location.assign('pedidos.php');
         }, 1000);
     })
+}
+
+async function getLocales() {
+    let url = "backend/locales/get.php?activo=1";
+    const req = await fetch(url);
+    const {data} = await req.json();
+    let select = document.getElementById('idLocal');
+    let template = '';
+    data.forEach(local=>{
+        template += `<option value="${local.idLocal}">${local.nombre}</option>`;
+    });
+    select.innerHTML = template;
 }

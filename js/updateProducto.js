@@ -1,17 +1,3 @@
-function checkUserSession() {
-    setTimeout(() => {
-      if (userSession == 1) {
-        elementos = document.getElementsByClassName('userPrivate');
-        for (let index = 0; index < elementos.length; index++) {
-          elementos[index].classList.remove('d-none');
-        };
-        return true;
-      }else{
-        return true;
-      } 
-    }, 2000);
-}
-
 let formulario = document.getElementById('formModificarProducto');
 formulario.addEventListener('submit', event=>{
     event.preventDefault();
@@ -31,11 +17,6 @@ formulario.addEventListener('submit', event=>{
         }
     })
 })
-
-window.onload = ()=>{
-    let bool = checkUserSession();
-    console.log(bool);
-}
 
 function handleChangeVentaKilo(event){
   if (event.target.value === 'si') {

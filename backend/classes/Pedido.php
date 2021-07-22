@@ -9,7 +9,7 @@
                     FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ";
             if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin']
                     && !is_null($_GET['idProveedor']))){
-                $sql .= "AND p.idProveedor = :idProveedor AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC ";
+                $sql .= "AND p.idProveedor = :idProveedor AND fecha BETWEEN :inicio AND :fin ORDER BY idPedido DESC ";
             }else{
                 if(!is_null($mes)){
                     $sql .= "AND fecha LIKE '".$mes."%' ORDER BY idPedido DESC "; 

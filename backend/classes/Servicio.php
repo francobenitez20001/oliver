@@ -70,7 +70,6 @@
         public function agregarServicio()
         {
             $servicioNombre = $_POST['servicioNombre'];
-            $fecha = $_POST['fecha'];
             $estado = $_POST['estado'];
             $total = $_POST['total'];
             $comprobante = 'NO';
@@ -78,11 +77,10 @@
                 $comprobante = $this->cargarComprobante('agregar');
             }
             $link = Conexion::conectar();
-            $sql = "INSERT INTO servicios (servicioNombre,fecha,estado,total,comprobante)
-                    VALUES (:servicioNombre,:fecha,:estado,:total,:comprobante)";
+            $sql = "INSERT INTO servicios (servicioNombre,estado,total,comprobante)
+                    VALUES (:servicioNombre,:estado,:total,:comprobante)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':servicioNombre',$servicioNombre,PDO::PARAM_STR);
-            $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
             $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
             $stmt->bindParam(':total',$total,PDO::PARAM_INT);
             $stmt->bindParam(':comprobante',$comprobante,PDO::PARAM_STR);

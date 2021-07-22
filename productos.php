@@ -29,11 +29,11 @@
       <thead class="thead-light">
         <tr>
           <th scope="col">Producto</th>
-          <th scope="col">Stock Depósito</th>
           <th scope="col">DESC</th>
           <th class="userPrivate" scope="col">Costo</th>
           <th class="userPrivate" scope="col">Ganancia</th>
-          <th scope="col">Stock</th>
+          <th scope="col">Stock Local 1</th>
+          <th scope="col">Stock Local 2</th>
           <th class="bg-important" scope="col">Precio público</th>
           <th scope="col">Precio Unitario</th>
           <th scope="col">Precio por KG</th>
@@ -225,7 +225,7 @@
 
 
   <?php include('includes/footer.php'); ?>
-  <script type="module" src="js/productos.js?v=1.0.6"></script>
+  <script type="module" src="js/productos.js?v=1.0.7"></script>
   <script src="js/menu-producto.js"></script>
   <!-- <script src="js/formAgregarProducto.js"></script> -->
 </body>

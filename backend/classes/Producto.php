@@ -127,67 +127,97 @@ class Producto
             return json_encode(false);
         }
 
-        public function modificarProducto()
-        {
+        public function modificarProducto(){
                 $link = Conexion::conectar();
                 // $this->cargarDatosDesdeForm();
                 $idProducto = $_POST['idProducto'];
                 $producto = $_POST['producto'];
                 $idMarca = $_POST['idMarca'];
                 $idCategoria = $_POST['idCategoria'];
-                $precioCosto = $_POST['precio_costo'];
-                $stock = $_POST['stock'] - $_POST['restaCostoUnitario'];
-                $idProveedor = $_POST['idProveedor'];
-                $porcentaje_ganancia = $_POST['porcentaje_ganancia'];
-                $stockSuelto = $_POST['stockSuelto'];
-                $precioPublico = $precioCosto + ($precioCosto*$porcentaje_ganancia/100);//precio publico dinamico
                 $cantidadUnitario = $_POST['cantidadUnitario'];
-                $stockDeposito = $_POST['stockDeposito'];
+                $idProveedor = $_POST['idProveedor'];
+                
+                $precioKilo = null;
+                $cantidadPorKilo = null;
+                $porcentajeGananciaKilo = null;
+                $costoKilo = null;
+
+                $stock_local_1 = null;
+                $stock_local_2 = null;
+                $stock_suelto_local_1 = null;
+                $stock_suelto_local_2 = null;
+                $porcentaje_ganancia = $_POST['porcentaje_ganancia'];
+                $precioCosto = $_POST['precioCosto'];
+                $precioPublico = $precioCosto + ($precioCosto*$porcentaje_ganancia/100);//precio publico dinamico
                 $precioUnidad = $precioPublico/$cantidadUnitario;
-                $precioKilo = 0;
-                $cantidadPorKilo = 0;
-                $porcentajeGananciaKilo = 0;
-                if(isset($_POST['cantidadKilo']) && $_POST['cantidadKilo']!=='' && $_POST['cantidadKilo']!==0 &&
-                   isset($_POST['porcentajePorKilo']) && $_POST['porcentajePorKilo']!=='' && $_POST['porcentajePorKilo']!==0){
+                                
+                if(isset($_POST['stock_local_1'])){
+                        $stock_local_1 = $_POST['stock_local_1'];
+                        $stock_local_2 = $_POST['stock_local_2'];
+                        $stock_suelto_local_1 = $_POST['stock_suelto_local_1'];
+                        $stock_suelto_local_2 = $_POST['stock_suelto_local_2'];
+                }
+
+                if(isset($_POST['cantidadKilo']) && isset($_POST['porcentajePorKilo']) && $_POST['cantidadKilo']!=='' && $_POST['cantidadKilo']!==0 && $_POST['porcentajePorKilo']!=='' && $_POST['porcentajePorKilo']!==0){
                         $cantidadPorKilo = $_POST['cantidadKilo'];
                         $porcentajeGananciaKilo = $_POST['porcentajePorKilo'];
                         $costoKilo = $precioPublico/$cantidadPorKilo;
                         $porcentajeGananciaKiloValor = $costoKilo*$porcentajeGananciaKilo/100;
                         $precioKilo = $costoKilo + $porcentajeGananciaKiloValor;
                 };
+
                 $sql = "UPDATE productos SET producto = :producto,
-                                                idMarca = :idMarca,
-                                                idCategoria = :idCategoria,
-                                                precioPublico = :precioPublico,
-                                                precioUnidad = :precioUnidad,
-                                                precioKilo = :precioKilo,
-                                                precio_costo = :precioCosto,
-                                                stock = :stock,
-                                                idProveedor = :idProveedor,
-                                                porcentaje_ganancia = :porcentaje_ganancia,
-                                                stock_suelto = :stockSuelto,
-                                                cantidadUnitario = :cantidadUnitario,
-                                                cantidadPorKilo = :cantidadPorKilo,
-                                                porcentajeGananciaPorKilo = :porcentajeGananciaPorKilo,
-                                                stock_deposito = :stockDeposito
-                                        WHERE idProducto = :idProducto";
+                        idMarca = :idMarca,
+                        idCategoria = :idCategoria,
+                        cantidadUnitario = :cantidadUnitario,
+                        porcentajeGananciaPorKilo = :porcentajeGananciaPorKilo, ";  
+                
+                if(!is_null($stock_local_1)){
+                        $sql .= "stock_local_1 = :stock_local_1,
+                                stock_local_2 = :stock_local_2,
+                                stock_suelto_local_1 = :stock_suelto_local_1,
+                                stock_suelto_local_2 = :stock_suelto_local_2,
+                                porcentaje_ganancia = :porcentajeGanancia,
+                                precio_costo = :precioCosto,
+                                precioPublico = :precioPublico,
+                                precioUnidad = :precioUnidad, ";
+                }
+
+                if(!is_null($cantidadPorKilo)){
+                        $sql .= "cantidadPorKilo = :cantidadPorKilo,
+                                porcentajeGananciaPorKilo = :gananciaPorKilo,
+                                precioKilo = :precioKilo, ";
+                }
+
+                $sql .= "idProveedor = :idProveedor WHERE idProducto = :idProducto";
+                
                 $stmt = $link->prepare($sql);
+
                 $stmt->bindParam(':idProducto', $idProducto , PDO::PARAM_INT);
                 $stmt->bindParam(':producto', $producto , PDO::PARAM_STR);
                 $stmt->bindParam(':idMarca', $idMarca , PDO::PARAM_INT);
                 $stmt->bindParam(':idCategoria', $idCategoria , PDO::PARAM_INT);
-                $stmt->bindParam(':precioPublico', $precioPublico , PDO::PARAM_STR);
-                $stmt->bindParam(':precioUnidad', $precioUnidad , PDO::PARAM_STR);
-                $stmt->bindParam(':precioKilo', $precioKilo , PDO::PARAM_STR);
-                $stmt->bindParam(':precioCosto',$precioCosto, PDO::PARAM_STR);
-                $stmt->bindParam(':stock', $stock , PDO::PARAM_INT);
-                $stmt->bindParam(':idProveedor', $idProveedor , PDO::PARAM_INT);
-                $stmt->bindParam(':porcentaje_ganancia', $porcentaje_ganancia , PDO::PARAM_INT);
-                $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_STR);
                 $stmt->bindParam(':cantidadUnitario',$cantidadUnitario,PDO::PARAM_INT);
-                $stmt->bindParam(':cantidadPorKilo',$cantidadPorKilo,PDO::PARAM_STR);
                 $stmt->bindParam(':porcentajeGananciaPorKilo',$porcentajeGananciaKilo,PDO::PARAM_INT);
-                $stmt->bindParam(':stockDeposito',$stockDeposito,PDO::PARAM_INT);
+                $stmt->bindParam(':idProveedor', $idProveedor , PDO::PARAM_INT);
+                
+                if(!is_null($stock_local_1)){
+                        $stmt->bindParam(':stock_local_1',$stock_local_1,PDO::PARAM_INT);
+                        $stmt->bindParam(':stock_local_2',$stock_local_2,PDO::PARAM_INT);
+                        $stmt->bindParam(':stock_suelto_local_1',$stock_suelto_local_1,PDO::PARAM_STR);
+                        $stmt->bindParam(':stock_suelto_local_2',$stock_suelto_local_2,PDO::PARAM_STR);
+                        $stmt->bindParam(':porcentajeGanancia',$porcentaje_ganancia,PDO::PARAM_INT);
+                        $stmt->bindParam(':precioCosto',$precioCosto,PDO::PARAM_STR);
+                        $stmt->bindParam(':precioPublico',$precioPublico,PDO::PARAM_STR);
+                        $stmt->bindParam(':precioUnidad',$precioUnidad,PDO::PARAM_STR);
+                }
+
+                if(!is_null($cantidadPorKilo)){
+                        $stmt->bindParam(':cantidadPorKilo',$cantidadPorKilo,PDO::PARAM_STR);
+                        $stmt->bindParam(':gananciaPorKilo',$porcentajeGananciaKilo,PDO::PARAM_INT);
+                        $stmt->bindParam(':precioKilo', $precioKilo , PDO::PARAM_STR);
+                }
+
                 $bool = $stmt->execute();
                 if ($bool) {
                         return json_encode(true);
@@ -213,7 +243,7 @@ class Producto
         {
                 $link = Conexion::conectar();
                 $idProducto = $_GET['idProducto'];
-                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,precio_costo,stock,p.idProveedor,proveedor,porcentaje_ganancia,stock_suelto,cantidadUnitario,codigo_producto,cantidadPorKilo,porcentajeGananciaPorKilo,stock_deposito FROM productos p, marcas m, categorias c, proveedor prov
+                $sql = "SELECT idProducto,producto,marcaNombre, p.idMarca,categoriaNombre,p.idCategoria,precioPublico,precioUnidad,precioKilo,precio_costo,stock_local_1,stock_local_2,p.idProveedor,proveedor,porcentaje_ganancia,stock_suelto_local_1,stock_suelto_local_2,cantidadUnitario,codigo_producto,cantidadPorKilo,porcentajeGananciaPorKilo FROM productos p, marcas m, categorias c, proveedor prov
                         WHERE p.idMarca = m.idMarca AND p.idCategoria = c.idCategoria AND p.idProveedor = prov.idProveedor AND idProducto = :idProducto";
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':idProducto', $idProducto, PDO::PARAM_INT);
@@ -313,13 +343,15 @@ class Producto
                 return json_encode(array('status'=>400,'info'=>'Problemas al actualizar los precios'));
         }
 
-        public function modificarStock()
-        {
+        public function modificarStock(){
                 $link = Conexion::conectar();
                 $producto = $_GET['producto'];
                 $cantidad = $_GET['cantidad'];
-                $sql = "UPDATE productos SET stock = stock + :nuevoStock
-                        WHERE producto = :producto";
+                $idLocal = $_GET['idLocal'];
+                $sql = "UPDATE productos SET stock_local_1 = stock_local_1 + :nuevoStock WHERE producto = :producto";
+                if($idLocal=="2"){
+                        $sql = "UPDATE productos SET stock_local_2 = stock_local_2 + :nuevoStock WHERE producto = :producto";
+                }
                 $stmt = $link->prepare($sql);
                 $stmt->bindParam(':nuevoStock',$cantidad,PDO::PARAM_INT);
                 $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);

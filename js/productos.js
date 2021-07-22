@@ -52,17 +52,12 @@ class Producto{
                     <tr>
                         <td scope="row">${reg.producto}</td>
                         <td>
-                            ${(reg.stock_deposito == 0)?`
-                                <button type="button" disabled="true" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>`:
-                                `<button type="button" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>`
-                            }
-                            <input type="number" disabled="true" value="${reg.stock_deposito}" id="inputStockDeposito_${reg.idProducto}" style="width:45px"/>
-                        <td>
                             <input type="number" onkeyup="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento" style="width:45px"/>
                         </td>
                         <td class="userPrivate">$${reg.precio_costo}</td>
                         <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
-                        <td>${stock}</td>
+                        <td>${reg.stock_local_1}</td>
+                        <td>${reg.stock_local_2}</td>
                         <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
                         <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
                         <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>
@@ -78,18 +73,12 @@ class Producto{
                     <tr>
                         <td scope="row">${reg.producto}</td>
                         <td>
-                            ${(reg.stock_deposito == 0)?`
-                                <button type="button" disabled="true" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>`:
-                                `<button type="button" id="buttonStockDeposito_${reg.idProducto}" onclick="producto.habilitarModificacionStockDeposito(${reg.idProducto})" class="btn btn-outline-info text-center" id="" style="width:35px;"><i class="fas fa-edit" style="cursor:pointer;color:yellow;font-size:15px"></i></button>`
-                            }
-                            <input type="number" disabled="true" value="${reg.stock_deposito}" id="inputStockDeposito_${reg.idProducto}" style="width:45px"/>
-                        </td>
-                        <td>
-                        <input type="number" onkeyup="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento" style="width:45px"/>
+                            <input type="number" onkeyup="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" onchange="producto.setDescuento(event,${reg.precioPublico},${reg.precioUnidad},${reg.precioKilo},${reg.idProducto})" id="descuento" style="width:45px"/>
                         </td>
                         <td class="userPrivate">$${reg.precio_costo}</td>
                         <td class="userPrivate">${reg.porcentaje_ganancia}%</td>
-                        <td>${stock}</td>
+                        <td>${reg.stock_local_1}</td>
+                        <td>${reg.stock_local_2}</td>
                         <td class="bg-important" id="precioPublico_${reg.idProducto}">${reg.precioPublico}</td>
                         <td id="precioUnidad_${reg.idProducto}">${reg.precioUnidad}</td>
                         <td class="bg-important-yellow" id="precioKilo_${reg.idProducto}">${reg.precioKilo}</td>

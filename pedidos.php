@@ -109,7 +109,10 @@
 
   <div class="cargarComprobante d-none" id="cargarComprobante">
     <form id="formCargarComprobante" class="form-group" enctype="multipart/form-data">
-      <input type="text" name="cantidadFinal" id="cantidadFinal" required class="form-control col-12 mt-3" placeholder="Ingrese la cantidad que llego del pedido (unidades)">
+      <input type="text" name="cantidadFinal" id="cantidadFinal" required class="my-3 form-control col-12" placeholder="Ingrese la cantidad que llego del pedido (unidades)">
+      <select name="idLocal" id="idLocal" class="my-3 form-control">
+        <option value="">Local para modificar stock</option>
+      </select>
       <br>
       <div class="row">
         <div class="col-6">
@@ -167,6 +170,6 @@
 
 
   <?php include('includes/footer.php'); ?>
-  <script src="js/pedidos.js?v=1.0.1"></script>
+  <script src="js/pedidos.js?v=1.0.2"></script>
 </body>
 </html>
