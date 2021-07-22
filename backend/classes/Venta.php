@@ -76,8 +76,8 @@
             }
             return false;
         }
-
-        public function listarVenta(){
+        
+        public function listarVenta($limit = null){
             $link = Conexion::conectar();
             $sql = "SELECT ven.idVenta,
                     ven.fecha,
@@ -99,10 +99,15 @@
                 $sql .= "AND ven.tipo_pago = :tp ";
             }
             if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])){
-                $sql .= "AND ven.fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
+                $sql .= "AND ven.fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC ";
             }else{
-                $sql .= "ORDER BY ven.idVenta DESC";
+                $sql .= "ORDER BY ven.idVenta DESC ";
             }
+
+            if(!is_null($limit)){
+                $sql .= "LIMIT :limit";
+            }
+
             $stmt = $link->prepare($sql);
             if (isset($_GET['tipo-pago']) && $_GET['tipo-pago']!='null') {
                 $stmt->bindParam(':tp',$tipo_pago,PDO::PARAM_STR);
@@ -111,6 +116,10 @@
                 $stmt->bindParam(':inicio',$_GET['inicio'],PDO::PARAM_STR);
                 $stmt->bindParam(':fin',$_GET['fin'],PDO::PARAM_STR);
             }
+            if(!is_null($limit)){
+                $stmt->bindParam(':limit',$limit,PDO::PARAM_INT);
+            }
+            
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $json = array();
@@ -188,36 +197,28 @@
 
 
         ####################### Balance #######################
-        public function obtenerMontoVenta($dia,$criterio=null){
+        public function obtenerMontoVenta($fecha=null,$estado=null,$tipo_pago=null){
             $link = Conexion::conectar();
-            switch ($criterio) {
-                case !is_null($criterio) && $criterio=='mes':
-                    $sql = "SELECT SUM(total) AS total_ventas
-                    FROM ventas WHERE estado = 'Pago' AND fecha LIKE '". $dia ."%'";
-                    break;
-                case 'diaEfectivo':
-                    $sql = "SELECT SUM(total) AS total_ventas
-                    FROM ventas WHERE estado = 'Pago' AND fecha = '". $dia ."' AND tipo_pago = 'Efectivo'";
-                    break;
-                case 'diaTarjeta':
-                    $sql = "SELECT SUM(total) AS total_ventas
-                    FROM ventas WHERE estado = 'Pago' AND fecha = '". $dia ."' AND tipo_pago = 'Tarjeta'";
-                    break;
-                case 'mesEfectivo':
-                    $sql = "SELECT SUM(total) AS total_ventas
-                    FROM ventas WHERE estado = 'Pago' AND fecha LIKE '". $dia ."%' AND tipo_pago = 'Efectivo'";
-                    break;
-                case 'mesTarjeta':
-                    $sql = "SELECT SUM(total) AS total_ventas
-                    FROM ventas WHERE estado = 'Pago' AND fecha LIKE '". $dia ."%' AND tipo_pago = 'Tarjeta'";
-                    break;
-                default:
-                    $sql = "SELECT SUM(total) AS total_ventas
-                    FROM ventas WHERE estado = 'Pago' AND fecha = '". $dia ."'";
-                    break;
+            $sql = "SELECT IFNULL(SUM(total),0) AS total_ventas FROM ventas WHERE 1 = 1 ";
+            
+            if(!is_null($estado) && $estado != ""){
+                $sql .= "AND estado = :estado ";
             }
+
+            if(!is_null($tipo_pago)){
+                $sql .= "AND tipo_pago = :tipo ";
+            }
+
+            $sql .= "AND fecha LIKE '". $fecha ."%' ";
+
             $stmt = $link->prepare($sql);
-            // $stmt->bindParam(':dia',$dia,PDO::PARAM_STR);
+            if(!is_null($estado) && $estado != ""){
+                $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
+            }
+
+            if(!is_null($tipo_pago)){
+                $stmt->bindParam(':tipo',$tipo_pago,PDO::PARAM_STR);
+            }
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $json = array();
@@ -229,48 +230,37 @@
             return json_encode($json);
         }
 
-        public function listarVentaLimit(){
+        public function getPagosPorMedioDePago($fecha){
             $link = Conexion::conectar();
-            $sql = "SELECT fecha,tipo_pago,total,estado,subtotal FROM ventas order by fecha DESC LIMIT 3";
-            $stmt = $link->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $json = array();
-            foreach ($result as $venta) {
-                $json[] = array(
-                    'fecha' => $venta['fecha'],
-                    'tipo_pago' => $venta['tipo_pago'],
-                    'estado' => $venta['estado'],
-                    'subtotal'=>$venta['subtotal'],
-                    'total' => $venta['total']
-                );
-            }
-            return json_encode($json);
-        }
-
-        public function getPagosConTarjeta($deuda=null){
-            $link = Conexion::conectar();
-            $fecha = $_GET['fecha'];
-            $sql = "SELECT count(tipo_pago) as pagos_tarjeta 
-                    FROM ventas WHERE tipo_pago = 'Tarjeta' AND fecha LIKE '". $fecha ."%'";
-            if (!is_null($deuda)) {
-                $sql = "SELECT count(tipo_pago) as pagos_tarjeta
-                        FROM ventas WHERE tipo_pago = 'Tarjeta' AND estado = 'Debe' AND fecha LIKE '". $fecha ."%'";
-            }
+            $sql = "SELECT (
+                SELECT COUNT(*) AS TOTAL FROM ventas WHERE tipo_pago = 'Tarjeta' AND estado = 'Pago' AND fecha LIKE '". $fecha ."%'
+            ) AS pagos_tarjeta,
+            (
+                SELECT COUNT(*) AS TOTAL FROM ventas WHERE tipo_pago = 'Tarjeta' AND estado = 'Debe' AND fecha LIKE '". $fecha ."%'
+            ) AS deudor_tarjeta,
+            (
+                SELECT COUNT(*) AS TOTAL FROM ventas WHERE tipo_pago = 'Efectivo' AND estado = 'Pago' AND fecha LIKE '". $fecha ."%'
+            ) AS pagos_efectivo,
+            (
+                SELECT COUNT(*) AS TOTAL FROM ventas WHERE tipo_pago = 'Efectivo' AND estado = 'Debe' AND fecha LIKE '". $fecha ."%'
+            ) AS deudor_efectivo;";
             $stmt=$link->prepare($sql);
             if ($stmt->execute()) {
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $json = array();
                 foreach ($result as $pagos_tarjeta) {
                     $json[] = array(
-                        'pagos_tarjeta' => $pagos_tarjeta['pagos_tarjeta']
+                        'pagos_tarjeta' => $pagos_tarjeta['pagos_tarjeta'],
+                        'deudor_tarjeta' => $pagos_tarjeta['deudor_tarjeta'],
+                        'pagos_efectivo' => $pagos_tarjeta['pagos_efectivo'],
+                        'deudor_efectivo' => $pagos_tarjeta['deudor_efectivo']
                     );
                 }
                 return json_encode($json);
             }
         }
 
-        public function getProductoMasVendido($criterio=null){
+        public function getProductoMasVendido($fecha){
             $link = Conexion::conectar();
             $fecha = $_GET['fecha'];
             $sql = "SELECT producto, count(pv.idProducto) as cantidad FROM productosVenta AS pv,productos AS pr 
@@ -278,13 +268,6 @@
                     and fecha LIKE '".$fecha."%' 
                     GROUP BY pv.idProducto
                     LIMIT 1";
-            if (!is_null($criterio)) {
-                $sql = "SELECT producto, count(pv.idProducto) as cantidad FROM productosVenta AS pv,productos AS pr 
-                        where pv.idProducto = pr.idProducto 
-                        and fecha = '$fecha' 
-                        GROUP BY pv.idProducto
-                        LIMIT 1;";
-            }
             $stmt = $link->prepare($sql);
             if ($stmt->execute()) {
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

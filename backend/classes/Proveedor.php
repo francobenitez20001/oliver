@@ -119,5 +119,26 @@
             return json_encode(array('status'=>400,'info'=>'Problemas al insertar el proveedor'));
         }
 
+        public function obtenerMontoPagos($fecha, $estado = null){
+            $link = Conexion::conectar();
+            $propiedadASumar = "total";
+            if(!is_null($estado)){
+                $propiedadASumar = "monto";
+            }
+            $sql = "SELECT SUM(". $propiedadASumar .") AS total_pagos FROM pagoProveedores WHERE fecha LIKE '". $fecha ."%'";
+            $stmt = $link->prepare($sql);
+            if ($stmt->execute()) {
+                $json = array();
+                $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($resultado as $pagos) {
+                    $json[] = array(
+                        'pagos_total' => $pagos['total_pagos']
+                    );
+                }
+                return json_encode($json);
+            };
+            return json_encode(array('status'=>400,'info'=>'problemas al ejecutar la consulta'));
+        }
+
     }
     

@@ -139,22 +139,18 @@
 
          ######################## BALANCE ########################
 
-        public function obtenerMontoServicio($criterio = null)//criterio es si filtra por dia o por mes. Si no es null, busca por mes
-        {
+        public function obtenerMontoServicio($fecha,$estado=null){
              $link = Conexion::conectar();
-             $fecha = $_GET['fecha'];
-             $sql = "SELECT SUM(total) AS total_servicios 
-                     FROM servicios WHERE fecha LIKE '". $fecha ."%'";
-             if (!is_null($criterio) && $criterio=='nopago') {
-                 $sql = "SELECT SUM(total) AS total_servicios
-                         FROM servicios WHERE estado = 'No pago' AND fecha LIKE '". $fecha ."%'";
-             }else if((!is_null($criterio) && $criterio=='pago')){
-                //pedidos del dia pagos
-                $sql = "SELECT SUM(total) AS total_servicios
-                         FROM servicios WHERE estado = 'Pago' AND fecha LIKE '". $fecha ."'";
-             }
+             $sql = "SELECT IFNULL(SUM(total),0) AS total_servicios 
+                    FROM servicios 
+                    WHERE fecha LIKE '". $fecha ."%' ";
+            if(!is_null($estado)){
+                $sql .= "AND estado = :estado";
+            }
              $stmt = $link->prepare($sql);
-             // $stmt->bindParam(':fecha',$fecha,PDO::PARAM_STR);
+             if(!is_null($estado)){
+                $stmt->bindParam(':estado',$estado,PDO::PARAM_STR);
+             }
              if ($stmt->execute()) {
                  $json = array();
                  $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);

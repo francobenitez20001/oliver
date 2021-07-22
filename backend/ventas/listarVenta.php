@@ -1,6 +1,7 @@
 <?php
     require '../config.php';
     $venta = new Venta;
-    $data = $venta->listarVenta();
+    $limit = isset($_GET['limit']) ? $_GET['limit'] : null;
+    $data = $venta->listarVenta($limit);
     echo $data;
 ?>

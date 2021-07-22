@@ -2,27 +2,34 @@
 
     class Pedido 
     {
-        public function listarPedidos()
-        {
+        public function listarPedidos($limit=null){
             $link = Conexion::conectar();
             $mes = isset($_GET['mes']) ? $_GET['mes'] : null;
             $sql = "SELECT idPedido,descripcion,cantidad,p.estado,p.idProveedor,proveedor,fecha,comprobante 
                     FROM pedidos p, proveedor pr where p.idProveedor = pr.idProveedor ";
             if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin']
                     && !is_null($_GET['idProveedor']))){
-                $sql .= "AND p.idProveedor = :idProveedor AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC";
+                $sql .= "AND p.idProveedor = :idProveedor AND fecha BETWEEN :inicio AND :fin ORDER BY fecha DESC ";
             }else{
                 if(!is_null($mes)){
-                    $sql .= "AND fecha LIKE '".$mes."%' ORDER BY idPedido DESC"; 
+                    $sql .= "AND fecha LIKE '".$mes."%' ORDER BY idPedido DESC "; 
                 };
             };
+
+            if(!is_null($limit)){
+                $sql .= "LIMIT :limit";
+            }
+
             $stmt = $link->prepare($sql);
-            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin'])
-            && !is_null($_GET['idProveedor'])){
+            if(isset($_GET['inicio']) && !is_null($_GET['inicio']) && isset($_GET['fin']) && !is_null($_GET['fin']) && !is_null($_GET['idProveedor'])){
                 $stmt->bindParam(':inicio',$_GET['inicio'],PDO::PARAM_STR);
                 $stmt->bindParam(':fin',$_GET['fin'],PDO::PARAM_STR);
                 $stmt->bindParam(':idProveedor',$_GET['idProveedor'],PDO::PARAM_INT);
             }
+            if(!is_null($limit)){
+                $stmt->bindParam(':limit',$limit,PDO::PARAM_INT);
+            }
+
             $stmt->execute();
             $json = array();
             $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -154,8 +161,7 @@
         }
 
         ######################## BALANCE ########################
-        public function obtenerPedidosSinEntregar()
-        {
+        public function obtenerPedidosSinEntregar(){
             $link = Conexion::conectar();
             $sql = "SELECT count(idPedido) AS pedidos_sin_entregar 
                     FROM pedidos WHERE estado = 'No recibido'";
@@ -171,23 +177,6 @@
                 return json_encode($json);
             }
             return json_encode(array('status'=>400,'info'=>'problemas al ejecutar la consulta'));
-        }
-
-        public function listarPedidosLimit()
-        {
-            $link = Conexion::conectar();
-            $sql = "SELECT descripcion,cantidad FROM pedidos order by fecha DESC LIMIT 3";
-            $stmt = $link->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $json = array();
-            foreach ($result as $venta) {
-                $json[] = array(
-                    'descripcion' => $venta['descripcion'],
-                    'cantidad' => $venta['cantidad']
-                );
-            }
-            return json_encode($json);
         }
 
     }
