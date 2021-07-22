@@ -80,8 +80,10 @@ class Producto
             $producto = $_POST['producto'];
             $idMarca = $_POST['idMarca'];
             $idCategoria = $_POST['idCategoria'];
-            $stock = $_POST['stock'];
-            $stockSuelto = $_POST['stockSuelto'];
+            $stock_local_1 = $_POST['stock_local_1'];
+            $stock_suelto_local_1 = $_POST['stock_suelto_local_1'];
+            $stock_local_2 = $_POST['stock_local_2'];
+            $stock_suelto_local_2 = $_POST['stock_suelto_local_2'];
             $idProveedor = $_POST['idProveedor'];
             $porcentaje_ganancia = $_POST['porcentaje_ganancia'];
             $precioCosto = $_POST['precioCosto'];
@@ -103,7 +105,7 @@ class Producto
             if(isset($_POST['codigoProducto']) && $_POST['codigoProducto']!=='' && $_POST['codigoProducto']!==0){
                 $codigoProducto = $_POST['codigoProducto'];
             }
-            $sql = "INSERT INTO productos (producto,idMarca,idCategoria,precioPublico,precioUnidad,preciokilo,stock,idProveedor,porcentaje_ganancia,stock_suelto,precio_costo,cantidadUnitario,codigo_producto,cantidadPorKilo,porcentajeGananciaPorKilo) VALUES (:producto,:idMarca,:idCategoria,:precioPublico,:precioUnidad,:precioKilo,:stock,:idProveedor,:porcentaje_ganancia,:stockSuelto,:precioCosto,:cantidadUnitario,:codigoProducto,:cantidadPorKilo,:porcentajeGananciaPorKilo)";
+            $sql = "INSERT INTO productos (producto,idMarca,idCategoria,precioPublico,precioUnidad,preciokilo,stock_local_1,stock_local_2,stock_suelto_local_1,stock_suelto_local_2,idProveedor,porcentaje_ganancia,precio_costo,cantidadUnitario,codigo_producto,cantidadPorKilo,porcentajeGananciaPorKilo) VALUES (:producto,:idMarca,:idCategoria,:precioPublico,:precioUnidad,:precioKilo,:stock_local_1,:stock_local_2,:stock_suelto_local_1,:stock_suelto_local_2,:idProveedor,:porcentaje_ganancia,:precioCosto,:cantidadUnitario,:codigoProducto,:cantidadPorKilo,:porcentajeGananciaPorKilo)";
             $stmt = $link->prepare($sql);
             $stmt->bindParam(':producto',$producto,PDO::PARAM_STR);
             $stmt->bindParam(':idMarca',$idMarca,PDO::PARAM_INT);
@@ -111,10 +113,12 @@ class Producto
             $stmt->bindParam(':precioPublico',$precioPublico,PDO::PARAM_STR);
             $stmt->bindParam(':precioUnidad',$precioUnidad,PDO::PARAM_STR);
             $stmt->bindParam(':precioKilo',$precioKilo,PDO::PARAM_STR);
-            $stmt->bindParam(':stock',$stock,PDO::PARAM_INT);
+            $stmt->bindParam(':stock_local_1',$stock_local_1,PDO::PARAM_INT);
+            $stmt->bindParam(':stock_local_2',$stock_local_2,PDO::PARAM_INT);
+            $stmt->bindParam(':stock_suelto_local_1',$stock_suelto_local_1,PDO::PARAM_STR);
+            $stmt->bindParam(':stock_suelto_local_2',$stock_suelto_local_2,PDO::PARAM_STR);
             $stmt->bindParam(':idProveedor',$idProveedor,PDO::PARAM_INT);
             $stmt->bindParam(':porcentaje_ganancia',$porcentaje_ganancia,PDO::PARAM_INT);
-            $stmt->bindParam(':stockSuelto',$stockSuelto,PDO::PARAM_STR);
             $stmt->bindParam(':precioCosto',$precioCosto,PDO::PARAM_STR);
             $stmt->bindParam(':cantidadUnitario',$cantidadUnitario,PDO::PARAM_INT);
             $stmt->bindParam(':codigoProducto',$codigoProducto,PDO::PARAM_INT);

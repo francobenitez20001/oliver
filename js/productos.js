@@ -44,8 +44,10 @@ class Producto{
         let permiso = this.checkUserSession();
         data.forEach(reg => {
             let stock = reg.stock_local_1;
+            let stockSuelto = reg.stock_suelto_local_1;
             if(localDelUsuario == "2"){
                 stock = reg.stock_local_2;
+                stockSuelto = reg.stock_suelto_local_2;
             }
             if(stock <=0 && stockSuelto<=0){
                 template += `

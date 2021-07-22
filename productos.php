@@ -38,8 +38,10 @@
           <th scope="col">Precio Unitario</th>
           <th scope="col">Precio por KG</th>
           <th scope="col">
-            <i class="fas fa-plus userPrivate" style="color:blue;cursor:pointer;" id="botonAgregar" onclick="producto.mostrarFormularioAgregar()"></i>
-            <a class="userPrivate" href="exports/exportarExcelProductos.php"><i class="fas fa-file-export" style="color:blue;cursor:pointer;"></i></a>
+            <?php if ($_SESSION['user']['admin']==1){?>
+              <i class="fas fa-plus" style="color:blue;cursor:pointer;" id="botonAgregar" onclick="producto.mostrarFormularioAgregar()"></i>
+              <a class="" href="exports/exportarExcelProductos.php"><i class="fas fa-file-export" style="color:blue;cursor:pointer;"></i></a>
+            <?php }; ?>
           </th>
         </tr>
       </thead>
@@ -57,34 +59,31 @@
     <hr>
     <form id="formAgregarProducto" class="form-group">
       <div class="row">
-          <div class="col-12 col-md-5">
+          <div class="col-12 col-md-6">
             <input type="text" name="producto" id="producto" class="form-control mb-4" placeholder="Nombre del producto" required>
           </div>
-          <div class="col-md-2"></div>
-          <div class="col-12 col-md-5">
+          <div class="col-12 col-md-6">
             <input type="number" name="codigoProducto" class="form-control mb-4" placeholder="Codigo del producto"/>
           </div>
-          <div class="col-12 col-md-5">
-            <p>Selecciona una marca</p>
+
+          <div class="col-12 col-md-4">
             <select class="form-control mb-4" name="idMarca" id="idMarca" required>
               <option value="">Seleccione una marca</option>
             </select>
           </div>
-          <div class="col-md-2"></div>
-          <div class="col-12 col-md-5">
-            <p>Selecciona una categoria</p>
+          <div class="col-12 col-md-4">
             <select class="form-control mb-4" name="idCategoria" id="idCategoria" required>
               <option value="">Seleccione una categoria</option>
             </select>
           </div>
-          <div class="input-group col-12 col-md-5 mb-4">
+          <div class="input-group col-12 col-md-4 mb-4">
             <div class="input-group-prepend">
               <div class="input-group-text">Cantidad Unitario</div>
             </div>
             <input type="text" name="cantidadUnitario" id="cantidadUnitario" class="form-control">
           </div>
-          <div class="col-md-2"></div>
-          <div class="input-group col-12 col-md-5 mb-4">
+
+          <div class="input-group col-12 col-md-4 mb-4">
             <div class="input-group-prepend">
               <div class="input-group-text">Venta por kilo</div>
             </div>
@@ -93,27 +92,33 @@
               <option value="si">Si</option>
             </select>
           </div>
-          <div class="input-group col-12 col-md-5 mb-4">
+          <div class="input-group col-12 col-md-4 mb-4">
             <div class="input-group-prepend">
               <div class="input-group-text">Cantidad por kilo</div>
             </div>
             <input type="number" name="cantidadKilo" id="cantidadKilo" class="form-control input-disable" disabled="true" step="any">
           </div>
-          <div class="col-md-2"></div>
-          <div class="input-group col-12 col-md-5 mb-4">
+          <div class="input-group col-12 col-md-4 mb-4">
             <div class="input-group-prepend">
               <div class="input-group-text">% extra por Kilo</div>
             </div>
             <input type="number" name="porcentajePorKilo" id="porcentajePorKilo" class="form-control input-disable" disabled="true" step="any">
           </div>
-          <div class="col-12 col-md-5 mb-4">
-            <input type="number" name="stock" id="stock" class="form-control" placeholder="Stock">
+
+          <div class="col-12 col-md-3 mb-4">
+            <input type="number" name="stock_local_1" id="stock_local_1" class="form-control" placeholder="Stock local 1">
           </div>
-          <div class="col-md-2"></div>
-          <div class="col-12 col-md-5 mb-4">
-            <input type="number" name="stockSuelto" id="stockSuelto" class="form-control" placeholder="Stock suelto" step="any">
+          <div class="col-12 col-md-3 mb-4">
+            <input type="number" name="stock_suelto_local_1" id="stock_suelto_local_1" class="form-control" placeholder="Stock suelto local 1">
           </div>
-          <div class="input-group col-12 col-md-5 mb-4">
+          <div class="col-12 col-md-3 mb-4">
+            <input type="number" name="stock_local_2" id="stock_local_2" class="form-control" placeholder="Stock local 2">
+          </div>
+          <div class="col-12 col-md-3 mb-4">
+            <input type="number" name="stock_suelto_local_2" id="stock_suelto_local_2" class="form-control" placeholder="Stock suelto local 2">
+          </div>
+          
+          <div class="input-group col-12 col-md-4 mb-4">
             <div class="input-group-prepend">
               <div class="input-group-text">Proveedor</div>
             </div>
@@ -121,14 +126,13 @@
                  
             </select>
           </div>
-          <div class="col-md-2"></div>
-          <div class="input-group col-12 col-md-5 mb-4">
+          <div class="input-group col-12 col-md-4 mb-4">
             <div class="input-group-prepend">
               <div class="input-group-text">% Ganancia</div>
             </div>
             <input type="text" name="porcentaje_ganancia" id="porcentaje_ganancia" class="form-control">
           </div>
-          <div class="input-group col-12 col-md-5 mb-4">
+          <div class="input-group col-12 col-md-4 mb-4">
             <div class="input-group-prepend">
               <div class="input-group-text">Precio de costo</div>
             </div>
@@ -225,7 +229,7 @@
 
 
   <?php include('includes/footer.php'); ?>
-  <script type="module" src="js/productos.js?v=1.0.7"></script>
+  <script type="module" src="js/productos.js?v=1.0.8"></script>
   <script src="js/menu-producto.js"></script>
   <!-- <script src="js/formAgregarProducto.js"></script> -->
 </body>
