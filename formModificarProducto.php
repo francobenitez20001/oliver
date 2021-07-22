@@ -152,7 +152,7 @@
                   <div class="input-group-prepend">
                     <div class="input-group-text">Precio de costo</div>
                   </div>
-                  <input type="text" name="precio_costo" id="precioCosto" class="form-control" value="<?php echo $reg['precio_costo'] ?>">
+                  <input type="text" name="precioCosto" id="precioCosto" class="form-control" value="<?php echo $reg['precio_costo'] ?>">
                 </div>
                 <div class="input-group col-12 col-md-4 mb-4">
                   <div class="input-group-prepend">
