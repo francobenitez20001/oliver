@@ -153,7 +153,7 @@ class Producto
                 $precioCosto = $_POST['precioCosto'];
                 $precioPublico = $precioCosto + ($precioCosto*$porcentaje_ganancia/100);//precio publico dinamico
                 $precioUnidad = $precioPublico/$cantidadUnitario;
-                                
+
                 if(isset($_POST['stock_local_1'])){
                         $stock_local_1 = $_POST['stock_local_1'];
                         $stock_local_2 = $_POST['stock_local_2'];
@@ -161,12 +161,18 @@ class Producto
                         $stock_suelto_local_2 = $_POST['stock_suelto_local_2'];
                 }
 
-                if(isset($_POST['cantidadKilo']) && isset($_POST['porcentajePorKilo']) && $_POST['cantidadKilo']!=='' && $_POST['cantidadKilo']!==0 && $_POST['porcentajePorKilo']!=='' && $_POST['porcentajePorKilo']!==0){
+                if(isset($_POST['cantidadKilo']) && isset($_POST['porcentajePorKilo'])){
                         $cantidadPorKilo = $_POST['cantidadKilo'];
                         $porcentajeGananciaKilo = $_POST['porcentajePorKilo'];
-                        $costoKilo = $precioPublico/$cantidadPorKilo;
-                        $porcentajeGananciaKiloValor = $costoKilo*$porcentajeGananciaKilo/100;
-                        $precioKilo = $costoKilo + $porcentajeGananciaKiloValor;
+                        if($cantidadPorKilo==0 || $cantidadPorKilo=="0"){
+                                $costoKilo = 0;
+                                $porcentajeGananciaKiloValor = 0;
+                                $precioKilo = 0;       
+                        }else{
+                                $costoKilo = $precioPublico/$cantidadPorKilo;
+                                $porcentajeGananciaKiloValor = $costoKilo*$porcentajeGananciaKilo/100;
+                                $precioKilo = $costoKilo + $porcentajeGananciaKiloValor;
+                        }
                 };
 
                 $sql = "UPDATE productos SET producto = :producto,
@@ -222,10 +228,7 @@ class Producto
                 }
 
                 $bool = $stmt->execute();
-                if ($bool) {
-                        return json_encode(true);
-                }
-                return json_encode(false);
+                return json_encode(array('ok'=>$bool,'data'=>$cantidadPorKilo));
         }
 
         public function eliminarProducto()

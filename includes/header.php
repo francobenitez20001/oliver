@@ -52,7 +52,7 @@
             </div>
           </li>
         <?php }; ?>
-        <?php if ($_SERVER['REQUEST_URI'] == '/oliver/productos.php'){?>
+        <?php if ($_SERVER['REQUEST_URI'] == '/oliver/productos.php' || $_SERVER['REQUEST_URI'] == '/productos.php'){?>
           <li class="nav-item" id="icon-menu-li">
             <a id="icon-menu" class="nav-link d-xs-none d-sm-none d-md-block"><i class="fas fa-bars"></i></a>
           </li>

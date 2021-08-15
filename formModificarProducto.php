@@ -24,7 +24,7 @@
     <hr>
     <h1>Formulario de modificación de un producto</h1>
     <hr>
-    <form id="formModificarProducto" class="form-group">
+    <form id="formModificarProducto" class="form-group" onsubmit="enviar(event)">
         <div class="row justify-content-between">
 
           <div class="col-12 col-md-5 input-group mb-4">
@@ -199,5 +199,5 @@
   </div><!--menu secundario-->
 
   <?php include('includes/footer.php'); ?>
-  <script src="js/updateProducto.js?v=1.0.1"></script>
+  <script src="js/updateProducto.js?v=1.0.3"></script>
 </body>

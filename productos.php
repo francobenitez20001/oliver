@@ -87,7 +87,7 @@
             <div class="input-group-prepend">
               <div class="input-group-text">Venta por kilo</div>
             </div>
-            <select onchange="producto.handleChangeVentaKilo(event)" class="form-control" id="ventaKiloSelect">
+            <select onchange="window.producto.handleChangeVentaKilo(event)" class="form-control" id="ventaKiloSelect">
               <option value="no">No</option>
               <option value="si">Si</option>
             </select>
@@ -229,7 +229,7 @@
 
 
   <?php include('includes/footer.php'); ?>
-  <script type="module" src="js/productos.js?v=1.0.8"></script>
+  <script type="module" src="js/productos.js?v=1.0.9"></script>
   <script src="js/menu-producto.js"></script>
   <!-- <script src="js/formAgregarProducto.js"></script> -->
 </body>

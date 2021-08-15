@@ -1,32 +1,26 @@
-let formulario = document.getElementById('formModificarProducto');
-formulario.addEventListener('submit', event=>{
+const enviar = async event=>{
     event.preventDefault();
-    let data = new FormData(formulario);
-    fetch('backend/producto/modificarProducto.php',{
+    let data = new FormData(event.target);
+    //console.log(data.get('cantidadKilo'));
+    const res = await fetch('backend/producto/modificarProducto.php',{
         method: 'POST',
         body: data
-    })
-    .then(res=>res.json())
-    .then(newRes=>{
-        if (newRes) {
-            alert = document.getElementById('alert-warning');
-            alert.classList.remove('d-none');
-            formulario.classList.add('d-none');
-        }else{
-          modalError('Ya existe un producto con el codigo ingresado');
-        }
-    })
-})
+    });
+    if(res.status!==200){
+        return modalError('Error al modificar');
+    }
+    return modalSuccess('Modificado').then(()=>window.location.assign('/productos.php'));
+};
 
 function handleChangeVentaKilo(event){
   if (event.target.value === 'si') {
     document.getElementsByClassName('input-disable')[0].removeAttribute('disabled');
     document.getElementsByClassName('input-disable')[1].removeAttribute('disabled');
   }else{
-      document.getElementsByClassName('input-disable')[0].setAttribute('disabled','true');
-      document.getElementsByClassName('input-disable')[0].value="";
-      document.getElementsByClassName('input-disable')[1].setAttribute('disabled','true');
-      document.getElementsByClassName('input-disable')[1].value="";
+    // document.getElementsByClassName('input-disable')[0].setAttribute('disabled','true');
+    document.getElementsByClassName('input-disable')[0].value="0";
+    // document.getElementsByClassName('input-disable')[1].setAttribute('disabled','true');
+    document.getElementsByClassName('input-disable')[1].value="0";
   }
 }
 
