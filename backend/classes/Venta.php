@@ -42,6 +42,21 @@
                 if(in_array(false,$logResponse)){
                     return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el stock'));
                 }
+                //actualizar stock de web
+                for ($i=0; $i < $prd_count; $i++) {
+                    if($data['productos'][$i]['tipoDeVenta'] == 'normal' && $idLocal=="1"){
+                        $actualizarStock = $this->actualizarStockWeb($data['productos'][$i]['cantidad'],$data['productos'][$i]['codigo_producto']);
+                        if ($actualizarStock) {
+                            array_push($logResponse,true);   
+                        }else{
+                            array_push($logResponse,false);
+                        }
+                    }
+                }
+
+                if(in_array(false,$logResponse)){
+                    return json_encode(array('status'=>400,'info'=>'Problemas al actualizar el stock web'));
+                }
                 return json_encode(array('status'=>200,'info'=>'Venta agregada','idVenta'=>$link->lastInsertId(),'produtos'=>$data['productos']));
             }
             return json_encode(array('status'=>400,'info'=>'No se pudo cargar la venta'));
@@ -75,6 +90,15 @@
                 return true;
             }
             return false;
+        }
+
+        public function actualizarStockWeb($cantidad,$codigo){
+            $link = Conexion::conectar();
+            $sql = "UPDATE oliver_web.subProducto SET stock = (stock - :cantidad) where codigoBarra = :codigo";
+            $stmt = $link->prepare($sql);
+            $stmt->bindParam(':cantidad',$cantidad,PDO::PARAM_INT);
+            $stmt->bindParam(':codigo',$codigo,PDO::PARAM_STR);
+            return $stmt->execute();
         }
         
         public function listarVenta($limit = null){

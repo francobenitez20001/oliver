@@ -45,6 +45,7 @@ class Carrito{
             idMarca:this.productosSeleccionados[index].idMarca,
             idProducto:this.productosSeleccionados[index].idProducto,
             precio:parseFloat(this.productosSeleccionados[index].precioPublico),
+            codigo_producto:this.productosSeleccionados[index].codigo_producto,
             total:0,
             tipoDeVenta:'normal'
         }

@@ -1,4 +1,4 @@
-import Carrito from './utils/Carrito.js?v=1.0.3';
+import Carrito from './utils/Carrito.js?v=1.0.4';
 import {getMarcas,getCategorias,getProveedores} from './utils/helpers.js';
 
 class Producto{
